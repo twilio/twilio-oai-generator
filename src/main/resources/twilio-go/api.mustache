@@ -77,6 +77,43 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
     return nil
 {{/returnType}}
 }
+// {{{nickname}}}WithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) {{{nickname}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) (*metadata.ResourceMetadata[{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}bool{{/returnType}}], error) {
+    path := "{{{path}}}"
+    {{>partial_serialization}}
+
+{{#hasHeaderParams}}
+{{#headerParams}}
+    if params != nil && params.{{paramName}} != nil {
+        headers["{{{baseName}}}"] = *params.{{paramName}}
+    }
+{{/headerParams}}
+{{/hasHeaderParams}}
+{{#vendorExtensions.x-is-json-type}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, body...)
+{{/vendorExtensions.x-is-json-type}}
+{{^vendorExtensions.x-is-json-type}}
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
+{{/vendorExtensions.x-is-json-type}}
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+
+    {{#returnType}}ps := &{{{returnType}}}{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }{{/returnType}}
+
+    metadataWrapper := metadata.NewResourceMetadata[{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}bool{{/returnType}}](
+        {{#returnType}}*ps{{/returnType}}{{^returnType}}true{{/returnType}},             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
+}
 {{/vendorExtensions.x-is-read-operation}}
 {{#vendorExtensions.x-is-read-operation}}
 // Retrieve a single page of {{{vendorExtensions.x-domain-name}}} records from the API. Request is executed immediately.
@@ -107,6 +144,40 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 
     return ps, err
 }
+// Page{{{vendorExtensions.x-domain-name}}}WithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params{{#vendorExtensions.isApiV1}}, pageToken string{{/vendorExtensions.isApiV1}}{{^vendorExtensions.isApiV1}}, pageToken, pageNumber string{{/vendorExtensions.isApiV1}}) (*metadata.ResourceMetadata[{{{returnContainer}}}], error) {
+    path := "{{{path}}}"
+
+    {{>partial_serialization}}
+    if pageToken != "" {
+        data.Set("PageToken", pageToken)
+    }
+    {{^vendorExtensions.isApiV1}}
+    if pageNumber != "" {
+        data.Set("Page", pageNumber)
+    }
+    {{/vendorExtensions.isApiV1}}
+
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+    if err != nil {
+        return nil, err
+    }
+
+    defer resp.Body.Close()
+
+    ps := &{{{returnContainer}}}{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[{{{returnContainer}}}](
+        *ps,             // The page object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
+}
 
 // Lists {{{vendorExtensions.x-domain-name}}} records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
 func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) ({{{returnType}}}, error) {
@@ -122,6 +193,29 @@ func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 	}
 
 	return records, nil
+}
+
+// List{{{vendorExtensions.x-domain-name}}}WithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) List{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) (*metadata.ResourceMetadata[{{{returnType}}}], error) {
+    response, errors := c.Stream{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params)
+    resource := response.GetResource()
+
+    records := make({{{returnType}}}, 0)
+    for record := range resource {
+        records = append(records, record)
+    }
+
+    if err := <-errors; err != nil {
+        return nil, err
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[{{{returnType}}}](
+        records,
+        response.GetStatusCode(), // HTTP status code
+        response.GetHeaders(),     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }
 
 // Streams {{{vendorExtensions.x-domain-name}}} records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
@@ -146,6 +240,34 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 	return recordChannel, errorChannel
 }
 
+// Stream{{{vendorExtensions.x-domain-name}}}WithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params) (*metadata.ResourceMetadata[chan {{{returnBaseType}}}], chan error) {
+    if params == nil {
+        params = &{{{nickname}}}Params{}
+    }
+    params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
+
+    recordChannel := make(chan {{{returnBaseType}}}, 1)
+    errorChannel := make(chan error, 1)
+
+    response, err := c.Page{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params, ""{{^vendorExtensions.isApiV1}}, ""{{/vendorExtensions.isApiV1}})
+    if err != nil {
+        errorChannel <- err
+        close(recordChannel)
+        close(errorChannel)
+    } else {
+        resource := response.GetResource()
+        go c.stream{{{vendorExtensions.x-domain-name}}}(&resource, params, recordChannel, errorChannel)
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[chan {{{returnBaseType}}}](
+        recordChannel,            // The stream
+        response.GetStatusCode(), // HTTP status code from page response
+        response.GetHeaders(),    // HTTP headers from page response
+    )
+
+    return metadataWrapper, errorChannel
+}
 
 func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{returnContainer}}}, params *{{{nickname}}}Params, recordChannel chan {{{returnBaseType}}}, errorChannel chan error) {
 	curRecord := 1
