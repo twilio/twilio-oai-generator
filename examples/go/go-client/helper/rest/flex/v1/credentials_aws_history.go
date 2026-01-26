@@ -64,3 +64,44 @@ func (c *ApiService) FetchCredentialHistory(Sid string, params *FetchCredentialH
 
 	return ps, err
 }
+
+// FetchCredentialHistoryWithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) FetchCredentialHistoryWithMetadata(Sid string, params *FetchCredentialHistoryParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
+	path := "/v1/Credentials/AWS/{Sid}/History"
+	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+
+	data := url.Values{}
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
+
+	if params != nil && params.AddOnsData != nil {
+		v, err := json.Marshal(params.AddOnsData)
+
+		if err != nil {
+			return nil, err
+		}
+
+		data.Set("AddOnsData", string(v))
+	}
+
+	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	ps := &TestResponseObject{}
+	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+		return nil, err
+	}
+
+	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+		*ps,             // The resource object
+		resp.StatusCode, // HTTP status code
+		resp.Header,     // HTTP headers
+	)
+
+	return metadataWrapper, nil
+}

@@ -101,6 +101,58 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 	return ps, err
 }
 
+// CreateCallWithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) CreateCallWithMetadata(params *CreateCallParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
+	path := "/2010-04-01/Accounts/{AccountSid}/Calls.json"
+	if params != nil && params.PathAccountSid != nil {
+		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+	} else {
+		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+	}
+
+	data := url.Values{}
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
+
+	if params != nil && params.RequiredStringProperty != nil {
+		data.Set("RequiredStringProperty", *params.RequiredStringProperty)
+	}
+	if params != nil && params.TestArrayOfStrings != nil {
+		for _, item := range *params.TestArrayOfStrings {
+			data.Add("TestArrayOfStrings", item)
+		}
+	}
+	if params != nil && params.TestArrayOfUri != nil {
+		for _, item := range *params.TestArrayOfUri {
+			data.Add("TestArrayOfUri", item)
+		}
+	}
+	if params != nil && params.TestMethod != nil {
+		data.Set("TestMethod", *params.TestMethod)
+	}
+
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	ps := &TestResponseObject{}
+	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+		return nil, err
+	}
+
+	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+		*ps,             // The resource object
+		resp.StatusCode, // HTTP status code
+		resp.Header,     // HTTP headers
+	)
+
+	return metadataWrapper, nil
+}
+
 // Optional parameters for the method 'DeleteCall'
 type DeleteCallParams struct {
 	//
@@ -134,6 +186,37 @@ func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) error
 	defer resp.Body.Close()
 
 	return nil
+}
+
+// DeleteCallWithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) DeleteCallWithMetadata(TestInteger int, params *DeleteCallParams) (*metadata.ResourceMetadata[bool], error) {
+	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
+	if params != nil && params.PathAccountSid != nil {
+		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+	} else {
+		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+	}
+	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
+
+	data := url.Values{}
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
+
+	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	metadataWrapper := metadata.NewResourceMetadata[bool](
+		true,            // The resource object
+		resp.StatusCode, // HTTP status code
+		resp.Header,     // HTTP headers
+	)
+
+	return metadataWrapper, nil
 }
 
 // Optional parameters for the method 'FetchCall'
@@ -174,4 +257,40 @@ func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestR
 	}
 
 	return ps, err
+}
+
+// FetchCallWithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) FetchCallWithMetadata(TestInteger int, params *FetchCallParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
+	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
+	if params != nil && params.PathAccountSid != nil {
+		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+	} else {
+		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+	}
+	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
+
+	data := url.Values{}
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
+
+	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	ps := &TestResponseObject{}
+	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+		return nil, err
+	}
+
+	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+		*ps,             // The resource object
+		resp.StatusCode, // HTTP status code
+		resp.Header,     // HTTP headers
+	)
+
+	return metadataWrapper, nil
 }
