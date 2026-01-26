@@ -18,6 +18,8 @@ import (
 	"encoding/json"
 	"net/url"
 	"strings"
+
+	"github.com/twilio/twilio-go/client/metadata"
 )
 
 // Optional parameters for the method 'FetchCredentialHistory'

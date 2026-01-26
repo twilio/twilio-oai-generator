@@ -18,6 +18,8 @@ import (
 	"encoding/json"
 	"net/url"
 	"strings"
+
+	"github.com/twilio/twilio-go/client/metadata"
 )
 
 func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
