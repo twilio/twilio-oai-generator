@@ -19,6 +19,8 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+
+	"github.com/twilio/twilio-go/client/metadata"
 )
 
 // Optional parameters for the method 'UpdateCallFeedbackSummary'
@@ -87,4 +89,50 @@ func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFee
 	}
 
 	return ps, err
+}
+
+// UpdateCallFeedbackSummaryWithMetadata returns response with metadata like status code and response headers
+func (c *ApiService) UpdateCallFeedbackSummaryWithMetadata(Sid string, params *UpdateCallFeedbackSummaryParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
+	path := "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json"
+	if params != nil && params.PathAccountSid != nil {
+		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+	} else {
+		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+	}
+	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+
+	data := url.Values{}
+	headers := map[string]interface{}{
+		"Content-Type": "application/x-www-form-urlencoded",
+	}
+
+	if params != nil && params.AccountSid != nil {
+		data.Set("AccountSid", *params.AccountSid)
+	}
+	if params != nil && params.EndDate != nil {
+		data.Set("EndDate", fmt.Sprint(*params.EndDate))
+	}
+	if params != nil && params.StartDate != nil {
+		data.Set("StartDate", fmt.Sprint(*params.StartDate))
+	}
+
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	if err != nil {
+		return nil, err
+	}
+
+	defer resp.Body.Close()
+
+	ps := &TestResponseObject{}
+	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+		return nil, err
+	}
+
+	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+		*ps,             // The resource object
+		resp.StatusCode, // HTTP status code
+		resp.Header,     // HTTP headers
+	)
+
+	return metadataWrapper, nil
 }
