@@ -28,6 +28,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import java.io.InputStream;
 import com.twilio.type.*;
 
 import com.twilio.base.Page;
@@ -103,8 +104,9 @@ public AssistantReader setPageSize(final Integer pageSize){
         if (response == null) {
             throw new ApiConnectionException("Assistant read failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
             RestException restException = RestException.fromJson(
-                response.getStream(),
+                inputStream,
                 client.getObjectMapper()
             );
 

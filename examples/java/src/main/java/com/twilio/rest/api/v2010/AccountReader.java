@@ -28,6 +28,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import com.twilio.type.*;
@@ -133,8 +134,9 @@ public AccountReader setPageSize(final Integer pageSize){
         if (response == null) {
             throw new ApiConnectionException("Account read failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
             RestException restException = RestException.fromJson(
-                response.getStream(),
+                inputStream,
                 client.getObjectMapper()
             );
 
