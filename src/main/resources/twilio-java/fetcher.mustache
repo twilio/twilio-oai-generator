@@ -5,7 +5,7 @@ package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 {{#operations}}
 {{#vendorExtensions.x-fetch-operation}}
-    public class {{resourceName}}Fetcher extends Fetcher<{{resourceName}}> {
+    public class {{resourceName}}Fetcher extends Fetcher<Resource> {
 
         {{>common/instanceVariables}}
         {{>common/constructors}}

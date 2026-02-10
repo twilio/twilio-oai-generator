@@ -1,0 +1,19 @@
+@JsonIgnoreProperties(ignoreUnknown = true)
+static class Fetch{{resourceName}}Response {
+{{#responseFetch}}
+    @Getter
+    private final {{{dataType}}} {{name}};
+{{/responseFetch}}
+
+    @JsonCreator
+    private Fetch{{resourceName}}Response(
+    {{#responseFetch}}
+        @JsonProperty("{{baseName}}")
+        final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}
+    {{/responseFetch}}
+    ){
+    {{#responseFetch}}
+        this.{{name}} = {{name}};
+    {{/responseFetch}}
+    }
+}

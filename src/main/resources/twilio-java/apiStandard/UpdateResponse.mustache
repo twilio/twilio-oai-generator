@@ -1,0 +1,19 @@
+@JsonIgnoreProperties(ignoreUnknown = true)
+static class Update{{resourceName}}Response {
+{{#responseUpdate}}
+    @Getter
+    private final {{{dataType}}} {{name}};
+{{/responseUpdate}}
+
+    @JsonCreator
+    private Update{{resourceName}}Response(
+    {{#responseUpdate}}
+        @JsonProperty("{{baseName}}")
+        final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}
+    {{/responseUpdate}}
+    ){
+    {{#responseUpdate}}
+        this.{{name}} = {{name}};
+    {{/responseUpdate}}
+    }
+}

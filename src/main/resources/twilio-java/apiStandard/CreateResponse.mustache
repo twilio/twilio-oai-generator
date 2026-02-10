@@ -1,0 +1,19 @@
+@JsonIgnoreProperties(ignoreUnknown = true)
+static class Create{{resourceName}}Response {
+{{#responseCreate}}
+    @Getter
+    private final {{{dataType}}} {{name}};
+{{/responseCreate}}
+
+    @JsonCreator
+    private Create{{resourceName}}Response(
+    {{#responseCreate}}
+        @JsonProperty("{{baseName}}")
+        final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}
+    {{/responseCreate}}
+    ){
+    {{#responseCreate}}
+        this.{{name}} = {{name}};
+    {{/responseCreate}}
+    }
+}

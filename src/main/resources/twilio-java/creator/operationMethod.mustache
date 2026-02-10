@@ -63,13 +63,13 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     }
 
     @Override
-    public {{resourceName}} {{vendorExtensions.x-common-action-method}}(final TwilioRestClient client) {
+    public {{#isApiV1}}Create{{resourceName}}Response{{/isApiV1}} {{^isApiV1}}{{resourceName}}{{/isApiV1}} {{vendorExtensions.x-common-action-method}}(final TwilioRestClient client) {
         Response response = makeRequest(client);
         return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 
     @Override
-    public TwilioResponse<{{resourceName}}> {{vendorExtensions.x-common-action-method}}WithResponse(final TwilioRestClient client) {
+    public TwilioResponse<{{#isApiV1}}{{resourceName}}.Create{{resourceName}}Response>{{/isApiV1}} {{^isApiV1}}TwilioResponse<{{resourceName}}{{/isApiV1}}> {{vendorExtensions.x-common-action-method}}WithResponse(final TwilioRestClient client) {
         Response response = makeRequest(client);
         {{resourceName}} content = {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());

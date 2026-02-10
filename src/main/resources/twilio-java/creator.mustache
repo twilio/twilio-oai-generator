@@ -6,7 +6,7 @@ package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 {{#operations}}
 {{#vendorExtensions.x-create-operation}}
-public class {{resourceName}}Creator extends Creator<{{resourceName}}> {
+public class {{resourceName}}Creator extends Creator<Resource> {
 
 {{>common/instanceVariables}}
 {{>common/constructors}}
