@@ -30,6 +30,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 import com.twilio.type.*;
@@ -109,8 +110,9 @@ public CallCreator setTestMethod(final HttpMethod testMethod){
         if (response == null) {
             throw new ApiConnectionException("Call creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
             RestException restException = RestException.fromJson(
-                response.getStream(),
+                inputStream,
                 client.getObjectMapper()
             );
             if (restException == null) {

@@ -3,8 +3,18 @@
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
+        {{#isApiV1}}
+            RestStandardException standardException = RestStandardException.fromJson(
+                inputStream,
+                client.getObjectMapper()
+            );
+            if (standardException != null && standardException.getType() != null) {
+                throw new ApiException(standardException);
+            }
+        {{/isApiV1}}
             RestException restException = RestException.fromJson(
-                response.getStream(),
+                inputStream,
                 client.getObjectMapper()
             );
 

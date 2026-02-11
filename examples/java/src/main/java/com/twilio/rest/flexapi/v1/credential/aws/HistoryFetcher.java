@@ -27,6 +27,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import java.io.InputStream;
 import java.util.Map;
 import com.twilio.type.*;
 
@@ -67,8 +68,9 @@ public HistoryFetcher setAddOnsData(final Map<String, Object> addOnsData){
         if (response == null) {
             throw new ApiConnectionException("History fetch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
             RestException restException = RestException.fromJson(
-                response.getStream(),
+                inputStream,
                 client.getObjectMapper()
             );
             if (restException == null) {
