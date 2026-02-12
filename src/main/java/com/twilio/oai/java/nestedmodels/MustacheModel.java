@@ -1,6 +1,7 @@
 package com.twilio.oai.java.nestedmodels;
 
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.checkerframework.checker.units.qual.A;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenParameter;
@@ -23,6 +24,9 @@ public class MustacheModel {
     List<CodegenProperty> optionalProperties;
 
     public MustacheModel(CodegenProperty codegenProperty, CodegenModel codegenModel) {
+        if (codegenModel.classname.equals(ResourceCacheContext.get().getResourceName())) {
+            codegenModel.classname = "_" + codegenModel.classname;
+        }
         this.className = codegenModel.classname;
         
         this.allProperties = new ArrayList<>(codegenModel.vars);

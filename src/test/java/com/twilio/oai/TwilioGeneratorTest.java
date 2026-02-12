@@ -45,7 +45,8 @@ public class TwilioGeneratorTest {
         
         //final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_api_v2010.yaml";
         //final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_memory_v1.yaml";
-        final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_messaging_v1.yaml";
+        final String pathname = "specs_test/twilio_memory_v1.yaml";
+        //final String pathname = "/Users/sbansla/Documents/code/twilio-oai/spec/yaml/twilio_messaging_v1.yaml";
         File filesList[] ;
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {

@@ -1,5 +1,5 @@
 @JsonIgnoreProperties(ignoreUnknown = true)
-static class Patch{{resourceName}}Response {
+static class Patch{{resourceName}}Response extends Resource {
 {{#responsePatch}}
     @Getter
     private final {{{dataType}}} {{name}};
@@ -15,5 +15,16 @@ static class Patch{{resourceName}}Response {
     {{#responsePatch}}
         this.{{name}} = {{name}};
     {{/responsePatch}}
+    }
+
+    public static Patch{{resourceName}}Response fromJson(final InputStream json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, Patch{{resourceName}}Response.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
     }
 }

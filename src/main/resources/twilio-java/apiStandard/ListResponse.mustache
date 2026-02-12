@@ -1,5 +1,5 @@
 @JsonIgnoreProperties(ignoreUnknown = true)
-static class List{{resourceName}}Response {
+static class List{{resourceName}}Response extends Resource {
 {{#responseList}}
     @Getter
     private final {{{dataType}}} {{name}};
@@ -15,5 +15,16 @@ static class List{{resourceName}}Response {
     {{#responseList}}
         this.{{name}} = {{name}};
     {{/responseList}}
+    }
+
+    public static List{{resourceName}}Response fromJson(final InputStream json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, List{{resourceName}}Response.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
     }
 }

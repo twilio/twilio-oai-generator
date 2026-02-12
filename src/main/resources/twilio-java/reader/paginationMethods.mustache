@@ -26,17 +26,17 @@
         return response;
     }
     
-private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
+private Page<{{vendorExtensions.x-response-class}}> pageForRequest(final TwilioRestClient client, final Request request) {
         Response response = makeRequest(client, request);
         return {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isApiV1}}Page{{/isApiV1}}.fromJson(
             "{{recordKey}}",
             response.getContent(),
-            {{resourceName}}.class,
+            {{vendorExtensions.x-response-class}}.class,
             client.getObjectMapper());
     }
 
     @Override
-    public Page<{{resourceName}}> previousPage(final Page<{{resourceName}}> page, final TwilioRestClient client ) {
+    public Page<{{vendorExtensions.x-response-class}}> previousPage(final Page<{{vendorExtensions.x-response-class}}> page, final TwilioRestClient client ) {
         {{#isApiV1}}
             {{>common/generateUri}}
             path = path + page.previousQueryString();
@@ -51,7 +51,7 @@ private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, fin
     }
 
     @Override
-    public Page<{{resourceName}}> nextPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
+    public Page<{{vendorExtensions.x-response-class}}> nextPage(final Page<{{vendorExtensions.x-response-class}}> page, final TwilioRestClient client) {
         {{#isApiV1}}
             {{>common/generateUri}}
             path = path + page.nextQueryString();
@@ -66,7 +66,7 @@ private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, fin
     }
 
     @Override
-    public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
+    public Page<{{vendorExtensions.x-response-class}}> getPage(final String targetUrl, final TwilioRestClient client) {
         Request request = new Request(HttpMethod.GET, targetUrl);
         return pageForRequest(client, request);
     }
