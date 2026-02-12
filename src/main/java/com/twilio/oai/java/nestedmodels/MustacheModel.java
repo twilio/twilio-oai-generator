@@ -41,6 +41,9 @@ public class MustacheModel {
     }
 
     public MustacheModel(CodegenParameter codegenParameter, CodegenModel codegenModel) {
+        if (codegenModel.classname.equals(ResourceCacheContext.get().getResourceName())) {
+            codegenModel.classname = "_" + codegenModel.classname;
+        }
         this.className = codegenModel.classname;
 
         this.allProperties = new ArrayList<>(codegenModel.vars);
