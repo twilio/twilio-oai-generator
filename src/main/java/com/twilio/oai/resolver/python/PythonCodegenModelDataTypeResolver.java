@@ -41,16 +41,13 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
      */
     @Override
     public CodegenProperty resolve(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
-        property =  super.resolve(property, apiResourceBuilder);
+        property = super.resolve(property, apiResourceBuilder);
         CodegenModel codegenModel = apiResourceBuilder.getModel(property.dataType);
         if (codegenModel != null && !CodegenUtils.isPropertySchemaEnum(property)) {
-            // this is recursion as codegenModelResolver will again call PythonCodegenModelDataTypeResolver
             codegenModelResolver.resolve(codegenModel, apiResourceBuilder);
             apiResourceBuilder.addNestedModel(codegenModel);
-        } else {
-            super.resolve(property, apiResourceBuilder);
-            resolveProperty(property, apiResourceBuilder);
         }
+        resolveProperty(property, apiResourceBuilder);
         return property;
     }
 
@@ -61,6 +58,7 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
      */
     public void resolveResponseModel(CodegenProperty property, ApiResourceBuilder apiResourceBuilder) {
         super.resolve(property, apiResourceBuilder);
+        resolveProperty(property, apiResourceBuilder);
     }
 
     /**
@@ -74,7 +72,12 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
             property.name = "from_";
             property.vendorExtensions.put("json-name", "from");
         } else {
-            property.vendorExtensions.put("json-name", property.name);
+            // Use baseName (original field name from spec) as the json-name if it differs from name
+            // This handles cases where reserved word mappings have been applied
+            String jsonName = (property.baseName != null && !property.baseName.equals(property.name))
+                ? property.baseName
+                : property.name;
+            property.vendorExtensions.put("json-name", jsonName);
         }
         if(CodegenUtils.isPropertySchemaEnum(property)
             && !property.dataType.contains(ApplicationConstants.ENUM)
