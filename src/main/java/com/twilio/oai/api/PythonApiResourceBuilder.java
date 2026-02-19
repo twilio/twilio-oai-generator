@@ -153,9 +153,8 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
 
         modelTree.values().forEach(model -> {
             model.setName(getModelName(model.getClassname()));
-            // Resolve properties for models in modelTree to set json-name
+            // Set json-name for properties in nested models
             model.getVars().forEach(property -> {
-                codegenPropertyResolver.resolve(property, this);
                 // Set json-name using baseName (original field name from spec) if it differs from name
                 String jsonName = (property.baseName != null && !property.baseName.equals(property.name))
                     ? property.baseName
