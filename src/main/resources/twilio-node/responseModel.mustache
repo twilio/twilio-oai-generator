@@ -46,14 +46,24 @@ export class {{instanceName}} {
     this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
     {{/complexType}}
     {{#complexType}}
-      {{#isArray}}
-      this.{{name}} =  payload.{{baseName}} !== null ? payload.{{baseName}}.map(
-        (payload: any) => new {{complexType}}(payload)
-      ) : null;
-      {{/isArray}}
-      {{^isArray}}
+    {{#isArray}}
+    {{#items.isModel}}
+    this.{{name}} =  payload.{{baseName}} !== null ? payload.{{baseName}}.map(
+      (payload: any) => new {{complexType}}(payload)
+    ) : null;
+    {{/items.isModel}}
+    {{^items.isModel}}
+    this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
+    {{/items.isModel}}
+    {{/isArray}}
+    {{^isArray}}
+      {{#vendorExtensions.isEnumClass}}
+    this.{{name}} = payload.{{baseName}};
+      {{/vendorExtensions.isEnumClass}}
+      {{^vendorExtensions.isEnumClass}}
     this.{{name}} = payload.{{baseName}} !== null ? new {{complexType}}(payload.{{baseName}}) : null;
-      {{/isArray}}
+      {{/vendorExtensions.isEnumClass}}
+    {{/isArray}}
     {{/complexType}}
     {{/vars}}
 

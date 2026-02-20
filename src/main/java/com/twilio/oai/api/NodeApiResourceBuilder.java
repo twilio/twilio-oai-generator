@@ -152,6 +152,8 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                 super.updateDataType(variable.complexType, variable.dataType, (dataTypeWithEnum, dataType) -> {
                     variable.datatypeWithEnum = dataTypeWithEnum;
                     variable.baseType = dataType;
+                    Object o = variable.dataType.contains("Enum") ? variable.vendorExtensions.put(
+                        "isEnumClass", true) : variable.vendorExtensions.put("isEnumClass", false);
                 });
             });
 
