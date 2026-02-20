@@ -22,6 +22,11 @@ import { ApiResponse } from "../../../base/ApiResponse";
 export class VersionlessFleetTestNestedObjectValue {
   "param1"?: string;
   "param2"?: number;
+
+  constructor(payload) {
+    this.param1 = payload["param1"];
+    this.param2 = payload["param2"];
+  }
 }
 
 /**
@@ -180,7 +185,10 @@ export class FleetInstance {
   ) {
     this.name = payload.name;
     this.testIntMap = payload.test_int_map;
-    this.testNestedObject = payload.test_nested_object;
+    this.testNestedObject =
+      payload.test_nested_object !== null
+        ? new VersionlessFleetTestNestedObjectValue(payload.test_nested_object)
+        : null;
     this.testNestedArray = payload.test_nested_array;
     this.testNestedArrayOfObjects = payload.test_nested_array_of_objects;
     this.sid = payload.sid;
@@ -240,18 +248,22 @@ export class FleetInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns Object
+   * @returns String
    */
   toJSON() {
-    return {
-      name: this.name,
-      testIntMap: this.testIntMap,
-      testNestedObject: this.testNestedObject,
-      testNestedArray: this.testNestedArray,
-      testNestedArrayOfObjects: this.testNestedArrayOfObjects,
-      sid: this.sid,
-      friendlyName: this.friendlyName,
-    };
+    return JSON.stringify(
+      {
+        name: this.name,
+        testIntMap: this.testIntMap,
+        testNestedObject: this.testNestedObject,
+        testNestedArray: this.testNestedArray,
+        testNestedArrayOfObjects: this.testNestedArrayOfObjects,
+        sid: this.sid,
+        friendlyName: this.friendlyName,
+      },
+      null,
+      2,
+    );
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {

@@ -331,15 +331,19 @@ export class HistoryInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns Object
+   * @returns String
    */
   toJSON() {
-    return {
-      accountSid: this.accountSid,
-      sid: this.sid,
-      testString: this.testString,
-      testInteger: this.testInteger,
-    };
+    return JSON.stringify(
+      {
+        accountSid: this.accountSid,
+        sid: this.sid,
+        testString: this.testString,
+        testInteger: this.testInteger,
+      },
+      null,
+      2,
+    );
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {

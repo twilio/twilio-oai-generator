@@ -32,6 +32,11 @@ export type CallStatus =
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
   "description"?: string;
+
+  constructor(payload) {
+    this.count = payload["count"];
+    this.description = payload["description"];
+  }
 }
 
 /**
@@ -294,12 +299,23 @@ export class CallInstance {
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
     this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
-    this.testEnum = payload.test_enum;
+    this.testEnum =
+      payload.test_enum !== null ? new TestEnumStatus(payload.test_enum) : null;
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
-    this.testArrayOfObjects = payload.test_array_of_objects;
-    this.testArrayOfEnum = payload.test_array_of_enum;
+    this.testArrayOfObjects =
+      payload.test_array_of_objects !== null
+        ? payload.test_array_of_objects.map(
+            (payload: any) => new TestResponseObjectTestArrayOfObjects(payload),
+          )
+        : null;
+    this.testArrayOfEnum =
+      payload.test_array_of_enum !== null
+        ? payload.test_array_of_enum.map(
+            (payload: any) => new TestEnumStatus(payload),
+          )
+        : null;
     this.status = payload.status;
     this.message = payload.message;
 
@@ -407,30 +423,34 @@ export class CallInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns Object
+   * @returns String
    */
   toJSON() {
-    return {
-      accountSid: this.accountSid,
-      sid: this.sid,
-      testString: this.testString,
-      testInteger: this.testInteger,
-      testObject: this.testObject,
-      testDateTime: this.testDateTime,
-      testNumber: this.testNumber,
-      from: this.from,
-      priceUnit: this.priceUnit,
-      testNumberFloat: this.testNumberFloat,
-      testNumberDecimal: this.testNumberDecimal,
-      testEnum: this.testEnum,
-      a2pProfileBundleSid: this.a2pProfileBundleSid,
-      testArrayOfIntegers: this.testArrayOfIntegers,
-      testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
-      testArrayOfObjects: this.testArrayOfObjects,
-      testArrayOfEnum: this.testArrayOfEnum,
-      status: this.status,
-      message: this.message,
-    };
+    return JSON.stringify(
+      {
+        accountSid: this.accountSid,
+        sid: this.sid,
+        testString: this.testString,
+        testInteger: this.testInteger,
+        testObject: this.testObject,
+        testDateTime: this.testDateTime,
+        testNumber: this.testNumber,
+        from: this.from,
+        priceUnit: this.priceUnit,
+        testNumberFloat: this.testNumberFloat,
+        testNumberDecimal: this.testNumberDecimal,
+        testEnum: this.testEnum,
+        a2pProfileBundleSid: this.a2pProfileBundleSid,
+        testArrayOfIntegers: this.testArrayOfIntegers,
+        testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
+        testArrayOfObjects: this.testArrayOfObjects,
+        testArrayOfEnum: this.testArrayOfEnum,
+        status: this.status,
+        message: this.message,
+      },
+      null,
+      2,
+    );
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
