@@ -288,8 +288,7 @@ export class FeedbackCallSummaryInstance {
     this.priceUnit = payload.price_unit;
     this.testNumberFloat = payload.test_number_float;
     this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
-    this.testEnum =
-      payload.test_enum !== null ? new TestEnumStatus(payload.test_enum) : null;
+    this.testEnum = payload.test_enum;
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
@@ -299,12 +298,7 @@ export class FeedbackCallSummaryInstance {
             (payload: any) => new TestResponseObjectTestArrayOfObjects(payload),
           )
         : null;
-    this.testArrayOfEnum =
-      payload.test_array_of_enum !== null
-        ? payload.test_array_of_enum.map(
-            (payload: any) => new TestEnumStatus(payload),
-          )
-        : null;
+    this.testArrayOfEnum = payload.test_array_of_enum;
     this.status = payload.status;
     this.message = payload.message;
 
