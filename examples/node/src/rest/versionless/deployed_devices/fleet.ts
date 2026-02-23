@@ -19,7 +19,15 @@ const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
 import { ApiResponse } from "../../../base/ApiResponse";
 
-export class VersionlessFleetTestNestedObjectValue {
+export class VersionlessFleetTestNestedObject {
+  "nestedObject"?: VersionlessFleetTestNestedObjectNestedObject;
+
+  constructor(payload) {
+    this.nestedObject = payload["nestedObject"];
+  }
+}
+
+export class VersionlessFleetTestNestedObjectNestedObject {
   "param1"?: string;
   "param2"?: number;
 
@@ -165,8 +173,11 @@ interface FleetPayload extends FleetResource {}
 interface FleetResource {
   name: string;
   test_int_map: { [key: string]: number };
-  test_nested_object: { [key: string]: VersionlessFleetTestNestedObjectValue };
+  test_nested_object: VersionlessFleetTestNestedObject;
   test_nested_array: Array<{ [key: string]: number }>;
+  test_nested_array_of_objects: Array<{
+    [key: string]: VersionlessFleetTestNestedObjectNestedObject;
+  }>;
   sid: string;
   friendly_name: string;
 }
@@ -184,9 +195,10 @@ export class FleetInstance {
     this.testIntMap = payload.test_int_map;
     this.testNestedObject =
       payload.test_nested_object !== null
-        ? new VersionlessFleetTestNestedObjectValue(payload.test_nested_object)
+        ? new VersionlessFleetTestNestedObject(payload.test_nested_object)
         : null;
     this.testNestedArray = payload.test_nested_array;
+    this.testNestedArrayOfObjects = payload.test_nested_array_of_objects;
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
 
@@ -195,8 +207,11 @@ export class FleetInstance {
 
   name: string;
   testIntMap: { [key: string]: number };
-  testNestedObject: { [key: string]: VersionlessFleetTestNestedObjectValue };
+  testNestedObject: VersionlessFleetTestNestedObject;
   testNestedArray: Array<{ [key: string]: number }>;
+  testNestedArrayOfObjects: Array<{
+    [key: string]: VersionlessFleetTestNestedObjectNestedObject;
+  }>;
   /**
    * A string that uniquely identifies this Fleet.
    */
@@ -250,6 +265,7 @@ export class FleetInstance {
         testIntMap: this.testIntMap,
         testNestedObject: this.testNestedObject,
         testNestedArray: this.testNestedArray,
+        testNestedArrayOfObjects: this.testNestedArrayOfObjects,
         sid: this.sid,
         friendlyName: this.friendlyName,
       },

@@ -299,6 +299,7 @@ module Twilio
               'test_int_map' => payload['test_int_map'],
               'test_nested_object' => payload['test_nested_object'],
               'test_nested_array' => payload['test_nested_array'],
+              'test_nested_array_of_objects' => payload['test_nested_array_of_objects'],
               'sid' => payload['sid'],
               'friendly_name' => payload['friendly_name'],
             }
@@ -332,7 +333,7 @@ module Twilio
           end
 
           ##
-          # @return [Hash<String, VersionlessFleetTestNestedObjectValue>]
+          # @return [VersionlessFleetTestNestedObject]
           def test_nested_object
             @properties['test_nested_object']
           end
@@ -341,6 +342,12 @@ module Twilio
           # @return [Array<Hash<String, Integer>>]
           def test_nested_array
             @properties['test_nested_array']
+          end
+
+          ##
+          # @return [Array<Hash<String, VersionlessFleetTestNestedObjectNestedObject>>]
+          def test_nested_array_of_objects
+            @properties['test_nested_array_of_objects']
           end
 
           ##

@@ -77,10 +77,10 @@ public class Fleet extends Resource {
 
 
 
-    @JsonDeserialize(builder = VersionlessFleetTestNestedObjectValue.Builder.class)
+    @JsonDeserialize(builder = VersionlessFleetTestNestedObjectNestedObject.Builder.class)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
-    public static class VersionlessFleetTestNestedObjectValue {
+    public static class VersionlessFleetTestNestedObjectNestedObject {
     
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @JsonProperty("param1")
@@ -91,7 +91,7 @@ public class Fleet extends Resource {
         @Getter private final Integer param2;
 
 
-    private VersionlessFleetTestNestedObjectValue(Builder builder) {
+    private VersionlessFleetTestNestedObjectNestedObject(Builder builder) {
         this.param1 = builder.param1;
         this.param2 = builder.param2;
     }
@@ -99,8 +99,8 @@ public class Fleet extends Resource {
         return new Builder(); 
     }
 
-    public static VersionlessFleetTestNestedObjectValue fromJson(String jsonString, ObjectMapper mapper) throws IOException {
-        return mapper.readValue(jsonString, VersionlessFleetTestNestedObjectValue.class);
+    public static VersionlessFleetTestNestedObjectNestedObject fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+        return mapper.readValue(jsonString, VersionlessFleetTestNestedObjectNestedObject.class);
     }
 
     @JsonPOJOBuilder(withPrefix = "")
@@ -126,8 +126,8 @@ public class Fleet extends Resource {
                 return this;
             }
 
-        public VersionlessFleetTestNestedObjectValue build() {
-            return new VersionlessFleetTestNestedObjectValue(this);
+        public VersionlessFleetTestNestedObjectNestedObject build() {
+            return new VersionlessFleetTestNestedObjectNestedObject(this);
         }
     }
     
@@ -141,7 +141,7 @@ public class Fleet extends Resource {
             return false;
         }
     
-        VersionlessFleetTestNestedObjectValue other = (VersionlessFleetTestNestedObjectValue) o;
+        VersionlessFleetTestNestedObjectNestedObject other = (VersionlessFleetTestNestedObjectNestedObject) o;
         return (
             Objects.equals(param1, other.param1) && 
             Objects.equals(param2, other.param2)
@@ -153,6 +153,72 @@ public class Fleet extends Resource {
         return Objects.hash(
         param1, 
         param2
+        );
+    }
+
+    }
+    
+
+    @JsonDeserialize(builder = VersionlessFleetTestNestedObject.Builder.class)
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @ToString
+    public static class VersionlessFleetTestNestedObject {
+    
+        @JsonInclude(JsonInclude.Include.NON_EMPTY)
+        @JsonProperty("nestedObject")
+        @Getter private final VersionlessFleetTestNestedObjectNestedObject nestedObject;
+
+
+    private VersionlessFleetTestNestedObject(Builder builder) {
+        this.nestedObject = builder.nestedObject;
+    }
+    public static Builder builder() {
+        return new Builder(); 
+    }
+
+    public static VersionlessFleetTestNestedObject fromJson(String jsonString, ObjectMapper mapper) throws IOException {
+        return mapper.readValue(jsonString, VersionlessFleetTestNestedObject.class);
+    }
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class Builder {
+        @JsonProperty("nestedObject")
+        private VersionlessFleetTestNestedObjectNestedObject nestedObject;
+
+
+
+            @JsonInclude(JsonInclude.Include.NON_EMPTY)
+            @JsonProperty("nestedObject")
+            public Builder nestedObject(VersionlessFleetTestNestedObjectNestedObject nestedObject) {
+                this.nestedObject = nestedObject;
+                return this;
+            }
+
+        public VersionlessFleetTestNestedObject build() {
+            return new VersionlessFleetTestNestedObject(this);
+        }
+    }
+    
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+    
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+    
+        VersionlessFleetTestNestedObject other = (VersionlessFleetTestNestedObject) o;
+        return (
+            Objects.equals(nestedObject, other.nestedObject)
+        );
+    }
+    
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+        nestedObject
         );
     }
 
@@ -220,7 +286,9 @@ public class Fleet extends Resource {
     @Getter
     private final List<Map<String, Integer>> testNestedArray;
     @Getter
-    private final Map<String, VersionlessFleetTestNestedObjectValue> testNestedObject;
+    private final List<Map<String, VersionlessFleetTestNestedObjectNestedObject>> testNestedArrayOfObjects;
+    @Getter
+    private final VersionlessFleetTestNestedObject testNestedObject;
 
 @JsonCreator
 private Fleet(
@@ -234,14 +302,17 @@ private Fleet(
     final Map<String, Integer> testIntMap, 
     @JsonProperty("test_nested_array")
     final List<Map<String, Integer>> testNestedArray, 
+    @JsonProperty("test_nested_array_of_objects")
+    final List<Map<String, VersionlessFleetTestNestedObjectNestedObject>> testNestedArrayOfObjects, 
     @JsonProperty("test_nested_object")
-    final Map<String, VersionlessFleetTestNestedObjectValue> testNestedObject
+    final VersionlessFleetTestNestedObject testNestedObject
 ){
     this.friendlyName = friendlyName;
     this.name = name;
     this.sid = sid;
     this.testIntMap = testIntMap;
     this.testNestedArray = testNestedArray;
+    this.testNestedArrayOfObjects = testNestedArrayOfObjects;
     this.testNestedObject = testNestedObject;
 }
 
@@ -262,6 +333,7 @@ public boolean equals(final Object o) {
             Objects.equals(sid, other.sid) && 
             Objects.equals(testIntMap, other.testIntMap) && 
             Objects.equals(testNestedArray, other.testNestedArray) && 
+            Objects.equals(testNestedArrayOfObjects, other.testNestedArrayOfObjects) && 
             Objects.equals(testNestedObject, other.testNestedObject)
     );
 }
@@ -274,6 +346,7 @@ public int hashCode() {
             sid, 
             testIntMap, 
             testNestedArray, 
+            testNestedArrayOfObjects, 
             testNestedObject
     );
 }
