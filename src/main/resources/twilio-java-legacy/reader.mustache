@@ -159,6 +159,9 @@ public class {{apiName}}Reader extends Reader<{{apiName}}> {
 
     @Override
     public Page<{{apiName}}> getPage(final String targetUrl, final {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}TwilioRestClient client) {
+        if (!com.twilio.http.HttpUtility.isValidTwilioUrl(targetUrl)) {
+            throw new ApiException("Invalid URL: URL must be a valid Twilio domain");
+        }
         {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request request = new {{vendorExtensions.x-auth-attributes.x-http-class-prefix}}Request(
             HttpMethod.GET,
             targetUrl
