@@ -1047,6 +1047,7 @@ public class TwilioRestTest {
     public void testAwsReaderPagination() {
         String firstPageURI = "/v1/Credentials/AWS";
         String nextPageURI = "/v1/Credentials/AWSN";
+        String firstPageURL = "https://flex-api.twilio.com/v1/Credentials/AWS";
         Request mockRequestFirstPage = new Request(
             HttpMethod.GET,
             "flex-api",
@@ -1071,7 +1072,7 @@ public class TwilioRestTest {
         Page<Aws> nextPage = awsReader.nextPage(firstPage, twilioRestClient);
         when(twilioRestClient.request(Mockito.any())).thenReturn(new Response(responseContent, 200));
         Page<Aws> previousPage = awsReader.previousPage(nextPage, twilioRestClient);
-        Page<Aws> page = awsReader.getPage(firstPageURI, twilioRestClient);
+        Page<Aws> page = awsReader.getPage(firstPageURL, twilioRestClient);
 
         assertEquals("Ahoy", firstPage.getRecords().get(0).getTestString());
         assertEquals("Matey", nextPage.getRecords().get(0).getTestString());

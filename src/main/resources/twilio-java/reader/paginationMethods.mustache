@@ -67,6 +67,9 @@ private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, fin
 
     @Override
     public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
+        if (!com.twilio.http.HttpUtility.isValidTwilioUrl(targetUrl)) {
+            throw new ApiException("Invalid URL: URL must be a valid Twilio domain");
+        }
         Request request = new Request(HttpMethod.GET, targetUrl);
         return pageForRequest(client, request);
     }
