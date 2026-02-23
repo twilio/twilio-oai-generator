@@ -313,10 +313,6 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         [JsonProperty("test_nested_array")]
         public List<Dictionary<string, int>> TestNestedArray { get; private set; }
 
-        ///<summary> The test_nested_array_of_objects </summary> 
-        [JsonProperty("test_nested_array_of_objects")]
-        public List<Dictionary<string, VersionlessFleetTestNestedObjectValue>> TestNestedArrayOfObjects { get; private set; }
-
         ///<summary> A string that uniquely identifies this Fleet. </summary> 
         [JsonProperty("sid")]
         public string Sid { get; private set; }

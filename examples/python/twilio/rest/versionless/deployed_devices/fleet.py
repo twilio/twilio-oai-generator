@@ -29,7 +29,6 @@ class FleetInstance(InstanceResource):
     :ivar test_int_map:
     :ivar test_nested_object:
     :ivar test_nested_array:
-    :ivar test_nested_array_of_objects:
     :ivar sid: A string that uniquely identifies this Fleet.
     :ivar friendly_name: A human readable description for this Fleet.
     """
@@ -47,9 +46,6 @@ class FleetInstance(InstanceResource):
         self.test_nested_array: Optional[List[Dict[str, int]]] = payload.get(
             "test_nested_array"
         )
-        self.test_nested_array_of_objects: Optional[
-            List[Dict[str, VersionlessFleetTestNestedObjectValue]]
-        ] = payload.get("test_nested_array_of_objects")
         self.sid: Optional[str] = payload.get("sid")
         self.friendly_name: Optional[str] = payload.get("friendly_name")
 

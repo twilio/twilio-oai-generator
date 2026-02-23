@@ -167,9 +167,6 @@ interface FleetResource {
   test_int_map: { [key: string]: number };
   test_nested_object: { [key: string]: VersionlessFleetTestNestedObjectValue };
   test_nested_array: Array<{ [key: string]: number }>;
-  test_nested_array_of_objects: Array<{
-    [key: string]: VersionlessFleetTestNestedObjectValue;
-  }>;
   sid: string;
   friendly_name: string;
 }
@@ -190,7 +187,6 @@ export class FleetInstance {
         ? new VersionlessFleetTestNestedObjectValue(payload.test_nested_object)
         : null;
     this.testNestedArray = payload.test_nested_array;
-    this.testNestedArrayOfObjects = payload.test_nested_array_of_objects;
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
 
@@ -201,9 +197,6 @@ export class FleetInstance {
   testIntMap: { [key: string]: number };
   testNestedObject: { [key: string]: VersionlessFleetTestNestedObjectValue };
   testNestedArray: Array<{ [key: string]: number }>;
-  testNestedArrayOfObjects: Array<{
-    [key: string]: VersionlessFleetTestNestedObjectValue;
-  }>;
   /**
    * A string that uniquely identifies this Fleet.
    */
@@ -257,7 +250,6 @@ export class FleetInstance {
         testIntMap: this.testIntMap,
         testNestedObject: this.testNestedObject,
         testNestedArray: this.testNestedArray,
-        testNestedArrayOfObjects: this.testNestedArrayOfObjects,
         sid: this.sid,
         friendlyName: this.friendlyName,
       },

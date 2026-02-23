@@ -220,8 +220,6 @@ public class Fleet extends Resource {
     @Getter
     private final List<Map<String, Integer>> testNestedArray;
     @Getter
-    private final List<Map<String, VersionlessFleetTestNestedObjectValue>> testNestedArrayOfObjects;
-    @Getter
     private final Map<String, VersionlessFleetTestNestedObjectValue> testNestedObject;
 
 @JsonCreator
@@ -236,8 +234,6 @@ private Fleet(
     final Map<String, Integer> testIntMap, 
     @JsonProperty("test_nested_array")
     final List<Map<String, Integer>> testNestedArray, 
-    @JsonProperty("test_nested_array_of_objects")
-    final List<Map<String, VersionlessFleetTestNestedObjectValue>> testNestedArrayOfObjects, 
     @JsonProperty("test_nested_object")
     final Map<String, VersionlessFleetTestNestedObjectValue> testNestedObject
 ){
@@ -246,7 +242,6 @@ private Fleet(
     this.sid = sid;
     this.testIntMap = testIntMap;
     this.testNestedArray = testNestedArray;
-    this.testNestedArrayOfObjects = testNestedArrayOfObjects;
     this.testNestedObject = testNestedObject;
 }
 
@@ -267,7 +262,6 @@ public boolean equals(final Object o) {
             Objects.equals(sid, other.sid) && 
             Objects.equals(testIntMap, other.testIntMap) && 
             Objects.equals(testNestedArray, other.testNestedArray) && 
-            Objects.equals(testNestedArrayOfObjects, other.testNestedArrayOfObjects) && 
             Objects.equals(testNestedObject, other.testNestedObject)
     );
 }
@@ -280,7 +274,6 @@ public int hashCode() {
             sid, 
             testIntMap, 
             testNestedArray, 
-            testNestedArrayOfObjects, 
             testNestedObject
     );
 }
