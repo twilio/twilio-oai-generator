@@ -194,7 +194,8 @@ export class FleetInstance {
     this.name = payload.name;
     this.testIntMap = payload.test_int_map;
     this.testNestedObject =
-      payload.test_nested_object !== null
+      payload.test_nested_object !== null &&
+      payload.test_nested_object !== undefined
         ? new VersionlessFleetTestNestedObject(payload.test_nested_object)
         : null;
     this.testNestedArray = payload.test_nested_array;

@@ -61,7 +61,7 @@ export class {{instanceName}} {
     this.{{name}} = payload.{{baseName}};
       {{/vendorExtensions.isEnumClass}}
       {{^vendorExtensions.isEnumClass}}
-    this.{{name}} = payload.{{baseName}} !== null ? new {{complexType}}(payload.{{baseName}}) : null;
+    this.{{name}} = payload.{{baseName}} !== null && payload.{{baseName}} !== undefined ? new {{complexType}}(payload.{{baseName}}) : null;
       {{/vendorExtensions.isEnumClass}}
     {{/isArray}}
     {{/complexType}}
