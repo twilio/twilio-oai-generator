@@ -49,10 +49,10 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
 {{/headerParams}}
 {{/hasHeaderParams}}
 {{#vendorExtensions.x-is-json-type}}
-    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, body...)
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, c.apiVersion, body...)
 {{/vendorExtensions.x-is-json-type}}
 {{^vendorExtensions.x-is-json-type}}
-    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, c.apiVersion)
 {{/vendorExtensions.x-is-json-type}}
 {{#returnType}}
     if err != nil {
@@ -91,10 +91,10 @@ func (c *ApiService) {{{nickname}}}WithMetadata({{#allParams}}{{#required}}{{par
 {{/headerParams}}
 {{/hasHeaderParams}}
 {{#vendorExtensions.x-is-json-type}}
-    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, body...)
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, c.apiVersion, body...)
 {{/vendorExtensions.x-is-json-type}}
 {{^vendorExtensions.x-is-json-type}}
-    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers)
+    resp, err := c.requestHandler.{{httpMethod}}(c.baseURL+path, data, headers, c.apiVersion)
 {{/vendorExtensions.x-is-json-type}}
     if err != nil {
         return nil, err
@@ -131,7 +131,7 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
     }
     {{/vendorExtensions.isApiV1}}
 
-    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
     if err != nil {
         return nil, err
     }
@@ -159,7 +159,7 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}WithMetadata({{#all
     }
     {{/vendorExtensions.isApiV1}}
 
-    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
     if err != nil {
         return nil, err
     }
@@ -304,7 +304,7 @@ func (c *ApiService) getNext{{{returnContainer}}}(nextPageUrl string) (interface
     if nextPageUrl == "" {
         return nil, nil
     }
-    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil)
+    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, c.apiVersion)
     if err != nil {
         return nil, err
     }

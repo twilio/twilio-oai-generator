@@ -76,7 +76,7 @@ func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFee
 		data.Set("StartDate", fmt.Sprint(*params.StartDate))
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ func (c *ApiService) UpdateCallFeedbackSummaryWithMetadata(Sid string, params *U
 		data.Set("StartDate", fmt.Sprint(*params.StartDate))
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
