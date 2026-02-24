@@ -48,7 +48,7 @@ export class {{instanceName}} {
     {{#complexType}}
     {{#isArray}}
     {{#items.isModel}}
-    this.{{name}} =  payload.{{baseName}} !== null ? payload.{{baseName}}.map(
+    this.{{name}} =  payload.{{baseName}} !== null && payload.{{baseName}} !== undefined ? payload.{{baseName}}.map(
       (payload: any) => new {{complexType}}(payload)
     ) : null;
     {{/items.isModel}}

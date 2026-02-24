@@ -512,7 +512,8 @@ export class AccountInstance {
     this.testArrayOfIntegers = payload.test_array_of_integers;
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
     this.testArrayOfObjects =
-      payload.test_array_of_objects !== null
+      payload.test_array_of_objects !== null &&
+      payload.test_array_of_objects !== undefined
         ? payload.test_array_of_objects.map(
             (payload: any) => new TestResponseObjectTestArrayOfObjects(payload),
           )
