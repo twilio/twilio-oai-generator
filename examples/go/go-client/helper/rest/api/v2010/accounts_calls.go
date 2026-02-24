@@ -88,7 +88,7 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 		data.Set("TestMethod", *params.TestMethod)
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (c *ApiService) CreateCallWithMetadata(params *CreateCallParams) (*metadata
 		data.Set("TestMethod", *params.TestMethod)
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -180,7 +180,7 @@ func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) error
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return err
 	}
@@ -205,7 +205,7 @@ func (c *ApiService) DeleteCallWithMetadata(TestInteger int, params *DeleteCallP
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -246,7 +246,7 @@ func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestR
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -276,7 +276,7 @@ func (c *ApiService) FetchCallWithMetadata(TestInteger int, params *FetchCallPar
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
