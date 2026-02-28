@@ -333,7 +333,7 @@ module Twilio
           end
 
           ##
-          # @return [Hash<String, VersionlessFleetTestNestedObjectValue>]
+          # @return [VersionlessFleetTestNestedObject]
           def test_nested_object
             @properties['test_nested_object']
           end
@@ -345,7 +345,7 @@ module Twilio
           end
 
           ##
-          # @return [Array<Hash<String, VersionlessFleetTestNestedObjectValue>>]
+          # @return [Array<Hash<String, VersionlessFleetTestNestedObjectNestedObject>>]
           def test_nested_array_of_objects
             @properties['test_nested_array_of_objects']
           end

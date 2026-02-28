@@ -42,7 +42,29 @@ export class {{instanceName}} {
 
   constructor(protected _version: {{apiVersionClass}}, payload: {{apiName}}Resource{{#instancePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/instancePathParams}}) {
     {{#vars}}
+    {{^complexType}}
     this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
+    {{/complexType}}
+    {{#complexType}}
+    {{#isArray}}
+    {{#items.isModel}}
+    this.{{name}} =  payload.{{baseName}} !== null && payload.{{baseName}} !== undefined ? payload.{{baseName}}.map(
+      (payload: any) => new {{complexType}}(payload)
+    ) : null;
+    {{/items.isModel}}
+    {{^items.isModel}}
+    this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
+    {{/items.isModel}}
+    {{/isArray}}
+    {{^isArray}}
+      {{#vendorExtensions.isEnumClass}}
+    this.{{name}} = payload.{{baseName}};
+      {{/vendorExtensions.isEnumClass}}
+      {{^vendorExtensions.isEnumClass}}
+    this.{{name}} = payload.{{baseName}} !== null && payload.{{baseName}} !== undefined ? new {{complexType}}(payload.{{baseName}}) : null;
+      {{/vendorExtensions.isEnumClass}}
+    {{/isArray}}
+    {{/complexType}}
     {{/vars}}
 
     {{#instancePath}}
@@ -98,14 +120,14 @@ export class {{instanceName}} {
   /**
    * Provide a user-friendly representation
    *
-   * @returns Object
+   * @returns String
    */
   toJSON() {
-    return {
+    return JSON.stringify({
       {{#vars}}
       {{name}}: this.{{name}},
       {{/vars}}
-    }
+    }, null, 2);
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
