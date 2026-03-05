@@ -45,6 +45,7 @@ public class NewCredentials extends Resource {
 
 
 
+
     public static NewCredentialsCreator creator(final String testString, final Integer testInteger, final Float testNumberFloat) {
         return new NewCredentialsCreator(
              testString,  testInteger,  testNumberFloat
