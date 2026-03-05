@@ -19,9 +19,22 @@ const serialize = require("../../../base/serialize");
 import { isValidPathParam } from "../../../base/utility";
 import { ApiResponse } from "../../../base/ApiResponse";
 
-export class VersionlessFleetTestNestedObjectValue {
+export class VersionlessFleetTestNestedObject {
+  "nestedObject"?: VersionlessFleetTestNestedObjectNestedObject;
+
+  constructor(payload) {
+    this.nestedObject = payload["nestedObject"];
+  }
+}
+
+export class VersionlessFleetTestNestedObjectNestedObject {
   "param1"?: string;
   "param2"?: number;
+
+  constructor(payload) {
+    this.param1 = payload["param1"];
+    this.param2 = payload["param2"];
+  }
 }
 
 /**
@@ -160,10 +173,10 @@ interface FleetPayload extends FleetResource {}
 interface FleetResource {
   name: string;
   test_int_map: { [key: string]: number };
-  test_nested_object: { [key: string]: VersionlessFleetTestNestedObjectValue };
+  test_nested_object: VersionlessFleetTestNestedObject;
   test_nested_array: Array<{ [key: string]: number }>;
   test_nested_array_of_objects: Array<{
-    [key: string]: VersionlessFleetTestNestedObjectValue;
+    [key: string]: VersionlessFleetTestNestedObjectNestedObject;
   }>;
   sid: string;
   friendly_name: string;
@@ -180,7 +193,11 @@ export class FleetInstance {
   ) {
     this.name = payload.name;
     this.testIntMap = payload.test_int_map;
-    this.testNestedObject = payload.test_nested_object;
+    this.testNestedObject =
+      payload.test_nested_object !== null &&
+      payload.test_nested_object !== undefined
+        ? new VersionlessFleetTestNestedObject(payload.test_nested_object)
+        : null;
     this.testNestedArray = payload.test_nested_array;
     this.testNestedArrayOfObjects = payload.test_nested_array_of_objects;
     this.sid = payload.sid;
@@ -191,10 +208,10 @@ export class FleetInstance {
 
   name: string;
   testIntMap: { [key: string]: number };
-  testNestedObject: { [key: string]: VersionlessFleetTestNestedObjectValue };
+  testNestedObject: VersionlessFleetTestNestedObject;
   testNestedArray: Array<{ [key: string]: number }>;
   testNestedArrayOfObjects: Array<{
-    [key: string]: VersionlessFleetTestNestedObjectValue;
+    [key: string]: VersionlessFleetTestNestedObjectNestedObject;
   }>;
   /**
    * A string that uniquely identifies this Fleet.
@@ -240,18 +257,22 @@ export class FleetInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns Object
+   * @returns String
    */
   toJSON() {
-    return {
-      name: this.name,
-      testIntMap: this.testIntMap,
-      testNestedObject: this.testNestedObject,
-      testNestedArray: this.testNestedArray,
-      testNestedArrayOfObjects: this.testNestedArrayOfObjects,
-      sid: this.sid,
-      friendlyName: this.friendlyName,
-    };
+    return JSON.stringify(
+      {
+        name: this.name,
+        testIntMap: this.testIntMap,
+        testNestedObject: this.testNestedObject,
+        testNestedArray: this.testNestedArray,
+        testNestedArrayOfObjects: this.testNestedArrayOfObjects,
+        sid: this.sid,
+        friendlyName: this.friendlyName,
+      },
+      null,
+      2,
+    );
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {

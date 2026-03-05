@@ -222,7 +222,7 @@ func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*Te
 		data.Set("SomeA2PThing", *params.SomeA2PThing)
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -328,7 +328,7 @@ func (c *ApiService) CreateCredentialAwsWithMetadata(params *CreateCredentialAws
 		data.Set("SomeA2PThing", *params.SomeA2PThing)
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -358,7 +358,7 @@ func (c *ApiService) DeleteCredentialAws(Sid string) error {
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return err
 	}
@@ -378,7 +378,7 @@ func (c *ApiService) DeleteCredentialAwsWithMetadata(Sid string) (*metadata.Reso
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -403,7 +403,7 @@ func (c *ApiService) FetchCredentialAws(Sid string) (*TestResponseObject, error)
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -428,7 +428,7 @@ func (c *ApiService) FetchCredentialAwsWithMetadata(Sid string) (*metadata.Resou
 		"Content-Type": "application/x-www-form-urlencoded",
 	}
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -486,7 +486,7 @@ func (c *ApiService) PageCredentialAws(params *ListCredentialAwsParams, pageToke
 		data.Set("Page", pageNumber)
 	}
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -521,7 +521,7 @@ func (c *ApiService) PageCredentialAwsWithMetadata(params *ListCredentialAwsPara
 		data.Set("Page", pageNumber)
 	}
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -666,7 +666,7 @@ func (c *ApiService) getNextListCredentialAwsResponse(nextPageUrl string) (inter
 	if nextPageUrl == "" {
 		return nil, nil
 	}
-	resp, err := c.requestHandler.Get(nextPageUrl, nil, nil)
+	resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -713,7 +713,7 @@ func (c *ApiService) PatchCredentialAws(Sid string, params *PatchCredentialAwsPa
 		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
 	}
 
-	resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -745,7 +745,7 @@ func (c *ApiService) PatchCredentialAwsWithMetadata(Sid string, params *PatchCre
 		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
 	}
 
-	resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -799,7 +799,7 @@ func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAws
 		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
@@ -831,7 +831,7 @@ func (c *ApiService) UpdateCredentialAwsWithMetadata(Sid string, params *UpdateC
 		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
 	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers)
+	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
 	if err != nil {
 		return nil, err
 	}
