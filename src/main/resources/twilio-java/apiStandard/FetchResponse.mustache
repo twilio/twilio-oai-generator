@@ -1,0 +1,30 @@
+@JsonIgnoreProperties(ignoreUnknown = true)
+static class Fetch{{resourceName}}Response extends Resource {
+{{#responseFetch}}
+    @Getter
+    private final {{{dataType}}} {{name}};
+{{/responseFetch}}
+
+    @JsonCreator
+    private Fetch{{resourceName}}Response(
+    {{#responseFetch}}
+        @JsonProperty("{{baseName}}")
+        final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}
+    {{/responseFetch}}
+    ){
+    {{#responseFetch}}
+        this.{{name}} = {{name}};
+    {{/responseFetch}}
+    }
+
+    public static Fetch{{resourceName}}Response fromJson(final InputStream json, final ObjectMapper objectMapper) {
+        // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, Fetch{{resourceName}}Response.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+}

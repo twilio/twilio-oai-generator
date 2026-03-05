@@ -5,16 +5,16 @@ httpMethod: http method associated in the current operation.
 domainName: example api, video, chat, etc. These can be found in Domains.java in twilio-java
 }}
 
-    public ResourceSetResponse<{{resourceName}}> readWithResponse(final TwilioRestClient client) {
+    public ResourceSetResponse<{{vendorExtensions.x-response-class}}> readWithResponse(final TwilioRestClient client) {
         Request request = buildFirstPageRequest(client);
         Response response = makeRequest(client, request);
-        Page<{{resourceName}}> page = Page.fromJson(
+        Page<{{vendorExtensions.x-response-class}}> page = Page.fromJson(
             "{{recordKey}}",
             response.getContent(),
-            {{resourceName}}.class,
+            {{vendorExtensions.x-response-class}}.class,
             client.getObjectMapper()
         );
-        ResourceSet<{{resourceName}}> resourceSet = new ResourceSet<>(this, client, page); 
+        ResourceSet<{{vendorExtensions.x-response-class}}> resourceSet = new ResourceSet<>(this, client, page); 
         return new ResourceSetResponse<>(resourceSet, response.getStatusCode(), response.getHeaders());
     }
 
@@ -39,22 +39,22 @@ domainName: example api, video, chat, etc. These can be found in Domains.java in
     
 
     @Override
-    public ResourceSet<{{resourceName}}> read(final TwilioRestClient client) {
+    public ResourceSet<{{vendorExtensions.x-response-class}}> read(final TwilioRestClient client) {
         return new ResourceSet<>(this, client, firstPage(client));
     }
 
-    public Page<{{resourceName}}> firstPage(final TwilioRestClient client) {
+    public Page<{{vendorExtensions.x-response-class}}> firstPage(final TwilioRestClient client) {
         Request request = buildFirstPageRequest(client);
         return pageForRequest(client, request);
     }
 
-    public TwilioResponse<Page<{{resourceName}}>> firstPageWithResponse(final TwilioRestClient client) {
+    public TwilioResponse<Page<{{vendorExtensions.x-response-class}}>> firstPageWithResponse(final TwilioRestClient client) {
         Request request = buildFirstPageRequest(client);
         Response response = makeRequest(client, request);
-        Page<{{resourceName}}> page = Page.fromJson(
+        Page<{{vendorExtensions.x-response-class}}> page = Page.fromJson(
             "{{recordKey}}",
             response.getContent(),
-            {{resourceName}}.class,
+            {{vendorExtensions.x-response-class}}.class,
             client.getObjectMapper()
         );
         return new TwilioResponse<>(page, response.getStatusCode(), response.getHeaders()); 
