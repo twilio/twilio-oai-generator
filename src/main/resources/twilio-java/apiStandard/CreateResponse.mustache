@@ -27,6 +27,7 @@ static class Create{{resourceName}}Response extends Resource {
             throw new ApiConnectionException(e.getMessage(), e);
         }
     }
+
     @Override
     public boolean equals(Object obj) {
         return obj != null && obj.getClass() == this.getClass();
