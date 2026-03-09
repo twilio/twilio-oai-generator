@@ -222,6 +222,8 @@ export class FleetInstance {
    */
   friendlyName: string;
 
+  sid: string;
+
   private get _proxy(): FleetContext {
     this._context =
       this._context || new FleetContextImpl(this._version, this._solution.sid);
