@@ -352,6 +352,13 @@ export class CallInstance {
    */
   message: string;
 
+  accountSid: string;
+
+  /**
+   * INTEGER ID param!!!
+   */
+  testInteger: number;
+
   private get _proxy(): CallContext {
     this._context =
       this._context ||

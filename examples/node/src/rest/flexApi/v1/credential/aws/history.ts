@@ -252,6 +252,8 @@ export class HistoryInstance {
   testString: string;
   testInteger: number;
 
+  sid: string;
+
   private get _proxy(): HistoryContext {
     this._context =
       this._context ||
