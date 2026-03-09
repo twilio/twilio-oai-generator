@@ -80,8 +80,17 @@ export class {{instanceName}} {
   {{/description}}
   {{name}}{{#hasMultipleResponseModels}}?{{/hasMultipleResponseModels}}: {{{baseType}}};
   {{/vars}}
-  {{#instancePath}}
+  {{#instancePathParams}}
 
+  {{#description}}
+    /**
+     * {{{description}}}
+    */
+  {{/description}}
+  {{paramName}}: {{{dataType}}};
+  {{/instancePathParams}}
+
+  {{#instancePath}}
   private get _proxy(): {{apiName}}Context {
     this._context = this._context || new {{apiName}}ContextImpl(this._version{{#instancePathParams}}, this._solution.{{paramName}}{{/instancePathParams}});
     return this._context;

@@ -74,7 +74,8 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
                         dependent.getName(),
                         operation);
                     dependentResource.setInstanceDependent(PathUtils.isInstanceOperation(co));
-                    dependents.put(dependentResource.getFilename(), dependentResource);
+                    var resourceName = dependentResource.getFilename().equalsIgnoreCase("import") ? "import_" : dependentResource.getFilename();
+                    dependents.put(resourceName, dependentResource);
                 }));
         }
 
