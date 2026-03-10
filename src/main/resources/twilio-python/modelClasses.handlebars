@@ -7,7 +7,7 @@
         def __init__(self, payload: Dict[str, Any]):
 
             {{#vars}}
-            self.{{name}}: Optional[{{{dataType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{name}}}")){{else}}payload.get("{{{name}}}"){{/if}}{{/vars}}
+            self.{{name}}: Optional[{{{dataType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{vendorExtensions.json-name}}}")){{else}}payload.get("{{{vendorExtensions.json-name}}}"){{/if}}{{/vars}}
 
         def to_dict(self):
             return {
