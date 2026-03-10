@@ -8,6 +8,9 @@ require (
 	github.com/twilio/twilio-go v1.30.0
 )
 
+// Use the latest main branch of twilio-go instead of a specific version
+replace github.com/twilio/twilio-go => github.com/twilio/twilio-go v1.30.3-0.20260224041941-6250a07606d0
+
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

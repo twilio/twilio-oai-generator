@@ -8,7 +8,7 @@ import com.twilio.base.ResourceSet;
 
 {{#operations}}
 {{#vendorExtensions.x-list-operation}}
-public class {{resourceName}}Reader extends Reader<{{resourceName}}> {
+public class {{resourceName}}Reader extends Reader<{{vendorExtensions.x-response-class}}> {
 
     {{>common/instanceVariables}}
     {{>common/constructors}}

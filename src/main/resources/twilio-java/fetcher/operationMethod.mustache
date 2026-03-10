@@ -57,14 +57,14 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     }
     
     @Override
-    public {{resourceName}} fetch(final TwilioRestClient client) {
+    public {{vendorExtensions.x-response-class}} fetch(final TwilioRestClient client) {
         Response response = makeRequest(client);
-        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+        return {{vendorExtensions.x-response-class}}.fromJson(response.getStream(), client.getObjectMapper());
     }
 
     @Override
-    public TwilioResponse<{{resourceName}}> fetchWithResponse(final TwilioRestClient client) {
+    public TwilioResponse<{{vendorExtensions.x-response-class}}> fetchWithResponse(final TwilioRestClient client) {
         Response response = makeRequest(client);
-        {{resourceName}} content =  {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+        {{vendorExtensions.x-response-class}} content =  {{vendorExtensions.x-response-class}}.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }

@@ -1,0 +1,40 @@
+@JsonIgnoreProperties(ignoreUnknown = true)
+static class Create{{resourceName}}Response extends Resource {
+{{#responseCreate}}
+    @Getter
+    private final {{{dataType}}} {{name}};
+{{/responseCreate}}
+
+    @JsonCreator
+    private Create{{resourceName}}Response(
+    {{#responseCreate}}
+        @JsonProperty("{{baseName}}")
+        final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}
+    {{/responseCreate}}
+    ){
+    {{#responseCreate}}
+        this.{{name}} = {{name}};
+    {{/responseCreate}}
+    }
+
+    public static Create{{resourceName}}Response fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, Create{{resourceName}}Response.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == this.getClass();
+    }
+
+    @Override
+    public int hashCode() {
+        return 1;
+    }
+}

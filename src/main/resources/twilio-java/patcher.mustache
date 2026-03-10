@@ -5,7 +5,7 @@ package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
 {{#operations}}
 {{#vendorExtensions.x-patch-operation}}
-    public class {{resourceName}}Patcher extends Patcher<{{resourceName}}> {
+    public class {{resourceName}}Patcher extends Patcher<{{vendorExtensions.x-response-class}}> {
         {{>common/instanceVariables}}
         {{>common/constructors}}
         {{>patcher/setters}}

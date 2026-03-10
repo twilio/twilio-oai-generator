@@ -45,6 +45,9 @@ public class SingleModelStrategy implements ModelProcessor {
     // basetype
     private void dataType(CodegenProperty codegenProperty) {
         //TODO: Need to identify whether the property is defined using ref or directly defined property
+        if (codegenProperty.dataType.equals(ResourceCacheContext.get().getResourceName())) {
+            codegenProperty.dataType = "_" + codegenProperty.dataType;
+        }
         codegenProperty.vendorExtensions.put(X_DATATYPE, ResourceCacheContext.get().getResourceName() + DOT + codegenProperty.dataType);
     }
 
