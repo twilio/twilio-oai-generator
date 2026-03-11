@@ -202,16 +202,12 @@ export class CallInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns String
+   * @returns Object
    */
   toJSON() {
-    return JSON.stringify(
-      {
-        sid: this.sid,
-      },
-      null,
-      2,
-    );
+    return {
+      sid: this.sid,
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {

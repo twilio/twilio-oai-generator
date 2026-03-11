@@ -273,20 +273,16 @@ export class TokenInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns String
+   * @returns Object
    */
   toJSON() {
-    return JSON.stringify(
-      {
-        accessToken: this.accessToken,
-        refreshToken: this.refreshToken,
-        idToken: this.idToken,
-        tokenType: this.tokenType,
-        expiresIn: this.expiresIn,
-      },
-      null,
-      2,
-    );
+    return {
+      accessToken: this.accessToken,
+      refreshToken: this.refreshToken,
+      idToken: this.idToken,
+      tokenType: this.tokenType,
+      expiresIn: this.expiresIn,
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {

@@ -785,19 +785,15 @@ export class AwsInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns String
+   * @returns Object
    */
   toJSON() {
-    return JSON.stringify(
-      {
-        accountSid: this.accountSid,
-        sid: this.sid,
-        testString: this.testString,
-        testInteger: this.testInteger,
-      },
-      null,
-      2,
-    );
+    return {
+      accountSid: this.accountSid,
+      sid: this.sid,
+      testString: this.testString,
+      testInteger: this.testInteger,
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
