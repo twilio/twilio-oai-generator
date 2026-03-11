@@ -257,22 +257,18 @@ export class FleetInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns String
+   * @returns Object
    */
   toJSON() {
-    return JSON.stringify(
-      {
-        name: this.name,
-        testIntMap: this.testIntMap,
-        testNestedObject: this.testNestedObject,
-        testNestedArray: this.testNestedArray,
-        testNestedArrayOfObjects: this.testNestedArrayOfObjects,
-        sid: this.sid,
-        friendlyName: this.friendlyName,
-      },
-      null,
-      2,
-    );
+    return {
+      name: this.name,
+      testIntMap: this.testIntMap,
+      testNestedObject: this.testNestedObject,
+      testNestedArray: this.testNestedArray,
+      testNestedArrayOfObjects: this.testNestedArrayOfObjects,
+      sid: this.sid,
+      friendlyName: this.friendlyName,
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {

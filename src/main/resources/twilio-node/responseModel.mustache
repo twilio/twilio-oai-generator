@@ -120,14 +120,14 @@ export class {{instanceName}} {
   /**
    * Provide a user-friendly representation
    *
-   * @returns String
+   * @returns Object
    */
   toJSON() {
-    return JSON.stringify({
+    return {
       {{#vars}}
       {{name}}: this.{{name}},
       {{/vars}}
-    }, null, 2);
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
