@@ -10,10 +10,10 @@ import com.twilio.oai.common.Utility;
 import com.twilio.oai.templating.mustache.TitleCaseLambda;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.LanguageConventionResolver;
-import com.twilio.oai.resolver.common.CodegenModelResolver;
 import com.twilio.oai.resolver.common.CodegenParameterResolver;
 import com.twilio.oai.resolver.csharp.CSharpCaseResolver;
 import com.twilio.oai.resolver.csharp.CsharpCodegenModelDataTypeResolver;
+import com.twilio.oai.resolver.csharp.CsharpCodegenModelResolver;
 import com.twilio.oai.resolver.csharp.CsharpCodegenParameterDataTypeResolver;
 import com.twilio.oai.resolver.csharp.CsharpSerializer;
 import com.twilio.oai.resolver.csharp.OperationStore;
@@ -80,7 +80,7 @@ public class TwilioCsharpGenerator extends CSharpClientCodegen {
 
         // Model Resolver
         CsharpCodegenModelDataTypeResolver csharpCodegenModelDataTypeResolver = new CsharpCodegenModelDataTypeResolver(conventionMapper, modelFormatMap);
-        CodegenModelResolver codegenModelResolver = new CodegenModelResolver(languageDataType, csharpCodegenModelDataTypeResolver);
+        CsharpCodegenModelResolver codegenModelResolver = new CsharpCodegenModelResolver(languageDataType, csharpCodegenModelDataTypeResolver);
         csharpCodegenModelDataTypeResolver.setCodegenModel(codegenModelResolver);
 
         // Parameter Resolver
