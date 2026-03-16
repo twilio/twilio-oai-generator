@@ -58,6 +58,11 @@ public class DirectoryStructureService {
         private List<Parameter> pathParams;
         private String resourceName;
         private String listName;
+        private boolean listWithPathParams;
+
+        public boolean getHasPathParams() {
+            return pathParams != null && !pathParams.isEmpty();
+        }
     }
 
     @Data
@@ -100,6 +105,14 @@ public class DirectoryStructureService {
 
                 if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
                     final DependentResource dependent = generateDependent(name, operation);
+                    final boolean isIgnoredOperation = Optional.ofNullable(operation.getExtensions())
+                        .map(ext -> ext.get(IGNORE_EXTENSION_NAME))
+                        .map(Boolean.class::cast)
+                        .orElse(false);
+                    if (pathType.isPresent() && pathType.get().equals("list")
+                            && dependent.getHasPathParams() && !isIgnoredOperation) {
+                        dependent.setListWithPathParams(true);
+                    }
                     addVersionResources(dependent, versionResources);
                 }
 
