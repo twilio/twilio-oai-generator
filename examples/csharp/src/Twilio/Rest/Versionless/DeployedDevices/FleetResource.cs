@@ -325,7 +325,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
 
         ///<summary> The test_int_map </summary> 
         [JsonProperty("test_int_map")]
-        public Dictionary<string, int> TestIntMap { get; private set; }
+        public Dictionary<string, int?> TestIntMap { get; private set; }
 
         ///<summary> The test_nested_object </summary> 
         [JsonProperty("test_nested_object")]
@@ -333,7 +333,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
 
         ///<summary> The test_nested_array </summary> 
         [JsonProperty("test_nested_array")]
-        public List<Dictionary<string, int>> TestNestedArray { get; private set; }
+        public List<Dictionary<string, int?>> TestNestedArray { get; private set; }
 
         ///<summary> The test_nested_array_of_objects </summary> 
         [JsonProperty("test_nested_array_of_objects")]

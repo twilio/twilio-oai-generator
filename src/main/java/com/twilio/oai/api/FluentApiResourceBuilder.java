@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
@@ -96,6 +97,19 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
 
             // Fill out the list path params with any "parent params".
             listPathParams = resourcePathParams.stream().filter(PathUtils::isParentParam).collect(Collectors.toList());
+        }
+
+        // Ensure all listPathParams are also in instancePathParams so the Instance
+        // constructor accepts the params that pagination's getInstance passes.
+        if (listPathParams != null && instancePathParams != null) {
+            final Set<String> instanceParamNames = instancePathParams.stream()
+                .map(p -> p.paramName)
+                .collect(Collectors.toSet());
+            for (final CodegenParameter param : listPathParams) {
+                if (!instanceParamNames.contains(param.paramName)) {
+                    instancePathParams.add(param);
+                }
+            }
         }
 
         return this;
