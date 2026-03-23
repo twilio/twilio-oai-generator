@@ -557,6 +557,8 @@ export class AccountInstance {
    */
   message: string;
 
+  sid: string;
+
   private get _proxy(): AccountContext {
     this._context =
       this._context ||

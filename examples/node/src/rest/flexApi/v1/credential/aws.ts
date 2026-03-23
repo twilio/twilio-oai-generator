@@ -597,6 +597,8 @@ export class AwsInstance {
   testString: string;
   testInteger: number;
 
+  sid: string;
+
   private get _proxy(): AwsContext {
     this._context =
       this._context || new AwsContextImpl(this._version, this._solution.sid);

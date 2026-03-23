@@ -167,6 +167,8 @@ export class CallInstance {
    */
   sid: number;
 
+  sid: string;
+
   private get _proxy(): CallContext {
     this._context =
       this._context || new CallContextImpl(this._version, this._solution.sid);

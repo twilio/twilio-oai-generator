@@ -12,11 +12,14 @@ public class PythonCaseResolver implements CaseResolver {
 
     @Override //flex_flow.py
     public String pathOperation(final String pathPart) {
-        return StringUtils.underscore(pathPart);
+        String processedName = StringUtils.underscore(pathPart);
+        // Handle Python reserved keyword "import"
+        return processedName.equalsIgnoreCase("import") ? "import_" : processedName;
     }
 
     @Override
     public String filenameOperation(final String filename) {
+        // pathOperation already handles the "import" keyword
         return pathOperation(filename);
     }
 }

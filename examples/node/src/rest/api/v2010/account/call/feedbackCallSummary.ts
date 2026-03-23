@@ -338,6 +338,10 @@ export class FeedbackCallSummaryInstance {
    */
   message: string;
 
+  accountSid: string;
+
+  sid: string;
+
   private get _proxy(): FeedbackCallSummaryContext {
     this._context =
       this._context ||
