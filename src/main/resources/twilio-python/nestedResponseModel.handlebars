@@ -3,8 +3,8 @@
 Nested response model for {{name}}
 '''
 class {{name}}:
-  def __init__(self,{{#vars}}{{baseName}}: {{{dataType}}}{{#unless @last}}, {{/unless}}{{/vars}}):
-    {{#vars}}self.{{baseName}} = {{baseName}}
+  def __init__(self,{{#vars}}{{name}}: {{{dataType}}}{{#unless @last}}, {{/unless}}{{/vars}}):
+    {{#vars}}self.{{name}} = {{name}}
     {{/vars}}
 
 {{/models}}
