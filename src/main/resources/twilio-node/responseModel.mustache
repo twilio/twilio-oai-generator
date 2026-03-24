@@ -57,12 +57,12 @@ export class {{instanceName}} {
     {{/items.isModel}}
     {{/isArray}}
     {{^isArray}}
-      {{#vendorExtensions.isEnumClass}}
+      {{^isModel}}
     this.{{name}} = payload.{{baseName}};
-      {{/vendorExtensions.isEnumClass}}
-      {{^vendorExtensions.isEnumClass}}
+      {{/isModel}}
+      {{#isModel}}
     this.{{name}} = payload.{{baseName}} !== null && payload.{{baseName}} !== undefined ? new {{complexType}}(payload.{{baseName}}) : null;
-      {{/vendorExtensions.isEnumClass}}
+      {{/isModel}}
     {{/isArray}}
     {{/complexType}}
     {{/vars}}
@@ -120,14 +120,14 @@ export class {{instanceName}} {
   /**
    * Provide a user-friendly representation
    *
-   * @returns String
+   * @returns Object
    */
   toJSON() {
-    return JSON.stringify({
+    return {
       {{#vars}}
       {{name}}: this.{{name}},
       {{/vars}}
-    }, null, 2);
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {

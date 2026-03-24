@@ -408,17 +408,13 @@ export class AssistantInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns String
+   * @returns Object
    */
   toJSON() {
-    return JSON.stringify(
-      {
-        sid: this.sid,
-        friendlyName: this.friendlyName,
-      },
-      null,
-      2,
-    );
+    return {
+      sid: this.sid,
+      friendlyName: this.friendlyName,
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {

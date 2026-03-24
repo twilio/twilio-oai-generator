@@ -675,34 +675,30 @@ export class AccountInstance {
   /**
    * Provide a user-friendly representation
    *
-   * @returns String
+   * @returns Object
    */
   toJSON() {
-    return JSON.stringify(
-      {
-        accountSid: this.accountSid,
-        sid: this.sid,
-        testString: this.testString,
-        testInteger: this.testInteger,
-        testObject: this.testObject,
-        testDateTime: this.testDateTime,
-        testNumber: this.testNumber,
-        from: this.from,
-        priceUnit: this.priceUnit,
-        testNumberFloat: this.testNumberFloat,
-        testNumberDecimal: this.testNumberDecimal,
-        testEnum: this.testEnum,
-        a2pProfileBundleSid: this.a2pProfileBundleSid,
-        testArrayOfIntegers: this.testArrayOfIntegers,
-        testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
-        testArrayOfObjects: this.testArrayOfObjects,
-        testArrayOfEnum: this.testArrayOfEnum,
-        status: this.status,
-        message: this.message,
-      },
-      null,
-      2,
-    );
+    return {
+      accountSid: this.accountSid,
+      sid: this.sid,
+      testString: this.testString,
+      testInteger: this.testInteger,
+      testObject: this.testObject,
+      testDateTime: this.testDateTime,
+      testNumber: this.testNumber,
+      from: this.from,
+      priceUnit: this.priceUnit,
+      testNumberFloat: this.testNumberFloat,
+      testNumberDecimal: this.testNumberDecimal,
+      testEnum: this.testEnum,
+      a2pProfileBundleSid: this.a2pProfileBundleSid,
+      testArrayOfIntegers: this.testArrayOfIntegers,
+      testArrayOfArrayOfIntegers: this.testArrayOfArrayOfIntegers,
+      testArrayOfObjects: this.testArrayOfObjects,
+      testArrayOfEnum: this.testArrayOfEnum,
+      status: this.status,
+      message: this.message,
+    };
   }
 
   [inspect.custom](_depth: any, options: InspectOptions) {
