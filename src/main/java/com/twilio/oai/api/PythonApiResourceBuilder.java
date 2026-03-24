@@ -151,7 +151,17 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 .forEach(this::processModelVariables);
         }
 
-        modelTree.values().forEach(model -> model.setName(getModelName(model.getClassname())));
+        modelTree.values().forEach(model -> {
+            model.setName(getModelName(model.getClassname()));
+            // Set json-name for properties in nested models
+            model.getVars().forEach(property -> {
+                // Set json-name using baseName (original field name from spec) if it differs from name
+                String jsonName = (property.baseName != null && !property.baseName.equals(property.name))
+                    ? property.baseName
+                    : property.name;
+                property.vendorExtensions.put("json-name", jsonName);
+            });
+        });
         if (responseModel != null) {
             responseModel.getVars().forEach(variable -> {
                 if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
