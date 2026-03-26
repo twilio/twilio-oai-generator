@@ -1,4 +1,4 @@
-{{#models}}
+{{#models}}{{#if vars}}
 '''
 Nested response model for {{name}}
 '''
@@ -7,4 +7,4 @@ class {{name}}:
     {{#vars}}self.{{name}} = {{name}}
     {{/vars}}
 
-{{/models}}
+{{/if}}{{/models}}
