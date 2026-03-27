@@ -36,6 +36,9 @@ public class ResourceCache2 {
     @Getter
     @Setter
     private Set<CodegenProperty> responsePatch = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
+    @Getter
+    @Setter
+    private Set<CodegenProperty> responseDelete = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
 
     @Getter
     private ArrayList<CodegenModel> allModelsByDefaultGenerator = new ArrayList<>();

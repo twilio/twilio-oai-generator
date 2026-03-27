@@ -17,12 +17,10 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
     
     @Override
     public void process(CodegenOperation codegenOperation) {
-        // delete operation does not have response body
-        if (codegenOperation.operationId.toLowerCase().startsWith("delete")) return;
         List<CodegenModel> allModels = ResourceCacheContext.get().getAllModelsByDefaultGenerator();
         CodegenResponse response = codegenOperation.responses.stream()
                 .filter(codegenResponse -> codegenResponse.is2xx || codegenResponse.is3xx)
-                .findFirst().get();
+                .findFirst().orElse(null);
         if (response == null || response.getContent() == null) return;
 
         String modelName = response.dataType;
@@ -38,6 +36,14 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
             recursiveModelProcessor.process(property);
         }
         String operationId = codegenOperation.operationId;
+
+        // Mark delete operations that have response body for special handling in Python
+        if (operationId.toLowerCase().startsWith("delete")) {
+            codegenOperation.vendorExtensions.put("x-delete-has-response-body", true);
+            codegenModel.vars.forEach(ResourceCacheContext.get().getResponseDelete()::add);
+            return;
+        }
+
         // Adding responseModel vars to cache
         if (operationId.toLowerCase().startsWith("create")) {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponseCreate()::add);

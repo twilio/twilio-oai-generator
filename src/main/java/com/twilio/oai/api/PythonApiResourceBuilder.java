@@ -55,11 +55,21 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
     public ApiResourceBuilder updateOperations(final Resolver<CodegenParameter> codegenParameterIResolver) {
         super.updateOperations(codegenParameterIResolver);
         updatePaths();
+        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
         for (final CodegenOperation co : codegenOperationList) {
             co.httpMethod = co.httpMethod.toLowerCase();
             updateNamespaceSubPart(co);
             if (co.operationId.startsWith("list")) {
                 addOperationName(co, "Page");
+            }
+
+            // Mark delete operations with response body for V1 APIs
+            if (isApiV1 && co.operationId.toLowerCase().startsWith("delete")) {
+                boolean hasResponseBody = co.responses != null && co.responses.stream()
+                    .anyMatch(response -> response.is2xx && response.getContent() != null && !response.getContent().isEmpty());
+                if (hasResponseBody) {
+                    co.vendorExtensions.put("x-delete-has-response-body", true);
+                }
             }
 
             for (CodegenParameter cp : co.allParams) {

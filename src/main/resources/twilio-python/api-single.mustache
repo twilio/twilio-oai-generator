@@ -12,12 +12,6 @@ from twilio.base.version import Version
 {{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
 
-{{#hasMultipleResponseModels}}
-class ResponseResource(Protocol):
-  pass
-{{>nestedResponseModel}}
-{{>responseInstance}}
-{{/hasMultipleResponseModels}}
 {{#responseModel}}{{>instance}}{{/responseModel}}
 {{#instancePath}}{{>context}}{{/instancePath}}
 {{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
@@ -61,4 +55,11 @@ class {{apiName}}List(ListResource):
         :returns: Machine friendly representation
         """
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
+
+{{#hasMultipleResponseModels}}
+class ResponseResource(Protocol):
+  pass
+{{>nestedResponseModel}}
+{{>responseInstance}}
+{{/hasMultipleResponseModels}}
 {{/resources}}
