@@ -5,7 +5,12 @@ package com.twilio.rest.{{domainPackage}}.{{apiVersion}}{{namespaceSubPart}};
 
     {{#operations}}
         {{#vendorExtensions.x-delete-operation}}
+        {{#vendorExtensions.x-delete-returns-model}}
+            public class {{resourceName}}Deleter extends ResourceDeleter<{{resourceName}}, {{vendorExtensions.x-response-class}}> {
+        {{/vendorExtensions.x-delete-returns-model}}
+        {{^vendorExtensions.x-delete-returns-model}}
             public class {{resourceName}}Deleter extends Deleter<{{resourceName}}> {
+        {{/vendorExtensions.x-delete-returns-model}}
 
             {{>common/instanceVariables}}
             {{>common/constructors}}
