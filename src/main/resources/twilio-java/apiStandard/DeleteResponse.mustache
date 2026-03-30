@@ -29,12 +29,31 @@ static class Delete{{resourceName}}Response extends Resource {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj != null && obj.getClass() == this.getClass();
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+{{#responseDelete}}
+        Delete{{resourceName}}Response other = (Delete{{resourceName}}Response) o;
+        return (
+                Objects.equals({{name}}, other.{{name}}){{^-last}} && {{/-last}}
+        );
+{{/responseDelete}}
+{{^responseDelete}}
+  return true;
+{{/responseDelete}}
     }
 
     @Override
     public int hashCode() {
-        return 1;
+        return Objects.hash(
+            {{#responseDelete}}
+                {{name}}{{^-last}}, {{/-last}}
+            {{/responseDelete}}
+        );
     }
 }
