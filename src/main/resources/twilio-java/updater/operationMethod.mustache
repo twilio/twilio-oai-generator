@@ -7,10 +7,10 @@ httpMethod: http method associated in the current operation.
 domainName: example api, video, chat, etc. These can be found in Domains.java in twilio-java
 vendorExtensions.x-content-type: content type of the request, example: application/json, application/x-www-form-urlencoded
 }}
-    @Override
-    public {{resourceName}} {{vendorExtensions.x-common-action-method}}(final TwilioRestClient client) {
+
+    private Response makeRequest(final TwilioRestClient client) {
     {{>common/generateUri}}
-    
+
         Request request = new Request(
             HttpMethod.{{httpMethod}},
             Domains.{{#lambda.uppercase}}{{domainName}}{{/lambda.uppercase}}.toString(),
@@ -34,14 +34,24 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
     {{#bodyParams.0}}
         addPostParams(request, client);
     {{/bodyParams.0}}
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} update failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
+        {{#isApiV1}}
+            RestStandardException standardException = RestStandardException.fromJson(
+                inputStream,
+                client.getObjectMapper()
+            );
+            if (standardException != null && standardException.getType() != null) {
+                throw new ApiException(standardException);
+            }
+        {{/isApiV1}}
             RestException restException = RestException.fromJson(
-                response.getStream(),
+                inputStream,
                 client.getObjectMapper()
             );
             if (restException == null) {
@@ -49,6 +59,19 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
             }
             throw new ApiException(restException);
         }
-    
-        return {{resourceName}}.fromJson(response.getStream(), client.getObjectMapper());
+        return response;
     }
+
+    @Override
+    public {{vendorExtensions.x-response-class}} {{vendorExtensions.x-common-action-method}}(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        return {{vendorExtensions.x-response-class}}.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<{{vendorExtensions.x-response-class}}> {{vendorExtensions.x-common-action-method}}WithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        {{vendorExtensions.x-response-class}} content = {{vendorExtensions.x-response-class}}.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
+    }
+    

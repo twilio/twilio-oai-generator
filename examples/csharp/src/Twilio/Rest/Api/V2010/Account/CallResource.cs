@@ -135,6 +135,50 @@ namespace Twilio.Rest.Api.V2010.Account
         }
         #endif
 
+
+        public static TwilioResponse<CallResource> CreateWithHeaders(CreateCallOptions options, ITwilioRestClient client = null) 
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildCreateRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<CallResource>(resource, response.Headers, response.StatusCode);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<CallResource>> CreateWithHeadersAsync(CreateCallOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildCreateRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<CallResource>(resource, response.Headers, response.StatusCode);
+        }
+        #endif
+
+        public static TwilioResponse<CallResource> CreateWithHeaders(
+            string requiredStringProperty,
+            Twilio.Http.HttpMethod testMethod,
+            string pathAccountSid = null,
+            List<string> testArrayOfStrings = null,
+            List<Uri> testArrayOfUri = null,
+        ITwilioRestClient client = null)
+        {
+        var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
+        return CreateWithHeaders(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<CallResource>> CreateWithHeadersAsync(
+            string requiredStringProperty,
+            Twilio.Http.HttpMethod testMethod,
+            string pathAccountSid = null,
+            List<string> testArrayOfStrings = null,
+            List<Uri> testArrayOfUri = null,
+        ITwilioRestClient client = null)
+        {
+        var options = new CreateCallOptions(requiredStringProperty, testMethod){  PathAccountSid = pathAccountSid, TestArrayOfStrings = testArrayOfStrings, TestArrayOfUri = testArrayOfUri };
+        return await CreateWithHeadersAsync(options, client);
+        }
+        #endif
         
         /// <summary> delete </summary>
         /// <param name="options"> Delete Call parameters </param>
@@ -167,7 +211,7 @@ namespace Twilio.Rest.Api.V2010.Account
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = client.Request(BuildDeleteRequest(options, client));
-            return response.StatusCode == System.Net.HttpStatusCode.NoContent;
+            return (int)response.StatusCode >= 200 && (int)response.StatusCode < 400;
         }
 
         #if !NET35
@@ -180,7 +224,7 @@ namespace Twilio.Rest.Api.V2010.Account
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
-            return response.StatusCode == System.Net.HttpStatusCode.NoContent;
+            return (int)response.StatusCode >= 200 && (int)response.StatusCode < 400;
         }
         #endif
 
@@ -205,6 +249,38 @@ namespace Twilio.Rest.Api.V2010.Account
         {
             var options = new DeleteCallOptions(pathTestInteger)  { PathAccountSid = pathAccountSid };
             return await DeleteAsync(options, client);
+        }
+        #endif
+
+        public static TwilioResponse<bool> DeleteWithHeaders(DeleteCallOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildDeleteRequest(options, client));
+            var success = (int)response.StatusCode >= 200 && (int)response.StatusCode < 400;
+            return new TwilioResponse<bool>(success, response.Headers, response.StatusCode);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(DeleteCallOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildDeleteRequest(options, client));
+            var success = (int)response.StatusCode >= 200 && (int)response.StatusCode < 400;
+            return new TwilioResponse<bool>(success, response.Headers, response.StatusCode);
+        }
+        #endif
+
+        public static TwilioResponse<bool> DeleteWithHeaders(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        {
+            var options = new DeleteCallOptions(pathTestInteger)      { PathAccountSid = pathAccountSid }   ;
+            return DeleteWithHeaders(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<bool>> DeleteWithHeadersAsync(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        {
+            var options = new DeleteCallOptions(pathTestInteger)  { PathAccountSid = pathAccountSid };
+            return await DeleteWithHeadersAsync(options, client);
         }
         #endif
         
@@ -274,6 +350,40 @@ namespace Twilio.Rest.Api.V2010.Account
         {
             var options = new FetchCallOptions(pathTestInteger){ PathAccountSid = pathAccountSid };
             return await FetchAsync(options, client);
+        }
+        #endif
+            
+        public static TwilioResponse<CallResource> FetchWithHeaders(FetchCallOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildFetchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<CallResource>(resource, response.Headers, response.StatusCode);
+        }
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<CallResource>> FetchWithHeadersAsync(FetchCallOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildFetchRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<CallResource>(resource, response.Headers, response.StatusCode);
+        }
+        #endif
+        
+        public static TwilioResponse<CallResource> FetchWithHeaders(
+                    int? pathTestInteger, 
+                    string pathAccountSid = null, 
+                ITwilioRestClient client = null)
+        {
+            var options = new FetchCallOptions(pathTestInteger){ PathAccountSid = pathAccountSid };
+            return FetchWithHeaders(options, client);
+        }
+        
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<CallResource>> FetchWithHeadersAsync(int? pathTestInteger, string pathAccountSid = null, ITwilioRestClient client = null)
+        {
+            var options = new FetchCallOptions(pathTestInteger){ PathAccountSid = pathAccountSid };
+            return await FetchWithHeadersAsync(options, client);
         }
         #endif
     

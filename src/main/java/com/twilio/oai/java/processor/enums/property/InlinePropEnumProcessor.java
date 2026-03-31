@@ -62,7 +62,11 @@ public class InlinePropEnumProcessor implements PropertyEnumProcessor {
         
         for (String s : (List<String>) codegenProperty.allowableValues.get("values")) {
             HashMap<String, Object> valueMap = new HashMap<>();
-            valueMap.put("name", StringHelper.toSnakeCase(s).toUpperCase());
+            if (s.isEmpty()) {
+                valueMap.put("name", "EMPTY");
+            } else {
+                valueMap.put("name", StringHelper.toSnakeCase(s).toUpperCase());
+            }
             valueMap.put("value",  "\"" + s + "\""); // adding extra quote as this is how enumVars are stored
             enumValues.add(valueMap);
         }

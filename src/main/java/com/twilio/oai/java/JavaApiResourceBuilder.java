@@ -45,6 +45,7 @@ public class JavaApiResourceBuilder {
 
     public JavaApiResourceBuilder recordKey() {
         this.recordKey = Utility.getRecordKey(ResourceCacheContext.get().getAllModelsByDefaultGenerator(), operations);
+        ResourceCacheContext.get().setRecordKey(this.recordKey);
         return this;
     }
 

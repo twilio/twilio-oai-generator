@@ -138,6 +138,51 @@ namespace Twilio.Rest.Api.V2010.Account.Call
         }
         #endif
 
+        public static TwilioResponse<FeedbackCallSummaryResource> UpdateWithHeaders(UpdateFeedbackCallSummaryOptions options, ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = client.Request(BuildUpdateRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<FeedbackCallSummaryResource>(resource, response.Headers, response.StatusCode);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<FeedbackCallSummaryResource>> UpdateWithHeadersAsync(UpdateFeedbackCallSummaryOptions options,
+        ITwilioRestClient client = null)
+        {
+            client = client ?? TwilioClient.GetRestClient();
+            var response = await client.RequestAsync(BuildUpdateRequest(options, client));
+            var resource = FromJson(response.Content);
+            return new TwilioResponse<FeedbackCallSummaryResource>(resource, response.Headers, response.StatusCode);
+        }
+        #endif
+
+        public static TwilioResponse<FeedbackCallSummaryResource> UpdateWithHeaders(
+            string pathSid,
+            DateTime? endDate,
+            DateTime? startDate,
+            string pathAccountSid = null,
+            string accountSid = null,
+        ITwilioRestClient client = null)
+        {
+            var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid, AccountSid = accountSid };
+            return UpdateWithHeaders(options, client);
+        }
+
+        #if !NET35
+        public static async System.Threading.Tasks.Task<TwilioResponse<FeedbackCallSummaryResource>> UpdateWithHeadersAsync(
+            string pathSid,
+            DateTime? endDate,
+            DateTime? startDate,
+            string pathAccountSid = null,
+            string accountSid = null,
+        ITwilioRestClient client = null)
+        {
+            var options = new UpdateFeedbackCallSummaryOptions(pathSid, endDate, startDate){ PathAccountSid = pathAccountSid, AccountSid = accountSid };
+            return await UpdateWithHeadersAsync(options, client);
+        }
+        #endif
+
     
         /// <summary>
         /// Converts a JSON string into a FeedbackCallSummaryResource object

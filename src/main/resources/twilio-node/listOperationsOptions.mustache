@@ -33,9 +33,9 @@ export interface {{vendorExtensions.x-resource-name}}PageOptions {
   {{#allParams}}
   /** {{{description}}} */
   "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
-  {{/allParams}}
+  {{/allParams}}{{^isApiV1}}
   /** Page Number, this value is simply for client state */
   pageNumber?: number;
   /** PageToken provided by the API */
-  pageToken?: string;
+  pageToken?: string;{{/isApiV1}}
 }

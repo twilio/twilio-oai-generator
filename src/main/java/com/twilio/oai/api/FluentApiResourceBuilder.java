@@ -2,6 +2,7 @@ package com.twilio.oai.api;
 
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
+import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -10,11 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -93,6 +96,19 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
 
             // Fill out the list path params with any "parent params".
             listPathParams = resourcePathParams.stream().filter(PathUtils::isParentParam).collect(Collectors.toList());
+        }
+
+        // Ensure all listPathParams are also in instancePathParams so the Instance
+        // constructor accepts the params that pagination's getInstance passes.
+        if (listPathParams != null && instancePathParams != null) {
+            final Set<String> instanceParamNames = instancePathParams.stream()
+                .map(p -> p.paramName)
+                .collect(Collectors.toSet());
+            for (final CodegenParameter param : listPathParams) {
+                if (!instanceParamNames.contains(param.paramName)) {
+                    instancePathParams.add(param);
+                }
+            }
         }
 
         return this;

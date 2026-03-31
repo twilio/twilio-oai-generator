@@ -15,6 +15,8 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     public static final String API_TEMPLATE = "api";
     public static final String NESTED_MODELS = "nested_models";
     public static final String VERSION_TEMPLATE = "version";
+    // New template type for individual instance classes (one file per response model)
+    public static final String INSTANCE_RESPONSE_TEMPLATE = "response_instance";
 
     private final Map<String, List<String>> templates = mapping();
     protected final CodegenConfig codegen;

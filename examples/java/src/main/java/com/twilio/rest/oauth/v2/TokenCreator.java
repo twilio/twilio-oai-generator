@@ -17,6 +17,7 @@ package com.twilio.rest.oauth.v2;
 
 import com.twilio.auth_strategy.NoAuthStrategy;
 import com.twilio.base.Creator;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Serializer;
@@ -29,6 +30,7 @@ import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import java.io.InputStream;
 import com.twilio.type.*;
 
 
@@ -95,13 +97,13 @@ public TokenCreator setScope(final String scope){
 }
 
 
-    @Override
-    public Token create(final TwilioRestClient client) {
+
+    private Response makeRequest(final TwilioRestClient client) {
     
     String path = "/v2/token";
 
 
-    
+
         Request request = new Request(
             HttpMethod.POST,
             Domains.OAUTH.toString(),
@@ -110,14 +112,15 @@ public TokenCreator setScope(final String scope){
         request.setContentType(EnumConstants.ContentType.FORM_URLENCODED);
         request.setAuth(NoAuthStrategy.getInstance());
         addPostParams(request);
-    
+
         Response response = client.request(request);
-    
+
         if (response == null) {
             throw new ApiConnectionException("Token creation failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
             RestException restException = RestException.fromJson(
-                response.getStream(),
+                inputStream,
                 client.getObjectMapper()
             );
             if (restException == null) {
@@ -125,8 +128,20 @@ public TokenCreator setScope(final String scope){
             }
             throw new ApiException(restException);
         }
-    
+        return response;
+    }
+
+    @Override
+    public Token create(final TwilioRestClient client) {
+        Response response = makeRequest(client);
         return Token.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<Token> createWithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        Token content = Token.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
     private void addPostParams(final Request request) {
 

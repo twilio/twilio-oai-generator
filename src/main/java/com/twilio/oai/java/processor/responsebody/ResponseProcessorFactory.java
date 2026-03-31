@@ -11,6 +11,7 @@ public class ResponseProcessorFactory {
 
     private ResponseProcessorFactory() {
         processors.add(new JsonResponseProcessor());
+        processors.add(new V1JsonResponseProcessor());
     }
 
     public static ResponseProcessorFactory getInstance() {

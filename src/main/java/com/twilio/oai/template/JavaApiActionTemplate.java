@@ -23,6 +23,8 @@ public class JavaApiActionTemplate extends AbstractApiActionTemplate {
                       Arrays.asList("reader.mustache", "Reader.java"),
                       "update",
                       Arrays.asList("updater.mustache", "Updater.java"),
+                      "patch",
+                      Arrays.asList("updater.mustache", "Updater.java"),
                       API_TEMPLATE,
                       Arrays.asList("api.mustache", ".java"),
                       NESTED_MODELS,

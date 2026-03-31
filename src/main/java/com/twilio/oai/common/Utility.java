@@ -93,7 +93,7 @@ public class Utility {
 
         return method.name();
     }
-    
+
     /*
        responses:
         '200':
@@ -129,16 +129,22 @@ public class Utility {
                                            final CodegenOperation codegenOperation) {
         if (recordKey != null &&
             (boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
-            return models
+            Optional<CodegenModel> nestedModel = models
                 .stream()
                 .filter(model -> model.getClassname().equals(className))
                 .map(CodegenModel::getVars)
                 .flatMap(Collection::stream)
                 .filter(prop -> prop.baseName.equals(recordKey))
                 .map(CodegenProperty::getComplexType)
+                .filter(Objects::nonNull)  // Filter out null complex types (e.g., arrays of primitives)
                 .map(classname -> getModelByClassname(models, classname))
                 .findFirst()
-                .orElse(null);
+                .orElse(Optional.empty());
+
+            // If we found a nested model, return it; otherwise fall back to top-level model
+            if (nestedModel.isPresent()) {
+                return nestedModel;
+            }
         }
 
         return getModelByClassname(models, className);
@@ -191,7 +197,7 @@ public class Utility {
         // Return the input unchanged if no match is found
         return input;
     }
-    
+
     public static String appendResourceNameToEnum(String name) {
         if (name == null || name.isEmpty()) {
             return null;
@@ -202,7 +208,7 @@ public class Utility {
         }
         return prefix + com.twilio.oai.common.StringUtils.toPascalCase(name);
     }
-    
+
     public static String getEnumNameFromRef(final String ref) {
         String schemaName = ref.replaceFirst("#/components/schemas/", "");
         String[] enumNameArray = schemaName.split("_enum_");
@@ -213,7 +219,7 @@ public class Utility {
        Example1:
        singleBodyRef:
          $ref: '#/components/schemas/singleReusable'
-       
+
        Example2:
        status:
           $ref: '#/components/schemas/message_enum_status'
@@ -228,7 +234,7 @@ public class Utility {
         String[] enumNameArray = schemaName.split("_enum_");
         return enumNameArray[enumNameArray.length - 1];
     }
-    
+
     public static String getEnumNameFromDatatype(final String datatype) {
         if (datatype == null || datatype.isEmpty()) {
             return null;
@@ -236,15 +242,15 @@ public class Utility {
         String[] enumNameArray = datatype.split("Enum");
         return enumNameArray[enumNameArray.length - 1];
     }
-    
+
     /*
-    Type1: 
+    Type1:
         types:
           $ref: '#/components/schemas/types'
-          
+
      */
     public static CodegenModel getModelFromOpenApiType(CodegenProperty codegenProperty) {
-        // Ref occurs for 2 cases, 
+        // Ref occurs for 2 cases,
         // 1. one when there is no ref, in that case the name will contain parent names.
         // 2. When model is defined using ref(reusable), name will not contain parent names.
         if (StringUtils.isBlank(codegenProperty.openApiType)) {
@@ -261,7 +267,7 @@ public class Utility {
 
     public static void main(String[] args) {
         String ref = "#/components/schemas/api.v2010.account.message";
-        
+
         System.out.println(getModelFromRef(ref));
     }
     public static CodegenModel getModelFromRef(String ref) {

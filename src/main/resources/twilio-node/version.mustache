@@ -16,16 +16,26 @@ export default class {{apiVersionClass}} extends Version {
   }
 
   {{#versionResources}}
+  {{^listWithPathParams}}
   /** {{mountName}} - { Twilio.{{domainName}}.{{apiVersionClass}}.{{type}} } resource */
   protected _{{mountName}}?: {{type}};
+  {{/listWithPathParams}}
   {{/versionResources}}
 
   {{#versionResources}}
+  {{#listWithPathParams}}
+  /** Accessor for {{mountName}} resource */
+  {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}): {{type}} {
+    return {{className}}(this, {{#pathParams}}{{name}}{{^-last}}, {{/-last}}{{/pathParams}});
+  }
+  {{/listWithPathParams}}
+  {{^listWithPathParams}}
   /** Getter for {{mountName}} resource */
   get {{mountName}}(): {{type}} {
     this._{{mountName}} = this._{{mountName}} || {{className}}(this){{#param}}(this.domain.twilio.{{.}}){{/param}};
     return this._{{mountName}};
   }
+  {{/listWithPathParams}}
 
   {{/versionResources}}
 }

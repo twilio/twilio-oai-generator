@@ -27,9 +27,9 @@
     {{#queryParams}}{{>requestParam}}{{/queryParams}}
     {{#formParams}}{{>requestParam}}{{/formParams}}
     {{#bodyParam}}data = params{{/bodyParam}}
-    {{#vendorExtensions.x-is-read-operation}}
+    {{#vendorExtensions.x-is-read-operation}}{{^isApiV1}}
     if (params.pageNumber !== undefined) data["Page"] = params.pageNumber;
-    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;
+    if (params.pageToken !== undefined) data["PageToken"] = params.pageToken;{{/isApiV1}}
     {{/vendorExtensions.x-is-read-operation}}
 
     {{#bodyParams}}if(headers === null || headers === undefined) {
@@ -71,11 +71,13 @@
     {{/vendorExtensions.x-is-context-operation}}
     let operationVersion = {{#vendorExtensions.x-is-context-operation}}instance._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}},
         operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers});
-    {{^vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-delete-operation}}
+    {{^vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-delete-returns-model}}
+    operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
+    {{/vendorExtensions.x-delete-returns-model}}{{^vendorExtensions.x-is-delete-operation}}
     operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
     {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-read-operation}}
-    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, instance._solution));
+    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload,{{#isApiV1}} instance._uri, data,{{/isApiV1}} instance._solution));
     {{/vendorExtensions.x-is-read-operation}}
 
     operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
@@ -88,8 +90,7 @@
 
   instance.getPage = function getPage(targetUrl: string, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
     const operationPromise = instance._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
-
-    let pagePromise = operationPromise.then(payload => new {{returnType}}(instance._version, payload, instance._solution));
+    let pagePromise = operationPromise.then(payload => new {{returnType}}(instance._version, payload,{{#isApiV1}} instance._uri, {},{{/isApiV1}} instance._solution));
     pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
     return pagePromise;
   }

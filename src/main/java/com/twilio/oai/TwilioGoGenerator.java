@@ -64,6 +64,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
             model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
+
         }
         return results;
     }
@@ -97,10 +98,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             return modelName;
         }
 
+        Set<String> FIXED_DATATYPE = new HashSet<>();
+        FIXED_DATATYPE.add("interface{}");
+        FIXED_DATATYPE.add("time.Time");
+
         String newModelName = removeStatusCode(modelName);
         if(Objects.equals(newModelName, modelName))
             newModelName = removeDigits(newModelName);
-        return StringUtils.camelize(newModelName);
+        return FIXED_DATATYPE.contains(newModelName) ? newModelName : StringUtils.camelize(newModelName);
     }
 
     private boolean isPrimitiveOrArrayType(String typeName) {
@@ -286,7 +291,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             .map(op -> models.get(op.returnType))
             .findFirst();
 
-        if (returnModel.isEmpty()) {
+        if (returnModel.isEmpty() ) {
             returnModel = opList
                     .stream()
                     .filter(op -> models.containsKey(op.returnType))
@@ -320,7 +325,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 });
 
                 // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
-                if (returnModel.isPresent()) {
+                if (returnModel.isPresent() && returnModel.get().allVars.stream().filter( v -> !v.baseName.contains("schemas")).filter(v -> v.dataType.startsWith("[]")).collect(Collectors.toList()).size() == 1) {
                     CodegenProperty field = returnModel.get().allVars
                             .stream()
                             .filter( v -> !v.baseName.contains("schemas"))

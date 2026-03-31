@@ -6,6 +6,7 @@ import com.twilio.oai.java.format.Deserializer;
 import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
 import com.twilio.oai.java.processor.model.ModelProcessorFactory;
 import com.twilio.oai.java.processor.model.parameter.ParamModelProcessorManager;
+import com.twilio.oai.resolver.common.CodegenModelOneOf;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
@@ -33,7 +34,10 @@ public class RecursiveModelProcessor {
                 .findFirst()
                 .orElse(null);
         if (codegenModel == null) return;
-
+        if (null != codegenModel.oneOf && !codegenModel.oneOf.isEmpty()) {
+            CodegenModelOneOf.getInstance().resolve(codegenModel);
+        }
+        
         paramModelProcessorManager.applyProcessor(codegenParameter, codegenModel);
 
         if (codegenModel.vars != null && !codegenModel.vars.isEmpty()) {
@@ -83,6 +87,11 @@ public class RecursiveModelProcessor {
 
             return;
         }
+
+        if (null != codegenModel.oneOf && !codegenModel.oneOf.isEmpty()) {
+            CodegenModelOneOf.getInstance().resolve(codegenModel);
+        }
+        
         // Logic 2: nested model logic
         modelProcessorFactory.applyProcessor(codegenProperty, codegenModel);
 

@@ -47,6 +47,7 @@ public class Assistant extends Resource {
 
 
 
+
     public static AssistantReader reader() {
         return new AssistantReader(
             

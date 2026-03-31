@@ -108,7 +108,7 @@
                         {{#vendorExtensions.scimProduces}}headers['Accept'] = 'application/scim+json'{{/vendorExtensions.scimProduces}}
                         {{#vendorExtensions.multipleProduces}} headers['Accept'] = '*/*'{{/vendorExtensions.multipleProduces}}
                         response = @version.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}_with_metadata('{{httpMethod}}', @uri{{#queryParams.0}}, params: params{{/queryParams.0}}{{#formParams.0}}, data: data{{/formParams.0}}, headers: headers{{#bodyParams.0}}, data: {{paramName}}.to_json{{/bodyParams.0}})
-                        {{#lambda.camelcase}}{{apiName}}{{/lambda.camelcase}}_instance = {{apiName}}Instance.new(
+                        {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance = {{apiName}}Instance.new(
                             @version,
                             response.body,{{#vendorExtensions.listOperation}}{{#listPathParams}}
                             {{paramName}}: @solution[:{{paramName}}],{{/listPathParams}}{{/vendorExtensions.listOperation}}{{#vendorExtensions.instanceOperation}}{{#instancePathParams}}
@@ -116,7 +116,7 @@
                         )
                         {{apiName}}InstanceMetadata.new(
                             @version,
-                            {{#lambda.camelcase}}{{apiName}}{{/lambda.camelcase}}_instance,
+                            {{#lambda.snakecase}}{{apiName}}{{/lambda.snakecase}}_instance,
                             response.headers,
                             response.status_code
                         )

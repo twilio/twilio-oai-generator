@@ -22,6 +22,22 @@ public class ResourceCache2 {
     private Set<CodegenProperty> response = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
 
     @Getter
+    @Setter
+    private Set<CodegenProperty> responseCreate = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
+    @Getter
+    @Setter
+    private Set<CodegenProperty> responseUpdate = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
+    @Getter
+    @Setter
+    private Set<CodegenProperty> responseList = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
+    @Getter
+    @Setter
+    private Set<CodegenProperty> responseFetch = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
+    @Getter
+    @Setter
+    private Set<CodegenProperty> responsePatch = new TreeSet<>((p1, p2) -> p1.baseName.compareTo(p2.baseName));
+
+    @Getter
     private ArrayList<CodegenModel> allModelsByDefaultGenerator = new ArrayList<>();
     @Getter
     private Set<MustacheModel> modelClassesForMustache = new HashSet<>();
@@ -39,6 +55,8 @@ public class ResourceCache2 {
     @Getter
     @Setter
     private HashMap<String, Object> additionalProperties = new HashMap<>();
+
+    private String recordKey;
 
     public void setAllModelsByDefaultGenerator(ArrayList<CodegenModel> allModelsByDefaultGenerator) {
         this.allModelsByDefaultGenerator = new ArrayList<>(allModelsByDefaultGenerator);

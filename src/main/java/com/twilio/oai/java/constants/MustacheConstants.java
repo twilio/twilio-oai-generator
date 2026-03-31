@@ -34,7 +34,8 @@ public class MustacheConstants {
         READER("Reader"),
         UPDATER("Updater"),
         DELETER("Deleter"),
-        FETCHER("Fetcher");
+        FETCHER("Fetcher"),
+        PATCHER("Patcher");
 
         private final String value;
     }
@@ -47,9 +48,10 @@ public class MustacheConstants {
         READ("read"),
         UPDATE("update"),
         DELETE("delete"),
-        FETCH("fetch");
+        FETCH("fetch"),
+        PATCH("patch");
 
         private final String value;
     }
-    
+
 }

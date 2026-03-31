@@ -137,6 +137,42 @@ class AwsInstance(InstanceResource):
         """
         return await self._proxy.fetch_with_http_info_async()
 
+    def patch(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> "AwsInstance":
+        """
+        Patch the AwsInstance
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: The patched AwsInstance
+        """
+        return self._proxy.patch(
+            test_string=test_string,
+            test_boolean=test_boolean,
+        )
+
+    async def patch_async(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> "AwsInstance":
+        """
+        Asynchronous coroutine to patch the AwsInstance
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: The patched AwsInstance
+        """
+        return await self._proxy.patch_async(
+            test_string=test_string,
+            test_boolean=test_boolean,
+        )
+
     def update(
         self,
         test_string: Union[str, object] = values.unset,
@@ -244,6 +280,20 @@ class AwsContext(InstanceContext):
 
         self._history: Optional[HistoryList] = None
 
+    def _delete(self) -> tuple:
+        """
+        Internal helper for delete operation
+
+        Returns:
+            tuple: (success_boolean, status_code, headers)
+        """
+
+        headers = values.of({})
+
+        return self._version.delete_with_response_info(
+            method="DELETE", uri=self._uri, headers=headers
+        )
+
     def delete(self) -> bool:
         """
         Deletes the AwsInstance
@@ -251,10 +301,32 @@ class AwsContext(InstanceContext):
 
         :returns: True if delete succeeds, False otherwise
         """
+        success, _, _ = self._delete()
+        return success
+
+    def delete_with_http_info(self) -> ApiResponse:
+        """
+        Deletes the AwsInstance and return response metadata
+
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        success, status_code, headers = self._delete()
+        return ApiResponse(data=success, status_code=status_code, headers=headers)
+
+    async def _delete_async(self) -> tuple:
+        """
+        Internal async helper for delete operation
+
+        Returns:
+            tuple: (success_boolean, status_code, headers)
+        """
 
         headers = values.of({})
 
-        return self._version.delete(method="DELETE", uri=self._uri, headers=headers)
+        return await self._version.delete_with_response_info_async(
+            method="DELETE", uri=self._uri, headers=headers
+        )
 
     async def delete_async(self) -> bool:
         """
@@ -263,11 +335,33 @@ class AwsContext(InstanceContext):
 
         :returns: True if delete succeeds, False otherwise
         """
+        success, _, _ = await self._delete_async()
+        return success
+
+    async def delete_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine that deletes the AwsInstance and return response metadata
+
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        success, status_code, headers = await self._delete_async()
+        return ApiResponse(data=success, status_code=status_code, headers=headers)
+
+    def _fetch(self) -> tuple:
+        """
+        Internal helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
 
         headers = values.of({})
 
-        return await self._version.delete_async(
-            method="DELETE", uri=self._uri, headers=headers
+        headers["Accept"] = "application/json"
+
+        return self._version.fetch_with_response_info(
+            method="GET", uri=self._uri, headers=headers
         )
 
     def fetch(self) -> AwsInstance:
@@ -277,17 +371,42 @@ class AwsContext(InstanceContext):
 
         :returns: The fetched AwsInstance
         """
+        payload, _, _ = self._fetch()
+        return AwsInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+
+    def fetch_with_http_info(self) -> ApiResponse:
+        """
+        Fetch the AwsInstance and return response metadata
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._fetch()
+        instance = AwsInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _fetch_async(self) -> tuple:
+        """
+        Internal async helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
 
         headers = values.of({})
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.fetch(method="GET", uri=self._uri, headers=headers)
-
-        return AwsInstance(
-            self._version,
-            payload,
-            sid=self._solution["sid"],
+        return await self._version.fetch_with_response_info_async(
+            method="GET", uri=self._uri, headers=headers
         )
 
     async def fetch_async(self) -> AwsInstance:
@@ -297,20 +416,155 @@ class AwsContext(InstanceContext):
 
         :returns: The fetched AwsInstance
         """
-
-        headers = values.of({})
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.fetch_async(
-            method="GET", uri=self._uri, headers=headers
-        )
-
+        payload, _, _ = await self._fetch_async()
         return AwsInstance(
             self._version,
             payload,
             sid=self._solution["sid"],
         )
+
+    async def fetch_with_http_info_async(self) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the AwsInstance and return response metadata
+
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._fetch_async()
+        instance = AwsInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    def _patch(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> tuple:
+        """
+        Internal helper for patch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        data = values.of(
+            {
+                "TestString": test_string,
+                "TestBoolean": serialize.boolean_to_string(test_boolean),
+            }
+        )
+        headers = values.of({})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        return self._version.patch_with_response_info(
+            method="PATCH", uri=self._uri, data=data, headers=headers
+        )
+
+    def patch(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> AwsInstance:
+        """
+        Patch the AwsInstance
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: The patched AwsInstance
+        """
+        payload, _, _ = self._patch(test_string=test_string, test_boolean=test_boolean)
+        return AwsInstance(self._version, payload, sid=self._solution["sid"])
+
+    def patch_with_http_info(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Patch the AwsInstance and return response metadata
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._patch(
+            test_string=test_string, test_boolean=test_boolean
+        )
+        instance = AwsInstance(self._version, payload, sid=self._solution["sid"])
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _patch_async(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> tuple:
+        """
+        Internal async helper for patch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        data = values.of(
+            {
+                "TestString": test_string,
+                "TestBoolean": serialize.boolean_to_string(test_boolean),
+            }
+        )
+        headers = values.of({})
+
+        headers["Content-Type"] = "application/x-www-form-urlencoded"
+
+        headers["Accept"] = "application/json"
+
+        return await self._version.patch_with_response_info_async(
+            method="PATCH", uri=self._uri, data=data, headers=headers
+        )
+
+    async def patch_async(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> AwsInstance:
+        """
+        Asynchronous coroutine to patch the AwsInstance
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: The patched AwsInstance
+        """
+        payload, _, _ = await self._patch_async(
+            test_string=test_string, test_boolean=test_boolean
+        )
+        return AwsInstance(self._version, payload, sid=self._solution["sid"])
+
+    async def patch_with_http_info_async(
+        self,
+        test_string: Union[str, object] = values.unset,
+        test_boolean: Union[bool, object] = values.unset,
+    ) -> ApiResponse:
+        """
+        Asynchronous coroutine to patch the AwsInstance and return response metadata
+
+        :param test_string:
+        :param test_boolean:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._patch_async(
+            test_string=test_string, test_boolean=test_boolean
+        )
+        instance = AwsInstance(self._version, payload, sid=self._solution["sid"])
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     def _update(
         self,

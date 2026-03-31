@@ -21,6 +21,7 @@ import (
 type ApiService struct {
 	baseURL        string
 	requestHandler *twilio.RequestHandler
+	apiVersion     string
 }
 
 func (c *ApiService) RequestHandler() *twilio.RequestHandler {

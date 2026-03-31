@@ -15,6 +15,12 @@ export class {{name}} {{#parent}}extends {{{parent}}} {{/parent}}{
 {{/description}}
   "{{name}}"{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}};
 {{/vars}}
+
+  constructor(payload) {
+  {{#vars}}
+    this.{{name}} = payload["{{baseName}}"];
+  {{/vars}}
+  }
 }
 
 {{/isEnum}}

@@ -168,13 +168,13 @@ module Twilio
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
               response = @version.create_with_metadata('POST', @uri, data: data, headers: headers)
-              newCredentials_instance = NewCredentialsInstance.new(
+              new_credentials_instance = NewCredentialsInstance.new(
                 @version,
                 response.body,
               )
               NewCredentialsInstanceMetadata.new(
                 @version,
-                newCredentials_instance,
+                new_credentials_instance,
                 response.headers,
                 response.status_code
               )
@@ -223,13 +223,14 @@ module Twilio
               @new_credentials_page = []
               @limit = limit
               key = get_key(response.body)
-              number_of_records = response.body[key].size
-              while (limit != :unset && number_of_records <= limit)
-                @new_credentials_page << NewCredentialsListResponse.new(version, @payload, key)
+              records = 0
+              while (limit != :unset && records < limit)
+                @new_credentials_page << NewCredentialsListResponse.new(version, @payload, key,
+                                                                        limit - records)
                 @payload = self.next_page
                 break unless @payload
 
-                number_of_records += @payload.body[key].size
+                records += @payload.body[key].size
               end
               # Path Solution
               @solution = solution
@@ -250,8 +251,12 @@ module Twilio
             # @param [Array<NewCredentialsInstance>] instance
             # @param [Hash{String => Object}] headers
             # @param [Integer] status_code
-            def initialize(version, payload, key)
-              @new_credentials = payload.body[key].map do |data|
+            def initialize(version, payload, key, limit = :unset)
+              data_list = payload.body[key]
+              if limit != :unset
+                data_list = data_list[0, limit]
+              end
+              @new_credentials = data_list.map do |data|
                 NewCredentialsInstance.new(version, data)
               end
               @headers = payload.headers

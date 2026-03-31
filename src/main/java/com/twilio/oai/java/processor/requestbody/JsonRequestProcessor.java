@@ -1,12 +1,14 @@
 package com.twilio.oai.java.processor.requestbody;
 
 import com.twilio.oai.LoggerUtil;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.List;
 
+import static com.twilio.oai.common.ApplicationConstants.DOT;
 import static com.twilio.oai.common.ApplicationConstants.X_REQUEST_CONTENT_TYPE;
 import static com.twilio.oai.java.constants.MustacheConstants.X_REQUEST_LANGUAGE_CONTENT_TYPE_CONSTANT;
 
@@ -46,13 +48,15 @@ public class JsonRequestProcessor implements RequestBodyProcessor {
         if (bodyParams.get(0).vars != null && !bodyParams.get(0).vars.isEmpty()) {
             processProperty(codegenOperation);
         } else {
-            processOneOf(codegenOperation);
+            //processOneOf(codegenOperation);
+            processParameter(codegenOperation);
         }
     }
     
     public void processOneOf(CodegenOperation codegenOperation) {
         System.out.println(codegenOperation.bodyParams);
         CodegenParameter codegenParameter = codegenOperation.bodyParams.get(0);
+        codegenParameter.dataType = ResourceCacheContext.get().getResourceName() + DOT + codegenParameter.dataType;
         if (codegenParameter.getContent() != null && codegenParameter.getContent().get("application/json") != null) {
             CodegenProperty codegenProperty = codegenParameter.getContent().get("application/json").getSchema();
             if (codegenProperty != null) {

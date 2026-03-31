@@ -57,6 +57,7 @@ public class JsonResponseProcessor implements ResponseProcessor {
     }
 
     public boolean shouldProcess(final CodegenOperation codegenOperation) {
+        if (ResourceCacheContext.get().isV1()) return false;
         System.out.println(codegenOperation.operationId);
         if (codegenOperation.produces != null && !codegenOperation.produces.isEmpty()) {
             for (Map<String, String> contentType : codegenOperation.produces) {

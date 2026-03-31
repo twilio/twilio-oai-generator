@@ -82,7 +82,7 @@ module Twilio
               limits = @version.read_limits(limit, page_size)
               params = Twilio::Values.of({
 
-                                           'PageSize' => page_size,
+                                           'PageSize' => limits[:page_size],
                                          });
               headers = Twilio::Values.of({})
 
@@ -207,6 +207,60 @@ module Twilio
               headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
               response = @version.fetch_with_metadata('GET', @uri, headers: headers)
+              aws_instance = AwsInstance.new(
+                @version,
+                response.body,
+                sid: @solution[:sid],
+              )
+              AwsInstanceMetadata.new(
+                @version,
+                aws_instance,
+                response.headers,
+                response.status_code
+              )
+            end
+
+            ##
+            # Patch the AwsInstance
+            # @param [String] test_string
+            # @param [Boolean] test_boolean
+            # @return [AwsInstance] Patched AwsInstance
+            def patch(
+              test_string: :unset,
+              test_boolean: :unset
+            )
+              data = Twilio::Values.of({
+                                         'TestString' => test_string,
+                                         'TestBoolean' => test_boolean,
+                                       })
+
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              payload = @version.patch('PATCH', @uri, data: data, headers: headers)
+              AwsInstance.new(
+                @version,
+                payload,
+                sid: @solution[:sid],
+              )
+            end
+
+            ##
+            # Patch the AwsInstanceMetadata
+            # @param [String] test_string
+            # @param [Boolean] test_boolean
+            # @return [AwsInstance] Patchd AwsInstance
+            def patch_with_metadata(
+              test_string: :unset,
+              test_boolean: :unset
+            )
+              data = Twilio::Values.of({
+                                         'TestString' => test_string,
+                                         'TestBoolean' => test_boolean,
+                                       })
+
+              headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
+
+              response = @version.patch_with_metadata('PATCH', @uri, data: data, headers: headers)
               aws_instance = AwsInstance.new(
                 @version,
                 response.body,
@@ -384,13 +438,13 @@ module Twilio
               @aws_page = []
               @limit = limit
               key = get_key(response.body)
-              number_of_records = response.body[key].size
-              while (limit != :unset && number_of_records <= limit)
-                @aws_page << AwsListResponse.new(version, @payload, key)
+              records = 0
+              while (limit != :unset && records < limit)
+                @aws_page << AwsListResponse.new(version, @payload, key, limit - records)
                 @payload = self.next_page
                 break unless @payload
 
-                number_of_records += @payload.body[key].size
+                records += @payload.body[key].size
               end
               # Path Solution
               @solution = solution
@@ -411,8 +465,12 @@ module Twilio
             # @param [Array<AwsInstance>] instance
             # @param [Hash{String => Object}] headers
             # @param [Integer] status_code
-            def initialize(version, payload, key)
-              @aws = payload.body[key].map do |data|
+            def initialize(version, payload, key, limit = :unset)
+              data_list = payload.body[key]
+              if limit != :unset
+                data_list = data_list[0, limit]
+              end
+              @aws = data_list.map do |data|
                 AwsInstance.new(version, data)
               end
               @headers = payload.headers
@@ -505,6 +563,21 @@ module Twilio
             # @return [AwsInstance] Fetched AwsInstance
             def fetch
               context.fetch
+            end
+
+            ##
+            # Patch the AwsInstance
+            # @param [String] test_string
+            # @param [Boolean] test_boolean
+            # @return [AwsInstance] Patched AwsInstance
+            def patch(
+              test_string: :unset,
+              test_boolean: :unset
+            )
+              context.patch(
+                test_string: test_string,
+                test_boolean: test_boolean,
+              )
             end
 
             ##

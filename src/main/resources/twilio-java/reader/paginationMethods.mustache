@@ -1,27 +1,42 @@
-private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, final Request request) {
+    private Response makeRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("{{resourceName}} read failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
+        {{#isApiV1}}
+            RestStandardException standardException = RestStandardException.fromJson(
+                inputStream,
+                client.getObjectMapper()
+            );
+            if (standardException != null && standardException.getType() != null) {
+                throw new ApiException(standardException);
+            }
+        {{/isApiV1}}
             RestException restException = RestException.fromJson(
-            response.getStream(),
-            client.getObjectMapper());
+                inputStream,
+                client.getObjectMapper()
+            );
 
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
-        } {{! end of else if }}
-
+        }
+        return response;
+    }
+    
+private Page<{{vendorExtensions.x-response-class}}> pageForRequest(final TwilioRestClient client, final Request request) {
+        Response response = makeRequest(client, request);
         return {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isApiV1}}Page{{/isApiV1}}.fromJson(
             "{{recordKey}}",
             response.getContent(),
-            {{resourceName}}.class,
+            {{vendorExtensions.x-response-class}}.class,
             client.getObjectMapper());
     }
 
     @Override
-    public Page<{{resourceName}}> previousPage(final Page<{{resourceName}}> page, final TwilioRestClient client ) {
+    public Page<{{vendorExtensions.x-response-class}}> previousPage(final Page<{{vendorExtensions.x-response-class}}> page, final TwilioRestClient client ) {
         {{#isApiV1}}
             {{>common/generateUri}}
             path = path + page.previousQueryString();
@@ -36,7 +51,7 @@ private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, fin
     }
 
     @Override
-    public Page<{{resourceName}}> nextPage(final Page<{{resourceName}}> page, final TwilioRestClient client) {
+    public Page<{{vendorExtensions.x-response-class}}> nextPage(final Page<{{vendorExtensions.x-response-class}}> page, final TwilioRestClient client) {
         {{#isApiV1}}
             {{>common/generateUri}}
             path = path + page.nextQueryString();
@@ -51,7 +66,10 @@ private Page<{{resourceName}}> pageForRequest(final TwilioRestClient client, fin
     }
 
     @Override
-    public Page<{{resourceName}}> getPage(final String targetUrl, final TwilioRestClient client) {
+    public Page<{{vendorExtensions.x-response-class}}> getPage(final String targetUrl, final TwilioRestClient client) {
+        if (!com.twilio.http.HttpUtility.isValidTwilioUrl(targetUrl)) {
+            throw new ApiException("Invalid URL: URL must be a valid Twilio domain");
+        }
         Request request = new Request(HttpMethod.GET, targetUrl);
         return pageForRequest(client, request);
     }

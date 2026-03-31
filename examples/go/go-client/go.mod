@@ -5,8 +5,11 @@ go 1.21
 require (
 	github.com/golang/mock v1.6.0
 	github.com/stretchr/testify v1.7.0
-	github.com/twilio/twilio-go v0.25.0
+	github.com/twilio/twilio-go v1.30.0
 )
+
+// Use the latest main branch of twilio-go instead of a specific version
+replace github.com/twilio/twilio-go => github.com/twilio/twilio-go v1.30.3-0.20260224041941-6250a07606d0
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect

@@ -99,7 +99,7 @@ module Twilio
                 headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
                 response = @version.update_with_metadata('POST', @uri, data: data, headers: headers)
-                feedbackCallSummary_instance = FeedbackCallSummaryInstance.new(
+                feedback_call_summary_instance = FeedbackCallSummaryInstance.new(
                   @version,
                   response.body,
                   account_sid: @solution[:account_sid],
@@ -107,7 +107,7 @@ module Twilio
                 )
                 FeedbackCallSummaryInstanceMetadata.new(
                   @version,
-                  feedbackCallSummary_instance,
+                  feedback_call_summary_instance,
                   response.headers,
                   response.status_code
                 )
@@ -212,14 +212,14 @@ module Twilio
                 @feedback_call_summary_page = []
                 @limit = limit
                 key = get_key(response.body)
-                number_of_records = response.body[key].size
-                while (limit != :unset && number_of_records <= limit)
-                  @feedback_call_summary_page << FeedbackCallSummaryListResponse.new(version, @payload,
-                                                                                     key)
+                records = 0
+                while (limit != :unset && records < limit)
+                  @feedback_call_summary_page << FeedbackCallSummaryListResponse.new(version, @payload, key,
+                                                                                     limit - records)
                   @payload = self.next_page
                   break unless @payload
 
-                  number_of_records += @payload.body[key].size
+                  records += @payload.body[key].size
                 end
                 # Path Solution
                 @solution = solution
@@ -240,8 +240,12 @@ module Twilio
               # @param [Array<FeedbackCallSummaryInstance>] instance
               # @param [Hash{String => Object}] headers
               # @param [Integer] status_code
-              def initialize(version, payload, key)
-                @feedback_call_summary = payload.body[key].map do |data|
+              def initialize(version, payload, key, limit = :unset)
+                data_list = payload.body[key]
+                if limit != :unset
+                  data_list = data_list[0, limit]
+                end
+                @feedback_call_summary = data_list.map do |data|
                   FeedbackCallSummaryInstance.new(version, data)
                 end
                 @headers = payload.headers

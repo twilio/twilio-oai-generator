@@ -26,6 +26,24 @@ abstract class AwsOptions
     /**
      * @param string $testString
      * @param bool $testBoolean
+     * @return PatchAwsOptions Options builder
+     */
+    public static function patch(
+        
+        string $testString = Values::NONE,
+        bool $testBoolean = Values::BOOL_NONE
+
+    ): PatchAwsOptions
+    {
+        return new PatchAwsOptions(
+            $testString,
+            $testBoolean
+        );
+    }
+
+    /**
+     * @param string $testString
+     * @param bool $testBoolean
      * @return UpdateAwsOptions Options builder
      */
     public static function update(
@@ -45,6 +63,54 @@ abstract class AwsOptions
 
 
 
+
+class PatchAwsOptions extends Options
+    {
+    /**
+     * @param string $testString
+     * @param bool $testBoolean
+     */
+    public function __construct(
+        
+        string $testString = Values::NONE,
+        bool $testBoolean = Values::BOOL_NONE
+
+    ) {
+        $this->options['testString'] = $testString;
+        $this->options['testBoolean'] = $testBoolean;
+    }
+
+    /**
+     * @param string $testString
+     * @return $this Fluent Builder
+     */
+    public function setTestString(string $testString): self
+    {
+        $this->options['testString'] = $testString;
+        return $this;
+    }
+
+    /**
+     * @param bool $testBoolean
+     * @return $this Fluent Builder
+     */
+    public function setTestBoolean(bool $testBoolean): self
+    {
+        $this->options['testBoolean'] = $testBoolean;
+        return $this;
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.FlexApi.V1.PatchAwsOptions ' . $options . ']';
+    }
+}
 
 class UpdateAwsOptions extends Options
     {

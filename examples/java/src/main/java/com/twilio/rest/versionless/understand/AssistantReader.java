@@ -15,17 +15,21 @@
 package com.twilio.rest.versionless.understand;
 
 import com.twilio.base.Reader;
+import com.twilio.base.ResourceSetResponse;
+import com.twilio.base.TwilioResponse;
 import com.twilio.constant.EnumConstants.ParameterType;
 import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.HttpUtility;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
+import java.io.InputStream;
 import com.twilio.type.*;
 
 import com.twilio.base.Page;
@@ -45,12 +49,21 @@ public AssistantReader setPageSize(final Integer pageSize){
 }
 
 
-        @Override
-    public ResourceSet<Assistant> read(final TwilioRestClient client) {
-        return new ResourceSet<>(this, client, firstPage(client));
+    
+    public ResourceSetResponse<Assistant> readWithResponse(final TwilioRestClient client) {
+        Request request = buildFirstPageRequest(client);
+        Response response = makeRequest(client, request);
+        Page<Assistant> page = Page.fromJson(
+            "assistants",
+            response.getContent(),
+            Assistant.class,
+            client.getObjectMapper()
+        );
+        ResourceSet<Assistant> resourceSet = new ResourceSet<>(this, client, page); 
+        return new ResourceSetResponse<>(resourceSet, response.getStatusCode(), response.getHeaders());
     }
 
-    public Page<Assistant> firstPage(final TwilioRestClient client) {
+    private Request buildFirstPageRequest(final TwilioRestClient client) {
         
     String path = "/understand/Assistants";
 
@@ -61,25 +74,53 @@ public AssistantReader setPageSize(final Integer pageSize){
             path
         );
         addQueryParams(request);
+        return request;
+    }
+    
 
+    @Override
+    public ResourceSet<Assistant> read(final TwilioRestClient client) {
+        return new ResourceSet<>(this, client, firstPage(client));
+    }
+
+    public Page<Assistant> firstPage(final TwilioRestClient client) {
+        Request request = buildFirstPageRequest(client);
         return pageForRequest(client, request);
     }
 
-    private Page<Assistant> pageForRequest(final TwilioRestClient client, final Request request) {
+    public TwilioResponse<Page<Assistant>> firstPageWithResponse(final TwilioRestClient client) {
+        Request request = buildFirstPageRequest(client);
+        Response response = makeRequest(client, request);
+        Page<Assistant> page = Page.fromJson(
+            "assistants",
+            response.getContent(),
+            Assistant.class,
+            client.getObjectMapper()
+        );
+        return new TwilioResponse<>(page, response.getStatusCode(), response.getHeaders()); 
+    }
+
+        private Response makeRequest(final TwilioRestClient client, final Request request) {
         Response response = client.request(request);
         if (response == null) {
             throw new ApiConnectionException("Assistant read failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
+            InputStream inputStream = response.getStream();
             RestException restException = RestException.fromJson(
-            response.getStream(),
-            client.getObjectMapper());
+                inputStream,
+                client.getObjectMapper()
+            );
 
             if (restException == null) {
                 throw new ApiException("Server Error, no content", response.getStatusCode());
             }
             throw new ApiException(restException);
-        } 
-
+        }
+        return response;
+    }
+    
+private Page<Assistant> pageForRequest(final TwilioRestClient client, final Request request) {
+        Response response = makeRequest(client, request);
         return Page.fromJson(
             "assistants",
             response.getContent(),
@@ -101,6 +142,9 @@ public AssistantReader setPageSize(final Integer pageSize){
 
     @Override
     public Page<Assistant> getPage(final String targetUrl, final TwilioRestClient client) {
+        if (!com.twilio.http.HttpUtility.isValidTwilioUrl(targetUrl)) {
+            throw new ApiException("Invalid URL: URL must be a valid Twilio domain");
+        }
         Request request = new Request(HttpMethod.GET, targetUrl);
         return pageForRequest(client, request);
     }

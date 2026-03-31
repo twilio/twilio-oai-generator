@@ -100,6 +100,19 @@ class AwsInstance extends InstanceResource
     }
 
     /**
+     * Patch the AwsInstance
+     *
+     * @param array|Options $options Optional Arguments
+     * @return AwsInstance Patchd AwsInstance
+     * @throws TwilioException When an HTTP error occurs.
+     */
+    public function patch(array $options = []): AwsInstance
+    {
+
+        return $this->proxy()->patch($options);
+    }
+
+    /**
      * Update the AwsInstance
      *
      * @param array|Options $options Optional Arguments

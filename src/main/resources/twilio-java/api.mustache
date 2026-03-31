@@ -11,6 +11,14 @@ import com.fasterxml.jackson.core.JsonParseException;
 @ToString
 public class {{resourceName}} extends Resource {
 
+{{#isApiV1}}
+    {{>apiStandard/CreateResponse}}
+    {{>apiStandard/UpdateResponse}}
+    {{>apiStandard/ListResponse}}
+    {{>apiStandard/PatchResponse}}
+    {{>apiStandard/FetchResponse}}
+{{/isApiV1}}
+
 {{>allConstructors}}
 {{>enums}}
 {{>models}}

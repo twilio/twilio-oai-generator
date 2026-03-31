@@ -143,15 +143,14 @@ class HistoryContext(InstanceContext):
         }
         self._uri = "/Credentials/AWS/{sid}/History".format(**self._solution)
 
-    def fetch(
+    def _fetch(
         self, add_ons_data: Union[Dict[str, object], object] = values.unset
-    ) -> HistoryInstance:
+    ) -> tuple:
         """
-        Fetch the HistoryInstance
+        Internal helper for fetch operation
 
-        :param add_ons_data:
-
-        :returns: The fetched HistoryInstance
+        Returns:
+            tuple: (payload, status_code, headers)
         """
 
         params = values.of({})
@@ -162,14 +161,65 @@ class HistoryContext(InstanceContext):
 
         headers["Accept"] = "application/json"
 
-        payload = self._version.fetch(
+        return self._version.fetch_with_response_info(
             method="GET", uri=self._uri, params=params, headers=headers
         )
 
+    def fetch(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> HistoryInstance:
+        """
+        Fetch the HistoryInstance
+
+        :param add_ons_data:
+
+        :returns: The fetched HistoryInstance
+        """
+        payload, _, _ = self._fetch(add_ons_data=add_ons_data)
         return HistoryInstance(
             self._version,
             payload,
             sid=self._solution["sid"],
+        )
+
+    def fetch_with_http_info(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> ApiResponse:
+        """
+        Fetch the HistoryInstance and return response metadata
+
+        :param add_ons_data:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = self._fetch(add_ons_data=add_ons_data)
+        instance = HistoryInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
+
+    async def _fetch_async(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> tuple:
+        """
+        Internal async helper for fetch operation
+
+        Returns:
+            tuple: (payload, status_code, headers)
+        """
+
+        params = values.of({})
+
+        params.update(serialize.prefixed_collapsible_map(add_ons_data, "AddOns"))
+
+        headers = values.of({})
+
+        headers["Accept"] = "application/json"
+
+        return await self._version.fetch_with_response_info_async(
+            method="GET", uri=self._uri, params=params, headers=headers
         )
 
     async def fetch_async(
@@ -182,24 +232,32 @@ class HistoryContext(InstanceContext):
 
         :returns: The fetched HistoryInstance
         """
-
-        params = values.of({})
-
-        params.update(serialize.prefixed_collapsible_map(add_ons_data, "AddOns"))
-
-        headers = values.of({})
-
-        headers["Accept"] = "application/json"
-
-        payload = await self._version.fetch_async(
-            method="GET", uri=self._uri, params=params, headers=headers
-        )
-
+        payload, _, _ = await self._fetch_async(add_ons_data=add_ons_data)
         return HistoryInstance(
             self._version,
             payload,
             sid=self._solution["sid"],
         )
+
+    async def fetch_with_http_info_async(
+        self, add_ons_data: Union[Dict[str, object], object] = values.unset
+    ) -> ApiResponse:
+        """
+        Asynchronous coroutine to fetch the HistoryInstance and return response metadata
+
+        :param add_ons_data:
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        payload, status_code, headers = await self._fetch_async(
+            add_ons_data=add_ons_data
+        )
+        instance = HistoryInstance(
+            self._version,
+            payload,
+            sid=self._solution["sid"],
+        )
+        return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
     def __repr__(self) -> str:
         """

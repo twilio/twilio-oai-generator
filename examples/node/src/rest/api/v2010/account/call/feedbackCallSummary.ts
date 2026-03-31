@@ -17,6 +17,7 @@ import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
 const serialize = require("../../../../../base/serialize");
 import { isValidPathParam } from "../../../../../base/utility";
+import { ApiResponse } from "../../../../../base/ApiResponse";
 import { PhoneNumberCapabilities } from "../../../../../interfaces";
 
 export type FeedbackCallSummaryStatus =
@@ -30,6 +31,11 @@ export type FeedbackCallSummaryStatus =
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
   "description"?: string;
+
+  constructor(payload) {
+    this.count = payload["count"];
+    this.description = payload["description"];
+  }
 }
 
 /**
@@ -57,6 +63,22 @@ export interface FeedbackCallSummaryContext {
     params: FeedbackCallSummaryContextUpdateOptions,
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
   ): Promise<FeedbackCallSummaryInstance>;
+
+  /**
+   * Update a FeedbackCallSummaryInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FeedbackCallSummaryInstance with HTTP metadata
+   */
+  updateWithHttpInfo(
+    params: FeedbackCallSummaryContextUpdateOptions,
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<FeedbackCallSummaryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<FeedbackCallSummaryInstance>>;
 
   /**
    * Provide a user-friendly representation
@@ -146,6 +168,67 @@ export class FeedbackCallSummaryContextImpl implements FeedbackCallSummaryContex
     return operationPromise;
   }
 
+  updateWithHttpInfo(
+    params: FeedbackCallSummaryContextUpdateOptions,
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<FeedbackCallSummaryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<FeedbackCallSummaryInstance>> {
+    if (params === null || params === undefined) {
+      throw new Error('Required parameter "params" missing.');
+    }
+
+    if (params["endDate"] === null || params["endDate"] === undefined) {
+      throw new Error("Required parameter \"params['endDate']\" missing.");
+    }
+
+    if (params["startDate"] === null || params["startDate"] === undefined) {
+      throw new Error("Required parameter \"params['startDate']\" missing.");
+    }
+
+    let data: any = {};
+
+    if (params["accountSid"] !== undefined)
+      data["AccountSid"] = params["accountSid"];
+
+    data["EndDate"] = serialize.iso8601Date(params["endDate"]);
+
+    data["StartDate"] = serialize.iso8601Date(params["startDate"]);
+
+    const headers: any = {};
+    headers["Content-Type"] = "application/x-www-form-urlencoded";
+    headers["Accept"] = "application/json";
+
+    const instance = this;
+    let operationVersion = instance._version;
+    // CREATE, FETCH, UPDATE operations
+    let operationPromise = operationVersion
+      .updateWithResponseInfo<FeedbackCallSummaryResource>({
+        uri: instance._uri,
+        method: "post",
+        data,
+        headers,
+      })
+      .then(
+        (response): ApiResponse<FeedbackCallSummaryInstance> => ({
+          ...response,
+          body: new FeedbackCallSummaryInstance(
+            operationVersion,
+            response.body,
+            instance._solution.accountSid,
+            instance._solution.sid,
+          ),
+        }),
+      );
+
+    operationPromise = instance._version.setPromiseCallback(
+      operationPromise,
+      callback,
+    );
+    return operationPromise;
+  }
+
   /**
    * Provide a user-friendly representation
    *
@@ -209,7 +292,13 @@ export class FeedbackCallSummaryInstance {
     this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
     this.testArrayOfIntegers = payload.test_array_of_integers;
     this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
-    this.testArrayOfObjects = payload.test_array_of_objects;
+    this.testArrayOfObjects =
+      payload.test_array_of_objects !== null &&
+      payload.test_array_of_objects !== undefined
+        ? payload.test_array_of_objects.map(
+            (payload: any) => new TestResponseObjectTestArrayOfObjects(payload),
+          )
+        : null;
     this.testArrayOfEnum = payload.test_array_of_enum;
     this.status = payload.status;
     this.message = payload.message;
@@ -278,6 +367,32 @@ export class FeedbackCallSummaryInstance {
     callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
   ): Promise<FeedbackCallSummaryInstance> {
     return this._proxy.update(params, callback);
+  }
+
+  /**
+   * Update a FeedbackCallSummaryInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FeedbackCallSummaryInstance with HTTP metadata
+   */
+  updateWithHttpInfo(
+    params: FeedbackCallSummaryContextUpdateOptions,
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<FeedbackCallSummaryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<FeedbackCallSummaryInstance>>;
+
+  updateWithHttpInfo(
+    params?: any,
+    callback?: (
+      error: Error | null,
+      item?: ApiResponse<FeedbackCallSummaryInstance>,
+    ) => any,
+  ): Promise<ApiResponse<FeedbackCallSummaryInstance>> {
+    return this._proxy.updateWithHttpInfo(params, callback);
   }
 
   /**
