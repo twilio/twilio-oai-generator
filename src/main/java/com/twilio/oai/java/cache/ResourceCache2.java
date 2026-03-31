@@ -56,6 +56,8 @@ public class ResourceCache2 {
     @Setter
     private HashMap<String, Object> additionalProperties = new HashMap<>();
 
+    @Getter
+    @Setter
     private String recordKey;
 
     public void setAllModelsByDefaultGenerator(ArrayList<CodegenModel> allModelsByDefaultGenerator) {
