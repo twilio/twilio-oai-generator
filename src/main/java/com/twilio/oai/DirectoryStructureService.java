@@ -139,8 +139,11 @@ public class DirectoryStructureService {
     public void addVersionResources(DependentResource dependent, Map<String, DependentResource> versionResources) {
         if (versionResources.containsKey(dependent.getFilename())) {
             DependentResource existingDependent = versionResources.get(dependent.getFilename());
-            if (existingDependent.getPathParams().size() == 0)
+            // Always prefer the dependent with MORE pathParams (instance over list)
+            if (dependent.getPathParams().size() > existingDependent.getPathParams().size()) {
                 versionResources.put(dependent.getFilename(), dependent);
+            }
+            // Keep existing if it has more or equal params
         } else {
             versionResources.put(dependent.getFilename(), dependent);
         }
