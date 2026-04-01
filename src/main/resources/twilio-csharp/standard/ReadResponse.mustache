@@ -1,0 +1,45 @@
+public class {{apiName}}Read{{resourceConstant}} : {{resourceConstant}}
+{
+{{#listResponseModels}}
+    {{#isEnum}}
+        {{#description}}///<summary> {{{description}}} </summary> {{/description}}
+        [JsonProperty("{{baseName}}")]
+        {{^required}}
+            public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
+        {{/required}}
+        {{#required}}
+            public {{{dataType}}} {{nameInCamelCase}} { get; }
+        {{/required}}
+    {{/isEnum}}
+    {{^isEnum}}
+        {{#description}}///<summary> {{{description}}} </summary> {{/description}}{{^description}}///<summary> The {{baseName}} </summary> {{/description}}
+        [JsonProperty("{{baseName}}")]
+        {{#vendorExtensions.x-jsonConverter}}
+            [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
+        {{/vendorExtensions.x-jsonConverter}}
+        {{^required}}
+            public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
+        {{/required}}
+        {{#required}}
+            public {{{dataType}}} {{nameInCamelCase}} { get; }
+        {{/required}}
+    {{/isEnum}}
+
+{{/listResponseModels}}
+    public static {{apiName}}Read{{resourceConstant}} FromJson(string json) {
+        try {
+            return JsonConvert.DeserializeObject<{{apiName}}Read{{resourceConstant}}>(json);
+        }
+        catch (JsonException e) {
+            throw new ApiException(e.Message, e);
+        }
+    }
+    public static string ToJson(object model) {
+        try {
+            return JsonConvert.SerializeObject(model);
+        }
+        catch (JsonException e) {
+            throw new ApiException(e.Message, e);
+        }
+    }
+}
