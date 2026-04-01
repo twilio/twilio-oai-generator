@@ -81,6 +81,11 @@ public class ResourceCache2 {
         modelClassesForMustache.clear();
         enumsClassesForMustache.clear();
         response.clear();
+        responseCreate.clear();
+        responseUpdate.clear();
+        responseList.clear();
+        responseFetch.clear();
+        responsePatch.clear();
     }
 
     // No need to clear

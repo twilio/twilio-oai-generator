@@ -1,5 +1,5 @@
 @JsonIgnoreProperties(ignoreUnknown = true)
-static class Patch{{resourceName}}Response extends Resource {
+public static class Patch{{resourceName}}Response extends Resource {
 {{#responsePatch}}
     @Getter
     private final {{{dataType}}} {{name}};

@@ -1,5 +1,5 @@
 @JsonIgnoreProperties(ignoreUnknown = true)
-static class Fetch{{resourceName}}Response extends Resource {
+public static class Fetch{{resourceName}}Response extends Resource {
 {{#responseFetch}}
     @Getter
     private final {{{dataType}}} {{name}};

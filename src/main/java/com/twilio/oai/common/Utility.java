@@ -253,13 +253,24 @@ public class Utility {
         // Ref occurs for 2 cases,
         // 1. one when there is no ref, in that case the name will contain parent names.
         // 2. When model is defined using ref(reusable), name will not contain parent names.
-        if (StringUtils.isBlank(codegenProperty.openApiType)) {
-            return null;
+        if (!StringUtils.isBlank(codegenProperty.openApiType)) {
+            String modelClassName = codegenProperty.isContainer ? codegenProperty.items.openApiType : codegenProperty.openApiType;
+            for (CodegenModel codegenModel : ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
+                if (modelClassName.equals(codegenModel.classname)) {
+                    return codegenModel;
+                }
+            }
         }
-        String modelClassName = codegenProperty.isContainer ? codegenProperty.items.openApiType: codegenProperty.openApiType;
-        for (CodegenModel codegenModel: ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
-            if (modelClassName.equals(codegenModel.classname)) {
-                return codegenModel;
+        // Fallback: try matching by dataType for response properties where openApiType
+        // may not match the model classname (e.g., openApiType is "object" for $ref types).
+        String dataType = codegenProperty.isContainer && codegenProperty.items != null
+                ? codegenProperty.items.dataType
+                : codegenProperty.dataType;
+        if (!StringUtils.isBlank(dataType)) {
+            for (CodegenModel codegenModel : ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
+                if (dataType.equals(codegenModel.classname)) {
+                    return codegenModel;
+                }
             }
         }
         return null;
