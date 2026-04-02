@@ -61,16 +61,16 @@
         #endif
 
         {{! ResourceSet with headers }}
-        public static ResourceSetResponse<{{apiName}}{{resourceConstant}}> ReadWithHeaders(Read{{apiName}}Options options, ITwilioRestClient client = null)
+        public static ResourceSetResponse<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}> ReadWithHeaders(Read{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = client.Request(BuildReadRequest(options, client));
-            var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
-            var records = new ResourceSet<{{apiName}}{{resourceConstant}}>(page, options, client);
-            return new ResourceSetResponse<{{apiName}}{{resourceConstant}}>(records, response.Headers, response.StatusCode);
+            var page = Page<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+            var records = new ResourceSet<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>(page, options, client);
+            return new ResourceSetResponse<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>(records, response.Headers, response.StatusCode);
         }
 
-        public static ResourceSetResponse<{{apiName}}{{resourceConstant}}> ReadWithHeaders({{#vendorExtensions.x-request-body-param}}
+        public static ResourceSetResponse<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}> ReadWithHeaders({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
             long? limit = null,
             ITwilioRestClient client = null)
@@ -80,14 +80,14 @@
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<ResourceSetResponse<{{apiName}}{{resourceConstant}}>> ReadWithHeadersAsync(Read{{apiName}}Options options, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<ResourceSetResponse<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>> ReadWithHeadersAsync(Read{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildReadRequest(options, client));
 
-            var page = Page<{{apiName}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
-            var records = new ResourceSet<{{apiName}}{{resourceConstant}}>(page, options, client);
-            return new ResourceSetResponse<{{apiName}}{{resourceConstant}}>(records, response.Headers, response.StatusCode);
+            var page = Page<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>.FromJson("{{recordKey}}", response.Content);
+            var records = new ResourceSet<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>(page, options, client);
+            return new ResourceSetResponse<{{apiName}}{{#isApiV1}}Read{{/isApiV1}}{{resourceConstant}}>(records, response.Headers, response.StatusCode);
         }
         #endif
         
