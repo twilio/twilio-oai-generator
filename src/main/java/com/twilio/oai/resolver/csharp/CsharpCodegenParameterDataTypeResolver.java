@@ -35,6 +35,14 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
             }
             return;
         }
+        if (parameter.getSchema() != null && parameter.getSchema().getRef() != null && parameter.isEnumRef) {
+            // Parameter + Enum + Ref
+            parameter.isEnum = true;
+            parameter.enumName = parameter.dataType;
+            OperationStore.getInstance().getEnums().putIfAbsent(parameter.enumName, parameter);
+            OperationStore.getInstance().setEnumPresentInResource(true);
+            return;
+        }
         if (parameter.dataType.contains(ApplicationConstants.ENUM)) {
             parameter.isEnum = true;
             parameter.enumName = Utility.removeEnumName(parameter.dataType) + ApplicationConstants.ENUM;
