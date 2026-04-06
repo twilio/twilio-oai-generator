@@ -23,6 +23,8 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
+import com.twilio.oai.java.cache.ResourceCacheContext;
+import static com.twilio.oai.common.ApplicationConstants.IS_PARENT_PARAM_EXTENSION_NAME;
 import static com.twilio.oai.common.ApplicationConstants.STRING;
 import static com.twilio.oai.template.AbstractApiActionTemplate.API_TEMPLATE;
 
@@ -108,6 +110,20 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
                 if (!instanceParamNames.contains(param.paramName)) {
                     instancePathParams.add(param);
                 }
+            }
+
+            // For v1Api specs only: mark params shared between list and instance paths as parent params.
+            // These are already provided when the list instance is constructed, so they
+            // should not appear in the instance context callable (e.g. get(profileId) not get(storeId, profileId)).
+            // Scoped to v1Api to avoid breaking existing non-v1Api SDKs.
+            final boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+            if (isApiV1) {
+                final Set<String> listParamNames = listPathParams.stream()
+                    .map(p -> p.paramName)
+                    .collect(Collectors.toSet());
+                instancePathParams.stream()
+                    .filter(p -> listParamNames.contains(p.paramName))
+                    .forEach(p -> p.vendorExtensions.put(IS_PARENT_PARAM_EXTENSION_NAME, true));
             }
         }
 
