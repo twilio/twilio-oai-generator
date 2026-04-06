@@ -53,9 +53,12 @@ module Twilio
                         raise ArgumentError, '{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} cannot be nil'
                     end
                     {{/pathParams}}
+
                     if {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} == :unset{{^-last}} && {{/-last}}{{/pathParams}}
                         @{{mountName}} ||= {{resourceName}}List.new self
-                    else
+                    {{#pathParams}}{{#-first}}{{^-last}}elsif {{#pathParams}}{{^-last}}{{^-first}} && {{/-first}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} != :unset{{/-last}}{{/pathParams}}{{#pathParams}}{{#-last}} && {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} == :unset{{/-last}}{{/pathParams}}
+                        {{resourceName}}List.new(self, {{#pathParams}}{{^-last}}{{^-first}}, {{/-first}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}: {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}{{/-last}}{{/pathParams}})
+                    {{/-last}}{{/-first}}{{/pathParams}}else
                         {{resourceName}}Context.new(self, {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}{{^-last}}, {{/-last}}{{/pathParams}})
                     end
                 end

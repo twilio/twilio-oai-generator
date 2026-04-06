@@ -56,6 +56,7 @@ public class DirectoryStructureService {
         private String param;
         private boolean instanceDependent;
         private List<Parameter> pathParams;
+        private List<Parameter> listPathParams;
         private String resourceName;
         private String listName;
         private boolean listWithPathParams;
@@ -188,6 +189,17 @@ public class DirectoryStructureService {
     public DependentResource generateDependent(final String path, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         List<Parameter> params = fetchNonParentPathParams(operation);
+        // Get parent path params for list operations
+        List<Parameter> listParams = new ArrayList<>();
+        if (operation != null && operation.getParameters() != null) {
+            listParams = operation.getParameters().stream()
+                    .filter(param -> Objects.nonNull(param.getIn()))
+                    .filter(PathUtils::isPathParam)
+                    .filter(param -> Objects.nonNull(param.getExtensions()))
+                    .filter(PathUtils::isParentParam)
+                    .collect(Collectors.toList());
+        }
+
         return new DependentResource.DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -197,6 +209,7 @@ public class DirectoryStructureService {
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .pathParams(params)
+                .listPathParams(listParams)
                 .resourceName(resourceAliases.getClassName())
                 .build();
     }
