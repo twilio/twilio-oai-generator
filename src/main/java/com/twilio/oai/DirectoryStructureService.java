@@ -205,7 +205,6 @@ public class DirectoryStructureService {
 
     public DependentResource generateDependent(final String path, final PathItem pathItem, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
-        List<Parameter> params = fetchNonParentPathParams(operation);
         // Get parent path params for list operations
         List<Parameter> listParams = new ArrayList<>();
         if (operation != null && operation.getParameters() != null) {
@@ -216,8 +215,9 @@ public class DirectoryStructureService {
                     .filter(PathUtils::isParentParam)
                     .collect(Collectors.toList());
         }
-
         List<Parameter> params = fetchNonParentPathParams(pathItem, operation);
+        // Set instanceDependent to true if the resource has path parameters
+        boolean hasPathParams = !params.isEmpty();
         return new DependentResource.DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -229,6 +229,7 @@ public class DirectoryStructureService {
                 .pathParams(params)
                 .listPathParams(listParams)
                 .resourceName(resourceAliases.getClassName())
+                .instanceDependent(hasPathParams)
                 .build();
     }
 
