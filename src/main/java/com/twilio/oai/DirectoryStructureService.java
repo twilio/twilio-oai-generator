@@ -200,6 +200,27 @@ public class DirectoryStructureService {
         return Optional.ofNullable(operation.getParameters()).stream().flatMap(Collection::stream);
     }
 
+    private boolean isInstanceDependent(final Operation operation, final List<Parameter> pathParams) {
+        if (operation == null || operation.getOperationId() == null || pathParams == null) {
+            return false;
+        }
+
+        // Must have path parameters to identify the instance
+        if (pathParams.isEmpty()) {
+            return false;
+        }
+
+        String operationId = operation.getOperationId().toLowerCase();
+
+        // Must be an instance operation
+        boolean isInstanceOperation = operationId.startsWith("fetch") ||
+                                      operationId.startsWith("update") ||
+                                      operationId.startsWith("patch") ||
+                                      operationId.startsWith("delete");
+
+        return isInstanceOperation;
+    }
+
     public DependentResource generateDependent(final String path, final Operation operation) {
         return generateDependent(path, null, operation);
     }
@@ -217,8 +238,6 @@ public class DirectoryStructureService {
                     .collect(Collectors.toList());
         }
         List<Parameter> params = fetchNonParentPathParams(pathItem, operation);
-        // Set instanceDependent to true if the resource has path parameters
-        boolean hasPathParams = !params.isEmpty();
         return new DependentResource.DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -230,7 +249,7 @@ public class DirectoryStructureService {
                 .pathParams(params)
                 .listPathParams(listParams)
                 .resourceName(resourceAliases.getClassName())
-                .instanceDependent(hasPathParams)
+                .instanceDependent(isInstanceDependent(operation, params))
                 .build();
     }
 
