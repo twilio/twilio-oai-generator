@@ -79,7 +79,7 @@
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildPatchRequest(options, client));
-            var resource = FromJson(response.Content);
+            var resource = {{#isApiV1}}{{apiName}}Patch{{resourceConstant}}.{{/isApiV1}}FromJson(response.Content);
             return new TwilioResponse<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
         }
         #endif

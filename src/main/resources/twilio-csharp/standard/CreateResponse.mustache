@@ -9,7 +9,7 @@ public class {{apiName}}Create{{resourceConstant}} : {{resourceConstant}}
             public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
         {{/required}}
         {{#required}}
-            public {{{dataType}}} {{nameInCamelCase}} { get; }
+            public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
         {{/required}}
     {{/isEnum}}
     {{^isEnum}}
@@ -22,7 +22,7 @@ public class {{apiName}}Create{{resourceConstant}} : {{resourceConstant}}
             public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
         {{/required}}
         {{#required}}
-            public {{{dataType}}} {{nameInCamelCase}} { get; }
+            public {{{dataType}}} {{nameInCamelCase}} { get; private set;}
         {{/required}}
     {{/isEnum}}
 
