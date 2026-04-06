@@ -67,6 +67,7 @@ public class ApplicationConstants {
     public static final String X_REQUEST_CONTENT_TYPE = "x-request-content-type";
     public static final String GENERATOR_NAME = "generator-name";
     public static final String X_RESPONSE_CLASS = "x-response-class";
+    public static final String X_DELETE_HAS_BODY = "x-delete-has-body";
     public static final Predicate<String> isV1 = input -> input != null && input.startsWith("v1"); // Usage: isV1.test("v1.0");
 
 }

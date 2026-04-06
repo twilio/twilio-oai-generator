@@ -19,6 +19,7 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenResponse;
 import org.openapitools.codegen.CodegenSecurity;
 
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.common.ApplicationConstants.SUCCESS;
 
 public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
@@ -50,6 +52,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
     protected List<CodegenProperty> patchResponseModels = new ArrayList<>();
     protected List<CodegenProperty> listResponseModels = new ArrayList<>();
     protected List<CodegenProperty> fetchResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> deleteResponseModels = new ArrayList<>();
 
     /**
      * List of C# primitive types that require a nullable marker (?) when nullable
@@ -400,6 +403,11 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     addWithoutDuplicates(this.updateResponseModels, distinctResponseModel);
                 } else if (operationId.toLowerCase().startsWith("patch")) {
                     addWithoutDuplicates(this.patchResponseModels, distinctResponseModel);
+                } else if (codegenOperation.operationId.toLowerCase().startsWith("delete")) {
+                    if (hasDeleteBody(codegenOperation)) {
+                        codegenOperation.vendorExtensions.put(ApplicationConstants.X_DELETE_HAS_BODY, true);
+                        addWithoutDuplicates(this.deleteResponseModels, distinctResponseModel);
+                    }
                 } else if (operationId.toLowerCase().startsWith("list")) {
                     // For list operations, use only the model inside the List<> property (skip pagination metadata like meta)
                     // since the generated code wraps items in ResourceSet<>
@@ -416,6 +424,26 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 }
             });
         });
+    }
+    
+    private boolean hasDeleteBody(CodegenOperation codegenOperation) {
+        System.out.println(codegenOperation);
+        List<CodegenResponse> responses = codegenOperation.responses.stream()
+                .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
+                .collect(Collectors.toList());
+        for (CodegenResponse codegenResponse:  responses) {
+            System.out.println(codegenResponse);
+            String statusCode = codegenResponse.code;
+            if (statusCode == "204" || statusCode == "205" || statusCode == "304") {
+                return false;
+            }
+            
+            if (codegenResponse.getContent() != null && codegenResponse.getContent().size() > 0) {
+                return true;
+            }
+                
+        }
+        return false;
     }
 
     private Optional<CodegenModel> getListItemModel(CodegenModel responseModel) {

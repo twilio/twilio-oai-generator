@@ -20,9 +20,13 @@ public class CsharpApiResources extends ApiResources {
     List<CodegenProperty> listResponseModels;
     List<CodegenProperty> patchResponseModels;
     List<CodegenProperty> fetchResponseModels;
+    List<CodegenProperty> deleteResponseModels;
     List<IJsonSchemaValidationProperties> enums = new ArrayList<>(OperationStore.getInstance().getEnums().values());
 
     public String resourceConstant = ApplicationConstants.RESOURCE;
+    
+    Boolean deleteHasBody = null;
+    String deleteReturnType = "bool";
 
     public CsharpApiResources(CsharpApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
@@ -32,5 +36,8 @@ public class CsharpApiResources extends ApiResources {
         this.patchResponseModels = apiResourceBuilder.patchResponseModels;
         this.listResponseModels = apiResourceBuilder.listResponseModels;
         this.fetchResponseModels = apiResourceBuilder.fetchResponseModels;
+        this.deleteResponseModels = apiResourceBuilder.deleteResponseModels;
+        deleteHasBody = deleteResponseModels != null && !deleteResponseModels.isEmpty() && deleteResponseModels.size() > 0;
+        if (deleteHasBody) deleteReturnType = this.apiName + "DeleteResource";
     }
 }
