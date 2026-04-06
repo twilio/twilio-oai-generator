@@ -147,17 +147,18 @@ public class DirectoryStructureService {
         final boolean isV1ApiSpec = "true".equals(additionalProperties.get("isV1ApiSpec"));
         if (versionResources.containsKey(dependent.getFilename())) {
             DependentResource existingDependent = versionResources.get(dependent.getFilename());
-            // Always prefer the dependent with more pathParams (instance over list)
-            if (dependent.getPathParams().size() > existingDependent.getPathParams().size()) {
+            // Replace if: new has MORE params,
+            // OR existing is empty,
+            // OR (v1 spec AND equal params AND list-with-params ordering issue)
+            if (dependent.getPathParams().size() > existingDependent.getPathParams().size()
+                    || existingDependent.getPathParams().isEmpty()
+                    || (isV1ApiSpec
+                        && dependent.getPathParams().size() == existingDependent.getPathParams().size()
+                        && dependent.isListWithPathParams()
+                        && !existingDependent.isListWithPathParams())) {
                 versionResources.put(dependent.getFilename(), dependent);
             }
-            // Keep existing if it has more or equal params
-            // For v1Api specs: also replace when new entry has listWithPathParams=true and existing
-            // does not — handles instance path processed before list path (spec ordering issue)
-            if (existingDependent.getPathParams().isEmpty()
-                    || (isV1ApiSpec && dependent.isListWithPathParams() && !existingDependent.isListWithPathParams())) {
-                versionResources.put(dependent.getFilename(), dependent);
-            }
+            // Otherwise keep existing (has equal or more params and is already populated)
         } else {
             versionResources.put(dependent.getFilename(), dependent);
         }
