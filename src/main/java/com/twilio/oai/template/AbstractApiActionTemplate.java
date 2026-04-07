@@ -220,7 +220,10 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
         final String fileExtension = templateStrings.get(1);
         final String apiVersionClass = codegen.additionalProperties().get("apiVersionClass").toString();
 
-        if (apiVersionClass.startsWith("V")) {
+        final boolean isVersionLess = "true".equals(
+            String.valueOf(codegen.additionalProperties().getOrDefault("isVersionLessSpec", "false")));
+
+        if (!isVersionLess) {
             codegen
                 .supportingFiles()
                     .add(new SupportingFile(templateName,

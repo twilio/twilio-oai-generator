@@ -41,6 +41,7 @@ public class DirectoryStructureService {
     @Getter
     private boolean isVersionLess = false;
     private final Map<String, String> productMap = new HashMap<>();
+    private OpenAPI openAPI;
     private final List<CodegenModel> allModels = new ArrayList<>();
     private final List<Object> dependentList = new ArrayList<>();
 
@@ -78,10 +79,15 @@ public class DirectoryStructureService {
     }
 
     public void configure(final OpenAPI openAPI) {
+        this.openAPI = openAPI;
         final Map<String, DependentResource> versionResources = getVersionResourcesMap();
         Map<String, PathItem> pathsToSkipMap = new HashMap<>();
 
         isVersionLess = additionalProperties.getOrDefault(API_VERSION, "").equals("");
+        additionalProperties.put("isVersionLessSpec", isVersionLess ? "true" : "false");
+
+        final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        additionalProperties.put("isV1ApiSpec", isV1ApiSpec ? "true" : "false");
 
         openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
@@ -104,7 +110,7 @@ public class DirectoryStructureService {
                 operation.addTagsItem(tag);
 
                 if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
-                    final DependentResource dependent = generateDependent(name, operation);
+                    final DependentResource dependent = generateDependent(name, path, operation);
                     final boolean isIgnoredOperation = Optional.ofNullable(operation.getExtensions())
                         .map(ext -> ext.get(IGNORE_EXTENSION_NAME))
                         .map(Boolean.class::cast)
@@ -138,10 +144,15 @@ public class DirectoryStructureService {
     }
 
     public void addVersionResources(DependentResource dependent, Map<String, DependentResource> versionResources) {
+        final boolean isV1ApiSpec = "true".equals(additionalProperties.get("isV1ApiSpec"));
         if (versionResources.containsKey(dependent.getFilename())) {
             DependentResource existingDependent = versionResources.get(dependent.getFilename());
-            if (existingDependent.getPathParams().size() == 0)
+            // For v1Api specs: also replace when new entry has listWithPathParams=true and existing
+            // does not — handles instance path processed before list path (spec ordering issue)
+            if (existingDependent.getPathParams().isEmpty()
+                    || (isV1ApiSpec && dependent.isListWithPathParams() && !existingDependent.isListWithPathParams())) {
                 versionResources.put(dependent.getFilename(), dependent);
+            }
         } else {
             versionResources.put(dependent.getFilename(), dependent);
         }
@@ -184,8 +195,12 @@ public class DirectoryStructureService {
     }
 
     public DependentResource generateDependent(final String path, final Operation operation) {
+        return generateDependent(path, null, operation);
+    }
+
+    public DependentResource generateDependent(final String path, final PathItem pathItem, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
-        List<Parameter> params = fetchNonParentPathParams(operation);
+        List<Parameter> params = fetchNonParentPathParams(pathItem, operation);
         return new DependentResource.DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -226,10 +241,38 @@ public class DirectoryStructureService {
     }
 
     private List<Parameter> fetchNonParentPathParams(Operation operation) {
+        return fetchNonParentPathParams(null, operation);
+    }
+
+    private List<Parameter> fetchNonParentPathParams(PathItem pathItem, Operation operation) {
         List<Parameter> params = new ArrayList<>();
         if (null == operation) return params;
-        List<Parameter> pathParams = Optional.ofNullable(operation.getParameters())
-                .stream().flatMap(Collection::stream)
+
+        // For v1Api specs: merge path-item level params (which may use $ref components) with
+        // operation-level params so nested list resources can detect their path parameters.
+        final boolean isV1ApiSpec = "true".equals(additionalProperties.get("isV1ApiSpec"));
+        List<Parameter> allParams = new ArrayList<>();
+        if (isV1ApiSpec && pathItem != null && pathItem.getParameters() != null) {
+            pathItem.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .forEach(allParams::add);
+        }
+        if (operation.getParameters() != null) {
+            Set<String> operationParamNames = operation.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .filter(p -> p.getName() != null)
+                    .map(Parameter::getName)
+                    .collect(Collectors.toSet());
+            allParams.removeIf(p -> p.getName() != null && operationParamNames.contains(p.getName()));
+            operation.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .forEach(allParams::add);
+        }
+
+        List<Parameter> pathParams = allParams.stream()
                 .filter(param -> Objects.nonNull(param.getIn())).filter(PathUtils::isPathParam)
                 .collect(Collectors.toList());
         params = pathParams.stream().filter(parameter -> Objects.isNull(parameter.getExtensions()))
@@ -238,6 +281,26 @@ public class DirectoryStructureService {
                 .filter(parameter -> !PathUtils.isParentParam(parameter))
                 .collect(Collectors.toList()));
         return params;
+    }
+
+    /**
+     * Resolves a $ref parameter stub to its full definition from openAPI components.
+     * Returns the parameter as-is if it is already fully defined (no $ref).
+     */
+    private Parameter resolveParameterRef(Parameter param) {
+        if (param == null) return null;
+        if (param.get$ref() != null && param.getIn() == null) {
+            // extract component name from e.g. "#/components/parameters/StoreId"
+            String ref = param.get$ref();
+            String componentName = ref.substring(ref.lastIndexOf('/') + 1);
+            if (openAPI != null
+                    && openAPI.getComponents() != null
+                    && openAPI.getComponents().getParameters() != null) {
+                return openAPI.getComponents().getParameters().get(componentName);
+            }
+            return null;
+        }
+        return param;
     }
 
     private Resource.Aliases getResourceAliases(final String path, final Operation operation) {
