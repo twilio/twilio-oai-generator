@@ -54,6 +54,10 @@ public class ResourceCache2 {
     
     @Getter
     @Setter
+    private HashMap<String, Object> additionalProperties = new HashMap<>();
+
+    @Getter
+    @Setter
     private String recordKey;
 
     public void setAllModelsByDefaultGenerator(ArrayList<CodegenModel> allModelsByDefaultGenerator) {
@@ -81,6 +85,11 @@ public class ResourceCache2 {
         modelClassesForMustache.clear();
         enumsClassesForMustache.clear();
         response.clear();
+        responseCreate.clear();
+        responseUpdate.clear();
+        responseList.clear();
+        responseFetch.clear();
+        responsePatch.clear();
     }
 
     // No need to clear
