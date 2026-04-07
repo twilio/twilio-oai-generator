@@ -9,7 +9,7 @@
 /**
  * Response model for {{name}} operations
  */
-interface {{name}}Resource {
+interface {{name}}_ResponseResource {
   {{#vars}}
   {{baseName}}{{^required}}?{{/required}}: {{{baseType}}};
   {{/vars}}
@@ -19,7 +19,7 @@ interface {{name}}Resource {
 /**
  * Union type for all possible response models
  */
-type {{apiName}}Resource = {{#responseInstanceModels}}{{name}}Resource{{^-last}} | {{/-last}}{{/responseInstanceModels}};
+type {{apiName}}Resource = {{#responseInstanceModels}}{{name}}_ResponseResource{{^-last}} | {{/-last}}{{/responseInstanceModels}};
 {{/hasMultipleResponseModels}}
 {{^hasMultipleResponseModels}}
 interface {{apiName}}Resource {
@@ -40,7 +40,8 @@ export class {{instanceName}} {
   protected _context?: {{apiName}}Context;
   {{/instancePath}}
 
-  constructor(protected _version: {{apiVersionClass}}, payload: {{apiName}}Resource{{#instancePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/instancePathParams}}) {
+  constructor(protected _version: {{apiVersionClass}}, {{#isApiV1}}_payload{{/isApiV1}}{{^isApiV1}}payload{{/isApiV1}}: {{apiName}}Resource{{#instancePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/instancePathParams}}) {
+    {{#isApiV1}}{{^hasMultipleResponseModels}}const payload = _payload;{{/hasMultipleResponseModels}}{{#hasMultipleResponseModels}}const payload: any = _payload;{{/hasMultipleResponseModels}}{{/isApiV1}}
     {{#vars}}
     {{^complexType}}
     this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
@@ -68,7 +69,7 @@ export class {{instanceName}} {
     {{/vars}}
 
     {{#instancePath}}
-    this._solution = { {{#instancePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}: {{paramName}} || this.{{paramName}}{{#vendorExtensions.x-stringify}}.toString(){{/vendorExtensions.x-stringify}}{{/vendorExtensions.x-is-parent-param}}, {{/instancePathParams}} };
+    this._solution = { {{#instancePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}{{#isApiV1}}: {{paramName}}{{/isApiV1}}{{^isApiV1}}: {{paramName}} || this.{{paramName}}{{#vendorExtensions.x-stringify}}.toString(){{/vendorExtensions.x-stringify}}{{/isApiV1}}{{/vendorExtensions.x-is-parent-param}}, {{/instancePathParams}} };
     {{/instancePath}}
   }
 
