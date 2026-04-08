@@ -4,6 +4,7 @@ import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.resolver.csharp.OperationStore;
 import lombok.Getter;
 import lombok.Setter;
+import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.IJsonSchemaValidationProperties;
 
 import java.util.ArrayList;
@@ -13,11 +14,30 @@ public class CsharpApiResources extends ApiResources {
     @Getter @Setter private String authMethod;
     @Getter @Setter private String restClientMethodName;
     @Getter @Setter private String clientName;
+
+    List<CodegenProperty> createResponseModels;
+    List<CodegenProperty> updateResponseModels;
+    List<CodegenProperty> listResponseModels;
+    List<CodegenProperty> patchResponseModels;
+    List<CodegenProperty> fetchResponseModels;
+    List<CodegenProperty> deleteResponseModels;
     List<IJsonSchemaValidationProperties> enums = new ArrayList<>(OperationStore.getInstance().getEnums().values());
 
     public String resourceConstant = ApplicationConstants.RESOURCE;
+    
+    Boolean deleteHasBody = null;
+    String deleteReturnType = "bool";
 
-    public CsharpApiResources(ApiResourceBuilder apiResourceBuilder) {
+    public CsharpApiResources(CsharpApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
+        this.authMethod = apiResourceBuilder.authMethod;
+        this.createResponseModels = apiResourceBuilder.createResponseModels;
+        this.updateResponseModels = apiResourceBuilder.updateResponseModels;
+        this.patchResponseModels = apiResourceBuilder.patchResponseModels;
+        this.listResponseModels = apiResourceBuilder.listResponseModels;
+        this.fetchResponseModels = apiResourceBuilder.fetchResponseModels;
+        this.deleteResponseModels = apiResourceBuilder.deleteResponseModels;
+        deleteHasBody = deleteResponseModels != null && !deleteResponseModels.isEmpty() && deleteResponseModels.size() > 0;
+        if (deleteHasBody) deleteReturnType = this.apiName + "DeleteResource";
     }
 }

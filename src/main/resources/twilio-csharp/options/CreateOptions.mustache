@@ -1,6 +1,6 @@
 
     {{>Summary}}
-    public class Create{{apiName}}Options : IOptions<{{apiName}}{{resourceConstant}}>
+    public class Create{{apiName}}Options : IOptions<{{apiName}}{{#isApiV1}}Create{{/isApiV1}}{{resourceConstant}}>
     {
         {{>options/Params}}
     {{#vendorExtensions.x-required-param-exists}}

@@ -32,6 +32,18 @@ namespace Twilio.Rest.Api.V2010
     
 
     
+        public sealed class AccountEnumXTwilioWebhookEnabled : StringEnum
+        {
+            private AccountEnumXTwilioWebhookEnabled(string value) : base(value) {}
+            public AccountEnumXTwilioWebhookEnabled() {}
+            public static implicit operator AccountEnumXTwilioWebhookEnabled(string value)
+            {
+                return new AccountEnumXTwilioWebhookEnabled(value);
+            }
+            public static readonly AccountEnumXTwilioWebhookEnabled True = new AccountEnumXTwilioWebhookEnabled("true");
+            public static readonly AccountEnumXTwilioWebhookEnabled False = new AccountEnumXTwilioWebhookEnabled("false");
+
+        }
         [JsonConverter(typeof(StringEnumConverter))]
         public sealed class StatusEnum : StringEnum
         {
@@ -48,18 +60,6 @@ namespace Twilio.Rest.Api.V2010
             public static readonly StatusEnum Processing = new StatusEnum("processing");
             public static readonly StatusEnum Completed = new StatusEnum("completed");
             public static readonly StatusEnum Absent = new StatusEnum("absent");
-        }
-        public sealed class XTwilioWebhookEnabledEnum : StringEnum
-        {
-            private XTwilioWebhookEnabledEnum(string value) : base(value) {}
-            public XTwilioWebhookEnabledEnum() {}
-            public static implicit operator XTwilioWebhookEnabledEnum(string value)
-            {
-                return new XTwilioWebhookEnabledEnum(value);
-            }
-            public static readonly XTwilioWebhookEnabledEnum True = new XTwilioWebhookEnabledEnum("true");
-            public static readonly XTwilioWebhookEnabledEnum False = new XTwilioWebhookEnabledEnum("false");
-
         }
 
         
@@ -114,7 +114,7 @@ namespace Twilio.Rest.Api.V2010
                                           Uri recordingStatusCallback = null,
                                           List<string> recordingStatusCallbackEvent = null,
                                           Types.Twiml twiml = null,
-                                          AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
+                                          AccountEnumXTwilioWebhookEnabled xTwilioWebhookEnabled = null,
                                             ITwilioRestClient client = null)
         {
             var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, Twiml = twiml, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
@@ -133,7 +133,7 @@ namespace Twilio.Rest.Api.V2010
                                                                                   Uri recordingStatusCallback = null,
                                                                                   List<string> recordingStatusCallbackEvent = null,
                                                                                   Types.Twiml twiml = null,
-                                                                                  AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
+                                                                                  AccountEnumXTwilioWebhookEnabled xTwilioWebhookEnabled = null,
                                                                                     ITwilioRestClient client = null)
         {
         var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, Twiml = twiml, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
@@ -164,7 +164,7 @@ namespace Twilio.Rest.Api.V2010
             Uri recordingStatusCallback = null,
             List<string> recordingStatusCallbackEvent = null,
             Types.Twiml twiml = null,
-            AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
+            AccountEnumXTwilioWebhookEnabled xTwilioWebhookEnabled = null,
         ITwilioRestClient client = null)
         {
         var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, Twiml = twiml, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
@@ -176,7 +176,7 @@ namespace Twilio.Rest.Api.V2010
             Uri recordingStatusCallback = null,
             List<string> recordingStatusCallbackEvent = null,
             Types.Twiml twiml = null,
-            AccountResource.XTwilioWebhookEnabledEnum xTwilioWebhookEnabled = null,
+            AccountEnumXTwilioWebhookEnabled xTwilioWebhookEnabled = null,
         ITwilioRestClient client = null)
         {
         var options = new CreateAccountOptions(){  RecordingStatusCallback = recordingStatusCallback, RecordingStatusCallbackEvent = recordingStatusCallbackEvent, Twiml = twiml, XTwilioWebhookEnabled = xTwilioWebhookEnabled };
@@ -213,7 +213,9 @@ namespace Twilio.Rest.Api.V2010
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = client.Request(BuildDeleteRequest(options, client));
-            return (int)response.StatusCode >= 200 && (int)response.StatusCode < 400;
+        
+          return (int)response.StatusCode >= 200 && (int)response.StatusCode < 400; 
+           
         }
 
         #if !NET35
@@ -226,7 +228,8 @@ namespace Twilio.Rest.Api.V2010
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
-            return (int)response.StatusCode >= 200 && (int)response.StatusCode < 400;
+        
+          return (int)response.StatusCode >= 200 && (int)response.StatusCode < 400; 
         }
         #endif
 
@@ -256,7 +259,8 @@ namespace Twilio.Rest.Api.V2010
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = client.Request(BuildDeleteRequest(options, client));
-            var success = (int)response.StatusCode >= 200 && (int)response.StatusCode < 400;
+        
+          var success = (int)response.StatusCode >= 200 && (int)response.StatusCode < 400; 
             return new TwilioResponse<bool>(success, response.Headers, response.StatusCode);
         }
 
@@ -265,7 +269,8 @@ namespace Twilio.Rest.Api.V2010
         {
             client = client ?? TwilioClient.GetRestClient();
             var response = await client.RequestAsync(BuildDeleteRequest(options, client));
-            var success = (int)response.StatusCode >= 200 && (int)response.StatusCode < 400;
+        
+          var success = (int)response.StatusCode >= 200 && (int)response.StatusCode < 400; 
             return new TwilioResponse<bool>(success, response.Headers, response.StatusCode);
         }
         #endif

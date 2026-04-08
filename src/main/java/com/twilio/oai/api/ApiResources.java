@@ -26,6 +26,7 @@ public class ApiResources {
     boolean hasPaginationOperation;
     Set<CodegenModel> nestedModels;
     private Boolean isApiV1 = null; // true or NULL
+    private Boolean deleteHasBody = null; // true or NULL
 
     public ApiResources(ApiResourceBuilder apiResourceBuilder) {
         apiOperations = apiResourceBuilder.codegenOperationList;
