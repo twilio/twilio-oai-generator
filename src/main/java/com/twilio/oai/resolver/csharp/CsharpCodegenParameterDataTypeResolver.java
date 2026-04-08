@@ -4,6 +4,7 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.common.CodegenParameterDataTypeResolver;
 import org.openapitools.codegen.CodegenParameter;
@@ -35,7 +36,7 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
             }
             return;
         }
-        if (parameter.getSchema() != null && parameter.getSchema().getRef() != null && parameter.isEnumRef) {
+        if (parameter.getSchema() != null && parameter.getSchema().getRef() != null && parameter.isEnumRef && ResourceCacheContext.get().isV1()) {
             // Parameter + Enum + Ref
             parameter.isEnum = true;
             parameter.enumName = parameter.dataType;
