@@ -264,13 +264,58 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         // extract the baseType for the modelName
         modelName = handleContainerDatatype(modelName);
         Optional<CodegenModel> model = Utility.getModelByClassname(allModels, modelName);
-        if ((model == null) || model.isEmpty()) {
+        if ((model == null) || model.isEmpty() || CodegenUtils.isPropertySchemaEnum(codegenProperty)) {
             return;
         }
+
+        CodegenModel codegenModel = model.get();
+        if(codegenModel.getFormat() != null) { // skip generating classes for formats
+            return;
+        }
+
+        for (CodegenProperty property : codegenModel.vars) {
+            // recursively resolve each var, since each var is itself a CodegenProperty
+            recursivelyResolve(property);
+        }
+
+        // Process oneOf variants - recursively resolve properties in oneOf variant models
+        // This ensures that nested models within oneOf variants (like ConfigurationEventLanguagesValue)
+        // are properly added to nestedModels for code generation
+        if (null != codegenModel.oneOf && !codegenModel.oneOf.isEmpty()) {
+            codegenModelOneOf.resolve(codegenModel);
+            for (String oneOfModelName : codegenModel.oneOf) {
+                Optional<CodegenModel> oneOfModel = Utility.getModelByClassname(allModels, oneOfModelName);
+                if (oneOfModel.isPresent()) {
+                    CodegenModel oneOfVariant = oneOfModel.get();
+                    for (CodegenProperty property : oneOfVariant.vars) {
+                        recursivelyResolve(property);
+                    }
+                    // Add the oneOf variant to nestedModels if not already there
+                    if (nestedModels.stream().noneMatch(m -> m.classname.equals(oneOfModelName))) {
+                        nestedModels.add(oneOfVariant);
+                    }
+                }
+            }
+        }
+        String finalModelName = modelName;
+        if (nestedModels.stream().noneMatch(m -> m.classname.equals(finalModelName))) {
+            nestedModels.add(codegenModel);
+        }
+    }
+
+    private void recursivelyResolveV1(CodegenProperty codegenProperty) {
+        String modelName = codegenProperty.dataType;
         if (CodegenUtils.isPropertySchemaEnum(codegenProperty)) {
             processResponseEnum(codegenProperty);
             return;
         }
+        // extract the baseType for the modelName
+        modelName = handleContainerDatatype(modelName);
+        Optional<CodegenModel> model = Utility.getModelByClassname(allModels, modelName);
+        if ((model == null) || model.isEmpty()) {
+            return;
+        }
+
 
         CodegenModel codegenModel = model.get();
         if(codegenModel.getFormat() != null) { // skip generating classes for formats
@@ -291,7 +336,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
         for (CodegenProperty property : codegenModel.vars) {
             // recursively resolve each var, since each var is itself a CodegenProperty
-            recursivelyResolve(property);
+            recursivelyResolveV1(property);
         }
 
         // Process oneOf variants - recursively resolve properties in oneOf variant models
@@ -387,7 +432,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 }
                 CodegenModel codegenModel = responseModel.get();
                 for (CodegenProperty property : codegenModel.vars) {
-                    recursivelyResolve(property);
+                    recursivelyResolveV1(property);
                 }
                 codegenModelResolver.resolve(codegenModel, this);
                 responseModels.add(codegenModel);
