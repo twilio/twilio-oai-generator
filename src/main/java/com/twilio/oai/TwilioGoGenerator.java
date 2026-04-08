@@ -126,6 +126,10 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         return Pattern.compile("2\\d{2}_").matcher(modelName).find();
     }
 
+    private boolean contains2xxStatusCode(String modelName){
+        return Pattern.compile("2\\d{2}").matcher(modelName).find();
+    }
+
     @Override
     public Map<String, ModelsMap> updateAllModels(Map<String, ModelsMap> objs) {
         objs = super.updateAllModels(objs);
