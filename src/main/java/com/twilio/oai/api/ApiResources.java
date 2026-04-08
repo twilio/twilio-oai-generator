@@ -45,4 +45,8 @@ public class ApiResources {
         }
         responseInstanceModels = apiResourceBuilder.responseInstanceModels;
     }
+
+    public Boolean getIsApiV1() {
+        return isApiV1;
+    }
 }

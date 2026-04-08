@@ -130,6 +130,46 @@ class {{instanceName}}(InstanceResource):
         """
         return await self._proxy.fetch_with_http_info_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
     {{/vendorExtensions.x-is-fetch-operation}}{{#vendorExtensions.x-is-delete-operation}}
+    {{#if isApiV1}}{{#if vendorExtensions.x-delete-has-response-body}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+        """
+        Deletes the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The {{instanceName}} with deletion response
+        """
+        return self._proxy.delete({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
+        """
+        Asynchronous coroutine that deletes the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: The {{instanceName}} with deletion response
+        """
+        return await self._proxy.delete_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Deletes the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return self._proxy.delete_with_http_info({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine that deletes the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with instance, status code, and headers
+        """
+        return await self._proxy.delete_with_http_info_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    {{else}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
         """
         Deletes the {{instanceName}}
@@ -168,6 +208,46 @@ class {{instanceName}}(InstanceResource):
         :returns: ApiResponse with success boolean, status code, and headers
         """
         return await self._proxy.delete_with_http_info_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    {{/if}}{{else}}
+    def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
+        """
+        Deletes the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return self._proxy.delete({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    async def {{vendorExtensions.x-name-lower}}_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> bool:
+        """
+        Asynchronous coroutine that deletes the {{instanceName}}
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: True if delete succeeds, False otherwise
+        """
+        return await self._proxy.delete_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    def {{vendorExtensions.x-name-lower}}_with_http_info(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Deletes the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        return self._proxy.delete_with_http_info({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+
+    async def {{vendorExtensions.x-name-lower}}_with_http_info_async(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> ApiResponse:
+        """
+        Asynchronous coroutine that deletes the {{instanceName}} with HTTP info
+        {{#allParams}}
+        :param {{paramName}}: {{{description}}}{{/allParams}}
+
+        :returns: ApiResponse with success boolean, status code, and headers
+        """
+        return await self._proxy.delete_with_http_info_async({{#allParams}}{{paramName}}={{paramName}}, {{/allParams}})
+    {{/if}}
     {{/vendorExtensions.x-is-delete-operation}}{{#vendorExtensions.x-is-create-operation}}
     def {{vendorExtensions.x-name-lower}}(self{{#allParams}}, {{paramName}}: {{#if required}}{{{dataType}}}{{else}}Union[{{{dataType}}}, object]=values.unset{{/if}}{{/allParams}}) -> "{{instanceName}}":
         """
