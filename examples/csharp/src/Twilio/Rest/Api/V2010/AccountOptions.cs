@@ -29,7 +29,7 @@ namespace Twilio.Rest.Api.V2010
     {
         
         
-        public AccountResource.AccountEnumXTwilioWebhookEnabled XTwilioWebhookEnabled { get; set; }
+        public AccountResource.XTwilioWebhookEnabledEnum XTwilioWebhookEnabled { get; set; }
 
         
         public Uri RecordingStatusCallback { get; set; }
