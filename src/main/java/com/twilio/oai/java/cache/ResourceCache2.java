@@ -12,7 +12,7 @@ import org.openapitools.codegen.CodegenProperty;
 import java.util.*;
 
 public class ResourceCache2 {
-    
+
     @Getter
     @Setter
     private String resourceName;
@@ -51,7 +51,7 @@ public class ResourceCache2 {
     @Getter
     @Setter
     private boolean isV1;
-    
+
     @Getter
     @Setter
     private HashMap<String, Object> additionalProperties = new HashMap<>();
@@ -85,6 +85,11 @@ public class ResourceCache2 {
         modelClassesForMustache.clear();
         enumsClassesForMustache.clear();
         response.clear();
+        responseCreate.clear();
+        responseUpdate.clear();
+        responseList.clear();
+        responseFetch.clear();
+        responsePatch.clear();
     }
 
     // No need to clear
