@@ -49,7 +49,7 @@ public class TwilioGeneratorTest {
     @Test
     public void launchGenerator() {
         final String pathname = "examples/spec/twilio_api_v2010.yaml";
-        File filesList[] ;
+        File filesList[];
         File directoryPath = new File(pathname);
         if (directoryPath.isDirectory()) {
             filesList = directoryPath.listFiles();

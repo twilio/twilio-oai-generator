@@ -25,7 +25,7 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
                 .findFirst().get();
         if (response == null || response.getContent() == null) return;
 
-        String modelName = response.dataType;
+        String modelName = response.dataType; 
         String recordKey = ResourceCacheContext.get().getRecordKey();
 
         Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);

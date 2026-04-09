@@ -4,6 +4,7 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.common.CodegenParameterDataTypeResolver;
 import org.openapitools.codegen.CodegenParameter;
@@ -33,6 +34,14 @@ public class CsharpCodegenParameterDataTypeResolver extends CodegenParameterData
             if (importStm.isPresent() && importStm.get() instanceof String && importStm.get().equals("Twilio.Types")) {
                 OperationStore.getInstance().setEnumPresentInOptions(true);
             }
+            return;
+        }
+        if (parameter.getSchema() != null && parameter.getSchema().getRef() != null && parameter.isEnumRef && ResourceCacheContext.get().isV1()) {
+            // Parameter + Enum + Ref
+            parameter.isEnum = true;
+            parameter.enumName = parameter.dataType;
+            OperationStore.getInstance().getEnums().putIfAbsent(parameter.enumName, parameter);
+            OperationStore.getInstance().setEnumPresentInResource(true);
             return;
         }
         if (parameter.dataType.contains(ApplicationConstants.ENUM)) {
