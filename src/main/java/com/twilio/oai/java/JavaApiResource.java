@@ -17,7 +17,6 @@ public class JavaApiResource {
     Set<MustacheModel> mustacheModels;
     List<CodegenOperation> operations;
     Set<CodegenProperty> response;
-    Set<CodegenProperty> responseDelete;
     String namespaceSubPart;
 
     Boolean responseFlag = null; // true or NUll
@@ -30,7 +29,6 @@ public class JavaApiResource {
         this.mustacheEnums = new HashSet<>(ResourceCacheContext.get().getEnumsClassesForMustache());
         this.mustacheModels = new HashSet<>(ResourceCacheContext.get().getModelClassesForMustache());
         this.response = ResourceCacheContext.get().getResponse();
-        this.responseDelete = ResourceCacheContext.get().getResponseDelete();
         if (response != null && !response.isEmpty()) responseFlag = true;
         this.namespaceSubPart = builder.namespaceSubPart;
         if (ResourceCacheContext.get().isV1()) isApiV1 = true;
