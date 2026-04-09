@@ -191,7 +191,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
             if (co.operationId.toLowerCase().startsWith("delete")) {
                 boolean hasDeleteResponseBody = co.responses != null && co.responses.stream()
                         .anyMatch(response -> response.dataType != null && !response.dataType.isEmpty()
-                                && response.code.startsWith("2"));
+                                && response.code.startsWith("2") && !response.code.contains("204"));
                 if (hasDeleteResponseBody) {
                     co.vendorExtensions.put("x-delete-returns-model", true);
                 }
