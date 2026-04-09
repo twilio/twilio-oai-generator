@@ -57,6 +57,21 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
         return response;
     }
 
+{{#vendorExtensions.x-delete-returns-model}}
+    @Override
+    public {{vendorExtensions.x-response-class}} {{vendorExtensions.x-common-action-method}}(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        return {{vendorExtensions.x-response-class}}.fromJson(response.getStream(), client.getObjectMapper());
+    }
+
+    @Override
+    public TwilioResponse<{{vendorExtensions.x-response-class}}> {{vendorExtensions.x-common-action-method}}WithResponse(final TwilioRestClient client) {
+        Response response = makeRequest(client);
+        {{vendorExtensions.x-response-class}} content = {{vendorExtensions.x-response-class}}.fromJson(response.getStream(), client.getObjectMapper());
+        return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
+    }
+{{/vendorExtensions.x-delete-returns-model}}
+{{^vendorExtensions.x-delete-returns-model}}
     @Override
     public boolean delete(final TwilioRestClient client) {
         Response response = makeRequest(client);
@@ -71,3 +86,4 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
         Boolean deleted = deleteStatuses.test(response.getStatusCode());
         return new TwilioResponse<>(deleted, response.getStatusCode(), response.getHeaders());
     }
+{{/vendorExtensions.x-delete-returns-model}}

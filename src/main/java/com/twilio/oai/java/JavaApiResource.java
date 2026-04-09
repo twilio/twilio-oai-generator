@@ -28,6 +28,7 @@ public class JavaApiResource {
     Set<CodegenProperty> responseFetch;
     Set<CodegenProperty> responsePatch;
 
+
     public JavaApiResource(JavaApiResourceBuilder builder) {
         resourceName = ResourceCacheContext.get().getResourceName();
         recordKey = builder.recordKey;
