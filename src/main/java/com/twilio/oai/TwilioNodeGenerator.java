@@ -132,9 +132,17 @@ public class TwilioNodeGenerator extends TypeScriptNodeClientCodegen {
 
     @Override
     public String toParamName(final String name) {
-        return Arrays
+        String paramName = Arrays
             .stream(twilioCodegen.toParamName(name).split("\\."))
             .map(input -> StringHelper.camelize(input, true))
             .collect(Collectors.joining("."));
+
+        // Rename 'version' path param to avoid collision with Version instance variable
+        // Used in generated code like: function VersionListInstance(version: V3, id: string)
+        if ("version".equals(paramName)) {
+            return "versionParam";
+        }
+
+        return paramName;
     }
 }

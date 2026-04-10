@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.twilio.oai.common.ApplicationConstants.*;
 
@@ -60,6 +61,11 @@ public class DirectoryStructureService {
         private String resourceName;
         private String listName;
         private boolean listWithPathParams;
+
+        // New fields for function overload support
+        private boolean hasInstanceOperation;
+        private String instanceParam;
+        private String instanceType;
 
         public boolean getHasPathParams() {
             return pathParams != null && !pathParams.isEmpty();
@@ -154,6 +160,99 @@ public class DirectoryStructureService {
             }
         } else {
             versionResources.put(dependent.getFilename(), dependent);
+        }
+    }
+
+    /**
+     * Enriches version resources with instance operation detection.
+     * For resources that have both list and instance operations, sets:
+     * - hasInstanceOperation: true
+     * - instanceParam: the instance parameter name (e.g., "summaryId")
+     * - instanceType: the Context type name (e.g., "ConversationSummaryContext")
+     */
+    private void enrichVersionResourcesWithInstanceOperations(List<DependentResource> versionResources) {
+        for (DependentResource resource : versionResources) {
+            // Find matching resource in resourceTree to check for instance operations
+            Optional<Resource> resourceOptional = StreamSupport.stream(
+                    resourceTree.getResources().spliterator(), false)
+                .filter(r -> caseResolver.filenameOperation(r.getResourceAliases().getClassName()).equals(resource.getFilename()))
+                .findFirst();
+
+            if (resourceOptional.isEmpty()) {
+                continue;
+            }
+
+            Resource treeResource = resourceOptional.get();
+
+            // Check if this resource has instance operations by looking for pathType: instance
+            boolean hasInstanceOp = openAPI.getPaths().entrySet().stream()
+                .filter(entry -> {
+                    String pathKey = entry.getKey();
+                    PathItem pathItem = entry.getValue();
+                    // Check if this path belongs to the same resource
+                    return pathItem.readOperations().stream()
+                        .anyMatch(op -> {
+                            String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(pathKey, op));
+                            // Compare the tag (converted to filename format) with the resource filename
+                            String tagFilename = caseResolver.filenameOperation(tag);
+                            return tagFilename.equals(resource.getFilename());
+                        });
+                })
+                .anyMatch(entry -> {
+                    PathItem pathItem = entry.getValue();
+                    Optional<String> pathType = PathUtils.getTwilioExtension(pathItem, "pathType");
+                    return pathType.isPresent() && pathType.get().equals("instance");
+                });
+
+            if (hasInstanceOp && resource.isListWithPathParams()) {
+                resource.setHasInstanceOperation(true);
+
+                // Find the instance parameter by looking at instance paths
+                String instanceParam = openAPI.getPaths().entrySet().stream()
+                    .filter(entry -> {
+                        PathItem pathItem = entry.getValue();
+                        Optional<String> pathType = PathUtils.getTwilioExtension(pathItem, "pathType");
+                        if (pathType.isEmpty() || !pathType.get().equals("instance")) {
+                            return false;
+                        }
+
+                        return pathItem.readOperations().stream()
+                            .anyMatch(op -> {
+                                String pathKey = entry.getKey();
+                                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(pathKey, op));
+                                String tagFilename = caseResolver.filenameOperation(tag);
+                                return tagFilename.equals(resource.getFilename());
+                            });
+                    })
+                    .findFirst()
+                    .map(entry -> {
+                        // Get the last path parameter from instance path
+                        String path = entry.getKey();
+                        List<Parameter> allParams = Optional.ofNullable(entry.getValue().readOperations().get(0).getParameters())
+                            .orElse(Collections.emptyList());
+
+                        List<Parameter> pathParams = allParams.stream()
+                            .filter(p -> "path".equals(p.getIn()))
+                            .collect(Collectors.toList());
+
+                        // The instance param is the one not in listWithPathParams
+                        Set<String> listParamNames = resource.getPathParams().stream()
+                            .map(Parameter::getName)
+                            .collect(Collectors.toSet());
+
+                        return pathParams.stream()
+                            .map(Parameter::getName)
+                            .filter(name -> !listParamNames.contains(name))
+                            .findFirst()
+                            .orElse(null);
+                    })
+                    .orElse(null);
+
+                if (instanceParam != null) {
+                    resource.setInstanceParam(caseResolver.pathOperation(instanceParam));
+                    resource.setInstanceType(resource.getResourceName() + "Context");
+                }
+            }
         }
     }
 
@@ -356,6 +455,10 @@ public class DirectoryStructureService {
                     .stream()
                     .filter(resource -> resource.getVersion().equals(version))
                 .collect(Collectors.toList());
+
+        // Detect instance operations for each version resource
+        enrichVersionResourcesWithInstanceOperations(versionResources);
+
         additionalProperties.put(VERSION_RESOURCES, versionResources);
 
         if (((String)additionalProperties.get(API_VERSION)).equalsIgnoreCase("v2010")) {

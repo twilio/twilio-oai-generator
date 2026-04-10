@@ -71,14 +71,27 @@
     const instance = this;
     {{/vendorExtensions.x-is-context-operation}}
     let operationVersion = {{#vendorExtensions.x-is-context-operation}}instance._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}},
-        operationPromise = operationVersion.{{#vendorExtensions.x-delete-returns-model}}fetch{{/vendorExtensions.x-delete-returns-model}}{{^vendorExtensions.x-delete-returns-model}}{{vendorExtensions.x-name-lower}}{{/vendorExtensions.x-delete-returns-model}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers});
+        operationPromise = operationVersion.{{#vendorExtensions.x-delete-returns-model}}fetch{{/vendorExtensions.x-delete-returns-model}}{{^vendorExtensions.x-delete-returns-model}}{{#vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{^vendorExtensions.x-supports-pagination}}fetch{{/vendorExtensions.x-supports-pagination}}{{#vendorExtensions.x-supports-pagination}}{{vendorExtensions.x-name-lower}}{{/vendorExtensions.x-supports-pagination}}{{/isApiV1}}{{^isApiV1}}{{vendorExtensions.x-name-lower}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}}{{^vendorExtensions.x-is-read-operation}}{{vendorExtensions.x-name-lower}}{{/vendorExtensions.x-is-read-operation}}{{/vendorExtensions.x-delete-returns-model}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers});
     {{^vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-delete-returns-model}}
     operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
     {{/vendorExtensions.x-delete-returns-model}}{{^vendorExtensions.x-is-delete-operation}}
     operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
     {{/vendorExtensions.x-is-delete-operation}}{{/vendorExtensions.x-is-read-operation}}
     {{#vendorExtensions.x-is-read-operation}}
-    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload,{{#isApiV1}} instance._uri, data,{{/isApiV1}} instance._solution));
+    {{#isApiV1}}{{#vendorExtensions.x-supports-pagination}}
+    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, instance._uri, data, instance._solution));
+    {{/vendorExtensions.x-supports-pagination}}{{^vendorExtensions.x-supports-pagination}}
+    {{#vendorExtensions.x-array-items-are-primitives}}
+    // Array items are primitives (strings, numbers), return them directly
+    operationPromise = operationPromise.then((payload: any) => payload["{{recordKey}}"] || []);
+    {{/vendorExtensions.x-array-items-are-primitives}}{{^vendorExtensions.x-array-items-are-primitives}}
+    operationPromise = operationPromise.then((payload: any) => (payload["{{recordKey}}"] || []).map(
+        (item: any) => new {{instanceName}}(operationVersion, item{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}})
+    ));
+    {{/vendorExtensions.x-array-items-are-primitives}}
+    {{/vendorExtensions.x-supports-pagination}}{{/isApiV1}}{{^isApiV1}}
+    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, instance._uri, data, instance._solution));
+    {{/isApiV1}}
     {{/vendorExtensions.x-is-read-operation}}
 
     operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
@@ -86,8 +99,50 @@
 
   {{#vendorExtensions.x-is-read-operation}}
   }
+  {{#vendorExtensions.x-supports-pagination}}
   instance.each = instance._version.each;
+  {{#vendorExtensions.x-paginated-primitive-items}}
+
+  instance.list = function list(params?: any, callback?: (error: Error | null, items: string[]) => any): Promise<string[]> {
+    if (params instanceof Function) {
+      callback = params;
+      params = {};
+    }
+    params = params || {};
+
+    let allRecords: string[] = [];
+
+    function fetchNextPage(nextPageParams: any): Promise<string[]> {
+      return instance.page(nextPageParams).then((page: any) => {
+        const payload = page['_payload'];
+        const records = payload && payload['{{recordKey}}'] ? payload['{{recordKey}}'] : [];
+        allRecords = allRecords.concat(records);
+
+        if (params.limit && allRecords.length >= params.limit) {
+          allRecords = allRecords.slice(0, params.limit);
+          return allRecords;
+        }
+
+        const nextToken = page.nextPageUrl ? new URL(page.nextPageUrl).searchParams.get('PageToken') : null;
+        if (nextToken) {
+          return fetchNextPage({ ...nextPageParams, pageToken: nextToken });
+        }
+        return allRecords;
+      });
+    }
+
+    const promise = fetchNextPage(params);
+    return instance._version.setPromiseCallback(promise, callback);
+  };
+  {{/vendorExtensions.x-paginated-primitive-items}}{{^vendorExtensions.x-paginated-primitive-items}}
+  {{/vendorExtensions.x-paginated-primitive-items}}
+  {{/vendorExtensions.x-supports-pagination}}
+  {{#isApiV1}}{{#vendorExtensions.x-supports-pagination}}{{^vendorExtensions.x-paginated-primitive-items}}
   instance.list = instance._version.list;
+  {{/vendorExtensions.x-paginated-primitive-items}}{{/vendorExtensions.x-supports-pagination}}{{/isApiV1}}{{^isApiV1}}{{^vendorExtensions.x-paginated-primitive-items}}
+  instance.list = instance._version.list;
+  {{/vendorExtensions.x-paginated-primitive-items}}{{/isApiV1}}
+  {{#vendorExtensions.x-supports-pagination}}
 
   instance.getPage = function getPage(targetUrl: string, callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
     const operationPromise = instance._version._domain.twilio.request({method: "{{httpMethod}}", uri: targetUrl});
@@ -95,4 +150,5 @@
     pagePromise = instance._version.setPromiseCallback(pagePromise, callback);
     return pagePromise;
   }
+  {{/vendorExtensions.x-supports-pagination}}
   {{/vendorExtensions.x-is-read-operation}}
