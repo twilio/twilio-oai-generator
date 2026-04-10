@@ -1,31 +1,43 @@
 public class {{apiName}}Read{{resourceConstant}} : {{resourceConstant}}
 {
-{{#listResponseModels}}
-    {{#isEnum}}
-        {{#description}}///<summary> {{{description}}} </summary> {{/description}}
-        [JsonProperty("{{baseName}}")]
-        {{^required}}
-            public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
-        {{/required}}
-        {{#required}}
-            public {{{dataType}}} {{nameInCamelCase}} { get; private set;}
-        {{/required}}
-    {{/isEnum}}
-    {{^isEnum}}
-        {{#description}}///<summary> {{{description}}} </summary> {{/description}}{{^description}}///<summary> The {{baseName}} </summary> {{/description}}
-        [JsonProperty("{{baseName}}")]
-        {{#vendorExtensions.x-jsonConverter}}
-            [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
-        {{/vendorExtensions.x-jsonConverter}}
-        {{^required}}
-            public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
-        {{/required}}
-        {{#required}}
-            public {{{dataType}}} {{nameInCamelCase}} { get; private set;}
-        {{/required}}
-    {{/isEnum}}
+{{#readHasPrimitive}}
+    {{#listResponseModels}}
+        public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
+        public {{apiName}}Read{{resourceConstant}}({{{dataType}}} {{nameInCamelCase}})
+        {
+        this.{{nameInCamelCase}} = {{nameInCamelCase}};
+        }
+    {{/listResponseModels}}
+{{/readHasPrimitive}}
+{{^readHasPrimitive}}
+    {{#listResponseModels}}
+        {{#isEnum}}
+            {{#description}}///<summary> {{{description}}} </summary> {{/description}}
+            [JsonProperty("{{baseName}}")]
+            {{^required}}
+                public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
+            {{/required}}
+            {{#required}}
+                public {{{dataType}}} {{nameInCamelCase}} { get; private set;}
+            {{/required}}
+        {{/isEnum}}
+        {{^isEnum}}
+            {{#description}}///<summary> {{{description}}} </summary> {{/description}}{{^description}}///<summary> The {{baseName}} </summary> {{/description}}
+            [JsonProperty("{{baseName}}")]
+            {{#vendorExtensions.x-jsonConverter}}
+                [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
+            {{/vendorExtensions.x-jsonConverter}}
+            {{^required}}
+                public {{{dataType}}} {{nameInCamelCase}} { get; private set; }
+            {{/required}}
+            {{#required}}
+                public {{{dataType}}} {{nameInCamelCase}} { get; private set;}
+            {{/required}}
+        {{/isEnum}}
 
-{{/listResponseModels}}
+    {{/listResponseModels}}
+{{/readHasPrimitive}}
+
     public static {{apiName}}Read{{resourceConstant}} FromJson(string json) {
         try {
             return JsonConvert.DeserializeObject<{{apiName}}Read{{resourceConstant}}>(json);
