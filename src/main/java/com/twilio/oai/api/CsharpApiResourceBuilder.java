@@ -35,6 +35,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
@@ -45,6 +47,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     public String authMethod = "";
     CodegenModelOneOf codegenModelOneOf = CodegenModelOneOf.getInstance();
+    Boolean readHasPrimitive = null;
 
     // Operation-specific response models for V1
     protected List<CodegenProperty> createResponseModels = new ArrayList<>();
@@ -456,12 +459,14 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 } else if (operationId.toLowerCase().startsWith("list")) {
                     // For list operations, use only the model inside the List<> property (skip pagination metadata like meta)
                     // since the generated code wraps items in ResourceSet<>
-                    Optional<CodegenModel> listItemModel = getListItemModel(codegenModel);
-                    if (listItemModel.isPresent()) {
+                    boolean metaPresent = doesContainPaginationMeta(codegenModel);
+                    if (!metaPresent) {
                         List<CodegenModel> itemModels = new ArrayList<>();
-                        itemModels.add(listItemModel.get());
+                        itemModels.add(codegenModel);
                         addWithoutDuplicates(this.listResponseModels, getDistinctResponseModel(itemModels));
                     } else {
+                        readHasPrimitive = true;
+                        removeMeta(distinctResponseModel);
                         addWithoutDuplicates(this.listResponseModels, distinctResponseModel);
                     }
                 } else if (operationId.toLowerCase().startsWith("fetch")) {
@@ -469,6 +474,31 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                 }
             });
         });
+    }
+    
+    private String typeExtractor(String input) {
+        // Regex logic: Find everything between < and >
+        Pattern pattern = Pattern.compile("List<(.*)>");
+        Matcher matcher = pattern.matcher(input);
+        String innerType = "";
+        if (matcher.find()) {
+            innerType = matcher.group(1);
+        }
+        return innerType;
+    }
+    
+    private void removeMeta(Set<CodegenProperty> distinctResponseModel) {
+        Set<CodegenProperty> metaRemoved = new HashSet<>();
+        for (CodegenProperty property : distinctResponseModel) {
+            if (property.baseName.equals(recordKey)) {
+                if (property.dataType.startsWith("List<")) {
+                    property.dataType = typeExtractor(property.dataType);
+                }
+                metaRemoved.add(property);
+            }
+        }
+        distinctResponseModel.clear();
+        distinctResponseModel.addAll(metaRemoved);
     }
     
     private boolean hasDeleteBody(CodegenOperation codegenOperation) {
@@ -491,36 +521,18 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         return false;
     }
 
-    private Optional<CodegenModel> getListItemModel(CodegenModel responseModel) {
+    // If this is true it means list response have primitive type.
+    // If false: Pagination already removed as a part of getModel.
+    private boolean doesContainPaginationMeta(CodegenModel responseModel) {
         // If recordKey exists, find the array property matching it and extract the inner model
         if (recordKey != null) {
             for (CodegenProperty property: responseModel.vars) {
-                if (property.isArray) {
-                    
+                if ("meta".equals(property.baseName.toLowerCase())) {
+                   return true;
                 }
             }
-            responseModel.getVars().stream()
-                    .collect(Collectors.toList());
-            Optional<CodegenModel> model = responseModel.getVars().stream()
-                    .filter(prop -> prop.baseName.equals(recordKey))
-                    
-                    .map(CodegenProperty::getComplexType)
-                    .filter(Objects::nonNull)
-                    .map(complexType -> Utility.getModelByClassname(allModels, complexType))
-                    .findFirst()
-                    .orElse(Optional.empty());
-            if (model.isPresent()) {
-                return model;
-            }
         }
-        // Fallback: find any array property's inner model
-        return responseModel.getVars().stream()
-                .filter(prop -> prop.isArray)
-                .map(CodegenProperty::getComplexType)
-                .filter(Objects::nonNull)
-                .map(complexType -> Utility.getModelByClassname(allModels, complexType))
-                .findFirst()
-                .orElse(Optional.empty());
+        return false;
     }
 
     private void addWithoutDuplicates(List<CodegenProperty> target, Set<CodegenProperty> source) {
@@ -647,7 +659,8 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         rearrangeBeforeAfter(co.pathParams);
         rearrangeBeforeAfter(conditionalParameters);
         rearrangeBeforeAfter(optionalParameters);
-        co.optionalParams = co.optionalParams.stream().filter(parameter -> !parameter.paramName.equals("PageSize")).collect(Collectors.toList());
+        if (co.operationId.toLowerCase().startsWith("list"))
+            co.optionalParams = co.optionalParams.stream().filter(parameter -> !parameter.paramName.equals("PageSize")).collect(Collectors.toList());
 
         // Add to vendor extension
         LinkedHashMap<String, CodegenParameter> requestBodyArgument = new LinkedHashMap<>();

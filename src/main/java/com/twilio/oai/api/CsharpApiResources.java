@@ -27,6 +27,7 @@ public class CsharpApiResources extends ApiResources {
     
     Boolean deleteHasBody = null;
     String deleteReturnType = "bool";
+    Boolean readHasPrimitive = null;
 
     public CsharpApiResources(CsharpApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
@@ -39,5 +40,6 @@ public class CsharpApiResources extends ApiResources {
         this.deleteResponseModels = apiResourceBuilder.deleteResponseModels;
         deleteHasBody = deleteResponseModels != null && !deleteResponseModels.isEmpty() && deleteResponseModels.size() > 0;
         if (deleteHasBody) deleteReturnType = this.apiName + "DeleteResource";
+        this.readHasPrimitive = apiResourceBuilder.readHasPrimitive;
     }
 }
