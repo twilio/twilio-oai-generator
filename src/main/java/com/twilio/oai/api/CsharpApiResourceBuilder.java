@@ -659,7 +659,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         rearrangeBeforeAfter(co.pathParams);
         rearrangeBeforeAfter(conditionalParameters);
         rearrangeBeforeAfter(optionalParameters);
-        if (co.operationId.startsWith("list"))
+        if (co.operationId.toLowerCase().startsWith("list"))
             co.optionalParams = co.optionalParams.stream().filter(parameter -> !parameter.paramName.equals("PageSize")).collect(Collectors.toList());
 
         // Add to vendor extension
