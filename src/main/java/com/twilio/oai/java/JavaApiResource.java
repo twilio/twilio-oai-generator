@@ -27,6 +27,7 @@ public class JavaApiResource {
     Set<CodegenProperty> responseList;
     Set<CodegenProperty> responseFetch;
     Set<CodegenProperty> responsePatch;
+    Set<CodegenProperty> responseDelete;
 
 
     public JavaApiResource(JavaApiResourceBuilder builder) {
@@ -44,6 +45,7 @@ public class JavaApiResource {
         this.responseList = ResourceCacheContext.get().getResponseList();
         this.responseFetch = ResourceCacheContext.get().getResponseFetch();
         this.responsePatch = ResourceCacheContext.get().getResponsePatch();
+        this.responseDelete = ResourceCacheContext.get().getResponseDelete();
     }
 }
 

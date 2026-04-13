@@ -93,6 +93,7 @@ public class ResourceCache2 {
         responseList.clear();
         responseFetch.clear();
         responsePatch.clear();
+        responseDelete.clear();
     }
 
     // No need to clear
