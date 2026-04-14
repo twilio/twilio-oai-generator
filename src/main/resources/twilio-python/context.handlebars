@@ -1,5 +1,6 @@
 class {{apiName}}Context(InstanceContext):
-{{#if nestedModels}}{{>modelClasses}}{{/if}}
+{{! For v1 APIs, nested models are in List class; for non-v1 APIs, keep them here for backward compatibility }}
+{{^isApiV1}}{{#if nestedModels}}{{>modelClasses}}{{/if}}{{/isApiV1}}
     def __init__(self, version: Version{{#instancePathParams}}, {{paramName}}: {{{dataType}}}{{/instancePathParams}}):
         """
         Initialize the {{apiName}}Context

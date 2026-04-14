@@ -64,6 +64,16 @@ public class DirectoryStructureService {
         public boolean getHasPathParams() {
             return pathParams != null && !pathParams.isEmpty();
         }
+
+        // Custom getters for boolean field listWithPathParams
+        // Need both is() and get() prefixes: is() for Java code, get() for Handlebars templates
+        public boolean isListWithPathParams() {
+            return listWithPathParams;
+        }
+
+        public boolean getListWithPathParams() {
+            return listWithPathParams;
+        }
     }
 
     @Data
@@ -87,7 +97,7 @@ public class DirectoryStructureService {
         additionalProperties.put("isVersionLessSpec", isVersionLess ? "true" : "false");
 
         final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-        additionalProperties.put("isV1ApiSpec", isV1ApiSpec ? "true" : "false");
+        additionalProperties.put("isV1ApiSpec", isV1ApiSpec);  // Boolean, not string!
 
         openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
@@ -109,17 +119,57 @@ public class DirectoryStructureService {
                 operation.setTags(null);
                 operation.addTagsItem(tag);
 
-                if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
+                // For v1 APIs: also add nested list resources (with path params) to version class
+                // For non-v1 APIs: only add top-level resources (no path separator in tag)
+
+                // Determine if resource is top-level by checking path structure
+                // A resource is nested if its path contains path parameters before the resource name
+                // Example: /v1/Stores/{storeId}/Profiles - storeId is a parent parameter
+                final String[] pathParts = name.split("/");
+                boolean hasParentPathParams = false;
+                for (int i = 0; i < pathParts.length - 1; i++) {
+                    if (pathParts[i].matches("\\{[^}]+\\}")) {
+                        hasParentPathParams = true;
+                        break;
+                    }
+                }
+
+                final boolean isTopLevel = !tag.contains(PATH_SEPARATOR_PLACEHOLDER) && !hasParentPathParams;
+                final boolean shouldProcessResource = isTopLevel || isV1ApiSpec;
+
+                if (shouldProcessResource) {
                     final DependentResource dependent = generateDependent(name, path, operation);
                     final boolean isIgnoredOperation = Optional.ofNullable(operation.getExtensions())
                         .map(ext -> ext.get(IGNORE_EXTENSION_NAME))
                         .map(Boolean.class::cast)
                         .orElse(false);
-                    if (pathType.isPresent() && pathType.get().equals("list")
-                            && dependent.getHasPathParams() && !isIgnoredOperation) {
-                        dependent.setListWithPathParams(true);
+
+                    // For v1 APIs: set listWithPathParams for nested list resources (with parent path params)
+                    // Non-top-level resources in v1 APIs need parent path parameters passed to constructor
+                    if (pathType.isPresent() && pathType.get().equals("list") && !isIgnoredOperation) {
+                        if (isV1ApiSpec && !isTopLevel) {
+                            // For v1 nested list resources, always set flag (they need parent params)
+                            dependent.setListWithPathParams(true);
+
+                            // For v1 nested resources, we need ALL path params (including parent ones)
+                            // The standard generateDependent filters out parent params, so we need to add them back
+                            List<Parameter> allPathParams = fetchAllPathParams(path, operation);
+                            dependent.setPathParams(allPathParams);
+                        } else if (dependent.getHasPathParams()) {
+                            // For non-v1 or top-level resources, only set if actually has path params
+                            dependent.setListWithPathParams(true);
+                        }
                     }
-                    addVersionResources(dependent, versionResources);
+
+                    // Add to version resources if:
+                    // - It's a top-level resource (non-v1 or v1), OR
+                    // - For v1 APIs: it's a list resource with path params (nested resources)
+                    if (isTopLevel) {
+                        addVersionResources(dependent, versionResources);
+                    } else if (isV1ApiSpec && pathType.isPresent() && pathType.get().equals("list")) {
+                        // For v1 nested list resources, add to version resources
+                        addVersionResources(dependent, versionResources);
+                    }
                 }
 
                 updateAccountSidParam(operation);
@@ -237,6 +287,39 @@ public class DirectoryStructureService {
                 .build();
         if (!resourceList.contains(dependent))
             resourceList.add(dependent);
+    }
+
+    private List<Parameter> fetchAllPathParams(PathItem pathItem, Operation operation) {
+        List<Parameter> params = new ArrayList<>();
+        if (null == operation) return params;
+
+        // Merge path-item level params (which may use $ref components) with operation-level params
+        List<Parameter> allParams = new ArrayList<>();
+        if (pathItem != null && pathItem.getParameters() != null) {
+            pathItem.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .forEach(allParams::add);
+        }
+        if (operation.getParameters() != null) {
+            Set<String> operationParamNames = operation.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .filter(p -> p.getName() != null)
+                    .map(Parameter::getName)
+                    .collect(Collectors.toSet());
+            allParams.removeIf(p -> p.getName() != null && operationParamNames.contains(p.getName()));
+            operation.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .forEach(allParams::add);
+        }
+
+        // Return ALL path parameters (including parent ones)
+        return allParams.stream()
+                .filter(param -> Objects.nonNull(param.getIn()))
+                .filter(PathUtils::isPathParam)
+                .collect(Collectors.toList());
     }
 
     private List<Parameter> fetchNonParentPathParams(Operation operation) {

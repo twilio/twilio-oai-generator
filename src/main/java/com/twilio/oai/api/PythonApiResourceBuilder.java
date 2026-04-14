@@ -8,11 +8,13 @@ import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.python.PythonCodegenModelResolver;
+import com.twilio.oai.resolver.python.PythonClassOrderResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -98,10 +100,24 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 .collect(Collectors.toList());
 
         // set all unique models in responseInstanceModels
+        // For v1 APIs, reorder models to avoid forward reference issues
         this.responseInstanceModels = new HashSet<>(allResponseModels);
+        if (isApiV1 && this.responseInstanceModels.size() > 1) {
+            // Convert to list, reorder based on dependencies, then back to set
+            List<CodegenModel> reorderedModels = PythonClassOrderResolver.reorderModels(
+                this.responseInstanceModels,
+                isApiV1
+            );
+            this.responseInstanceModels = new LinkedHashSet<>(reorderedModels);
+        }
 
         allResponseModels.stream().findFirst().ifPresent(firstModel -> {
             responseModel = firstModel;
+
+            // For v1 APIs, detect if list operations return primitive arrays
+            if (isApiV1) {
+                detectPrimitiveListItems(allResponseModels);
+            }
 
             allResponseModels.forEach(model -> {
                 codegenModelResolver.resolveResponseModel(model, this);
@@ -233,6 +249,22 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         super.updateModel(codegenModelResolver);
         return this;
     }
+
+    @Override
+    public FluentApiResources build() {
+        // For v1 APIs, reorder nested models to avoid forward reference issues
+        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        if (isApiV1 && nestedModels != null && nestedModels.size() > 1) {
+            List<CodegenModel> reorderedModels = PythonClassOrderResolver.reorderModels(
+                nestedModels,
+                isApiV1
+            );
+            nestedModels = new LinkedHashSet<>(reorderedModels);
+        }
+
+        return super.build();
+    }
+
     private void processModelVariables(CodegenModel model) {
         model.getVars().forEach(variable -> {
             addModel(modelTree, variable.complexType, variable.dataType);
@@ -241,5 +273,39 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 variable.baseType = dataType;
             });
         });
+    }
+
+    /**
+     * Detects if list operations return arrays of primitives (strings) instead of objects.
+     * Sets vendor extension x-list-items-are-primitives on the list operation if true.
+     */
+    private void detectPrimitiveListItems(final List<CodegenModel> models) {
+        // Find list operations
+        codegenOperationList.stream()
+            .filter(co -> co.operationId.startsWith("list") || co.operationId.startsWith("List"))
+            .forEach(co -> {
+                // Get the response model for this operation from allModels (not just responseModels)
+                co.responses.stream()
+                    .filter(response -> "200".equals(response.code))
+                    .filter(response -> response.dataType != null)
+                    .findFirst()
+                    .flatMap(response -> allModels.stream()
+                        .filter(model -> model.getClassname().equals(response.dataType) ||
+                                       model.getName().equals(response.dataType))
+                        .findFirst())
+                    .ifPresent(responseModel -> {
+                        // Check if model has an array property with primitive items
+                        boolean hasPrimitiveArray = responseModel.getVars().stream()
+                            .filter(prop -> prop.isArray)
+                            .filter(prop -> prop.items != null)
+                            .anyMatch(prop -> "String".equals(prop.items.dataType) ||
+                                            "string".equals(prop.items.dataType) ||
+                                            "str".equals(prop.items.dataType));
+
+                        if (hasPrimitiveArray) {
+                            co.vendorExtensions.put("x-list-items-are-primitives", true);
+                        }
+                    });
+            });
     }
 }

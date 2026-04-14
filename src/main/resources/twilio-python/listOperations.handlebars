@@ -496,9 +496,9 @@
         {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
-    ) -> List[{{instanceName}}]:
+    ) -> List[{{#if vendorExtensions.x-list-items-are-primitives}}str{{else}}{{instanceName}}{{/if}}]:
         """
-        Lists {{instanceName}} records from the API as a list.
+        Lists {{#if vendorExtensions.x-list-items-are-primitives}}{{instanceName}} IDs{{else}}{{instanceName}} records{{/if}} from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
         memory before returning.
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}
@@ -522,9 +522,9 @@
         {{#startsWith paramName text='page_size'}}{{else}}{{paramName}}: Union[{{{dataType}}}, object] = values.unset,{{/startsWith}}{{/allParams}}
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
-    ) -> List[{{instanceName}}]:
+    ) -> List[{{#if vendorExtensions.x-list-items-are-primitives}}str{{else}}{{instanceName}}{{/if}}]:
         """
-        Asynchronously lists {{instanceName}} records from the API as a list.
+        Asynchronously lists {{#if vendorExtensions.x-list-items-are-primitives}}{{instanceName}} IDs{{else}}{{instanceName}} records{{/if}} from the API as a list.
         Unlike stream(), this operation is eager and will load `limit` records into
         memory before returning.
         {{#allParams}}{{#startsWith paramName text='page_size'}}{{else}}

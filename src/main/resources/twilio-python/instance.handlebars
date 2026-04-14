@@ -1,5 +1,6 @@
 class {{instanceName}}(InstanceResource):
-{{#if nestedModels}}{{>modelClasses}}{{/if}}
+{{! For v1 APIs, nested models are in List class; for non-v1 APIs, keep them here for backward compatibility }}
+{{^isApiV1}}{{#if nestedModels}}{{>modelClasses}}{{/if}}{{/isApiV1}}
 {{>model}}
     """{{#vars}}
     :ivar {{name}}: {{{description}}}{{/vars}}
@@ -12,9 +13,18 @@ class {{instanceName}}(InstanceResource):
         self.{{name}}: Optional[{{{baseType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{baseName}}}")){{else}}payload.get("{{{baseName}}}"){{/if}}{{/vars}}
 
         {{#if instancePathParams}}
+        {{#if ../../isApiV1}}
+        # Only set _solution if path params are provided (not None)
+        if {{#instancePathParams}}{{paramName}} is not None{{#unless @last}} or {{/unless}}{{/instancePathParams}}:
+            self._solution = { {{#instancePathParams}}
+                "{{paramName}}": {{paramName}},{{/instancePathParams}}
+            }
+        {{else}}
         self._solution = { {{#instancePathParams}}
             "{{paramName}}": {{paramName}}{{#unless vendorExtensions.x-is-parent-param}} or self.{{paramName}}{{/unless}},{{/instancePathParams}}
-        }{{/if}}
+        }
+        {{/if}}
+        {{/if}}
         {{#instancePath}}self._context: Optional[{{apiName}}Context] = None
 
     @property
