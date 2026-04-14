@@ -48,7 +48,9 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
         } else if (operationId.toLowerCase().startsWith("patch")) {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponsePatch()::add);
         } else if (operationId.toLowerCase().startsWith("list")) {
-            codegenModel.vars.forEach(ResourceCacheContext.get().getResponseList()::add);
+            codegenModel.vars.stream()
+                    .filter(property -> !"meta".equalsIgnoreCase(property.baseName))
+                    .forEach(ResourceCacheContext.get().getResponseList()::add);
         } else if (operationId.toLowerCase().startsWith("fetch")) {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponseFetch()::add);
         }
