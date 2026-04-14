@@ -1,5 +1,5 @@
 @JsonIgnoreProperties(ignoreUnknown = true)
-public static class Fetch{{resourceName}}Response extends Resource {
+static class Fetch{{resourceName}}Response extends Resource {
 {{#responseFetch}}
     @Getter
     private final {{{dataType}}} {{name}};
@@ -29,31 +29,12 @@ public static class Fetch{{resourceName}}Response extends Resource {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Fetch{{resourceName}}Response other = (Fetch{{resourceName}}Response) o;
-        return
-        {{#responseFetch}}
-          Objects.equals({{name}}, other.{{name}}){{^-last}} && {{/-last}}
-        {{/responseFetch}}
-        {{^responseFetch}}
-          true
-        {{/responseFetch}}
-        ;
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == this.getClass();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            {{#responseFetch}}
-                {{name}}{{^-last}}, {{/-last}}
-            {{/responseFetch}}
-        );
+        return 1;
     }
 }

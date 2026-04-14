@@ -22,14 +22,6 @@ public class JavaApiResource {
     Boolean responseFlag = null; // true or NUll
     Boolean isApiV1 = null; // true or NUll
 
-    Set<CodegenProperty> responseUpdate;
-    Set<CodegenProperty> responseCreate;
-    Set<CodegenProperty> responseList;
-    Set<CodegenProperty> responseFetch;
-    Set<CodegenProperty> responsePatch;
-    Set<CodegenProperty> responseDelete;
-
-
     public JavaApiResource(JavaApiResourceBuilder builder) {
         resourceName = ResourceCacheContext.get().getResourceName();
         recordKey = builder.recordKey;
@@ -40,12 +32,6 @@ public class JavaApiResource {
         if (response != null && !response.isEmpty()) responseFlag = true;
         this.namespaceSubPart = builder.namespaceSubPart;
         if (ResourceCacheContext.get().isV1()) isApiV1 = true;
-        this.responseUpdate = ResourceCacheContext.get().getResponseUpdate();
-        this.responseCreate = ResourceCacheContext.get().getResponseCreate();
-        this.responseList = ResourceCacheContext.get().getResponseList();
-        this.responseFetch = ResourceCacheContext.get().getResponseFetch();
-        this.responsePatch = ResourceCacheContext.get().getResponsePatch();
-        this.responseDelete = ResourceCacheContext.get().getResponseDelete();
     }
 }
 

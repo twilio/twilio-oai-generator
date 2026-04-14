@@ -24,11 +24,10 @@ public class MustacheModel {
     List<CodegenProperty> optionalProperties;
 
     public MustacheModel(CodegenProperty codegenProperty, CodegenModel codegenModel) {
-        String resolvedClassName = codegenModel.classname;
-        if (resolvedClassName.equals(ResourceCacheContext.get().getResourceName())) {
-            resolvedClassName = "_" + resolvedClassName;
+        if (codegenModel.classname.equals(ResourceCacheContext.get().getResourceName())) {
+            codegenModel.classname = "_" + codegenModel.classname;
         }
-        this.className = resolvedClassName;
+        this.className = codegenModel.classname;
         
         this.allProperties = new ArrayList<>(codegenModel.vars);
         
@@ -42,11 +41,10 @@ public class MustacheModel {
     }
 
     public MustacheModel(CodegenParameter codegenParameter, CodegenModel codegenModel) {
-        String resolvedClassName = codegenModel.classname;
-        if (resolvedClassName.equals(ResourceCacheContext.get().getResourceName())) {
-            resolvedClassName = "_" + resolvedClassName;
+        if (codegenModel.classname.equals(ResourceCacheContext.get().getResourceName())) {
+            codegenModel.classname = "_" + codegenModel.classname;
         }
-        this.className = resolvedClassName;
+        this.className = codegenModel.classname;
 
         this.allProperties = new ArrayList<>(codegenModel.vars);
 

@@ -1,5 +1,5 @@
 @JsonIgnoreProperties(ignoreUnknown = true)
-public static class Patch{{resourceName}}Response extends Resource {
+static class Patch{{resourceName}}Response extends Resource {
 {{#responsePatch}}
     @Getter
     private final {{{dataType}}} {{name}};
@@ -29,31 +29,12 @@ public static class Patch{{resourceName}}Response extends Resource {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Patch{{resourceName}}Response other = (Patch{{resourceName}}Response) o;
-        return
-        {{#responsePatch}}
-          Objects.equals({{name}}, other.{{name}}){{^-last}} && {{/-last}}
-        {{/responsePatch}}
-        {{^responsePatch}}
-          true
-        {{/responsePatch}}
-        ;
+    public boolean equals(Object obj) {
+        return obj != null && obj.getClass() == this.getClass();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-            {{#responsePatch}}
-                {{name}}{{^-last}}, {{/-last}}
-            {{/responsePatch}}
-        );
+        return 1;
     }
 }
