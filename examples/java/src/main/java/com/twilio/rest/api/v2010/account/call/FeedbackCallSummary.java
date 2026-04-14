@@ -71,8 +71,7 @@ public class FeedbackCallSummary extends Resource {
         );
     }
 
-
-
+    
 
 public enum Status {
     IN_PROGRESS("in-progress"),

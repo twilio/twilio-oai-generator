@@ -37,14 +37,6 @@ public class OpenApiSpecFormatFeatureConstants {
     );
 
     /*
-     * key (format) -> The key is the format defined in the OpenAPI Spec.
-     * value -> serializer class name in twilio-java
-     */
-    public final static Map<String, String> SERIALIZER = Map.of(
-            "date-time", "com.twilio.converter.ISO8601Serializer"
-    );
-
-    /*
      * key -> The key is the combination of type+format defined in the OpenAPI Spec.
      * value -> The value is the Java type that should be used for that combination.
      */

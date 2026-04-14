@@ -84,7 +84,6 @@ public class RecursiveModelProcessor {
             // For non ref models, CodegenModel will be present. Non model nor enum.
             // Logic 3: Normal variable logic
             Deserializer.addDeserializer(codegenProperty);
-            Deserializer.addSerializer(codegenProperty);
 
             return;
         }

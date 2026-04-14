@@ -22,15 +22,15 @@ public class ListModelStrategy implements ModelProcessor {
         variableName(codegenProperty);
         dataType(codegenProperty);
         cacheModelClass(codegenProperty, codegenModel);
-
+        
     }
-
+    
     @Override
     public boolean shouldProcess(CodegenProperty codegenProperty, CodegenModel codegenModel) {
         if (codegenProperty.isContainer) return true;
         return false;
     }
-
+    
     public ModelType getType() {
         return type;
     }

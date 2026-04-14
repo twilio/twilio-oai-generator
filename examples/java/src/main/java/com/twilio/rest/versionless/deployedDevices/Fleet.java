@@ -61,8 +61,7 @@ public class Fleet extends Resource {
 
 
 
-
-
+    
 
 
 
@@ -75,8 +74,7 @@ public class Fleet extends Resource {
 
 
 
-
-
+    
 
 
 

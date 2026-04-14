@@ -10,9 +10,6 @@
         {{#vendorExtensions.x-deserializer}}
         @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
         {{/vendorExtensions.x-deserializer}}
-        {{#vendorExtensions.x-serializer}}
-        @JsonSerialize(using = {{vendorExtensions.x-serializer}}.class)
-        {{/vendorExtensions.x-serializer}}
         @JsonInclude(JsonInclude.Include.NON_EMPTY)
         @JsonProperty("{{{baseName}}}")
         @Getter private final {{{dataType}}} {{name}};
@@ -38,9 +35,6 @@
         {{#vendorExtensions.x-deserializer}}
             @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
         {{/vendorExtensions.x-deserializer}}
-        {{#vendorExtensions.x-serializer}}
-            @JsonSerialize(using = {{vendorExtensions.x-serializer}}.class)
-        {{/vendorExtensions.x-serializer}}
         @JsonProperty("{{{baseName}}}")
         private {{{dataType}}} {{name}};
 
@@ -59,9 +53,6 @@
             {{#vendorExtensions.x-deserializer}}
             @JsonDeserialize(using = {{vendorExtensions.x-deserializer}}.class)
             {{/vendorExtensions.x-deserializer}}
-            {{#vendorExtensions.x-serializer}}
-            @JsonSerialize(using = {{vendorExtensions.x-serializer}}.class)
-            {{/vendorExtensions.x-serializer}}
             @JsonInclude(JsonInclude.Include.NON_EMPTY)
             @JsonProperty("{{{baseName}}}")
             public Builder {{name}}({{{dataType}}} {{name}}) {
