@@ -35,6 +35,7 @@ public class JsonResponseProcessor implements ResponseProcessor {
         responseModel.vars.forEach(codegenProperty -> {
             enumProcessorFactory.applyProcessor(codegenProperty);
             Deserializer.addDeserializer(codegenProperty);
+            Deserializer.addSerializer(codegenProperty);
         });
         responseModel.vars.stream().forEach(property -> recursiveModelProcessor.process(property));
 
