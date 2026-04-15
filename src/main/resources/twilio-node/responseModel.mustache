@@ -1,8 +1,10 @@
 {{#responseModel}}
 
-  interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resource {}{{/hasPaginationOperation}}{{#hasPaginationOperation}}{{#isApiV1}}TokenPaginationPayload{{/isApiV1}}{{^isApiV1}}TwilioResponsePayload{{/isApiV1}} {
-    {{recordKey}}: {{apiName}}Resource[];
-}{{/hasPaginationOperation}}
+{{^isApiV1}}  interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resource {}{{/hasPaginationOperation}}{{#hasPaginationOperation}}TwilioResponsePayload {
+    {{recordKey}}: {{#hasPaginatedPrimitiveItems}}string[]{{/hasPaginatedPrimitiveItems}}{{^hasPaginatedPrimitiveItems}}{{apiName}}Resource[]{{/hasPaginatedPrimitiveItems}};
+}{{/hasPaginationOperation}}{{/isApiV1}}{{#isApiV1}}{{#hasOperationWithPagination}}  interface {{apiName}}Payload extends TokenPaginationPayload {
+    {{recordKey}}: {{#hasPaginatedPrimitiveItems}}string[]{{/hasPaginatedPrimitiveItems}}{{^hasPaginatedPrimitiveItems}}{{apiName}}Resource[]{{/hasPaginatedPrimitiveItems}};
+}{{/hasOperationWithPagination}}{{/isApiV1}}
 
 {{#hasMultipleResponseModels}}
 {{#responseInstanceModels}}
@@ -42,7 +44,7 @@ export class {{instanceName}} {
 
   constructor(protected _version: {{apiVersionClass}}, {{#isApiV1}}_payload{{/isApiV1}}{{^isApiV1}}payload{{/isApiV1}}: {{apiName}}Resource{{#instancePathParams}}, {{paramName}}{{^vendorExtensions.x-is-parent-param}}?{{/vendorExtensions.x-is-parent-param}}: {{{dataType}}}{{/instancePathParams}}) {
     {{#isApiV1}}{{^hasMultipleResponseModels}}const payload = _payload;{{/hasMultipleResponseModels}}{{#hasMultipleResponseModels}}const payload: any = _payload;{{/hasMultipleResponseModels}}{{/isApiV1}}
-    {{#vars}}
+    {{#allResponseVars}}
     {{^complexType}}
     this.{{name}} = {{vendorExtensions.x-deserialize}}(payload.{{baseName}});
     {{/complexType}}
@@ -66,21 +68,21 @@ export class {{instanceName}} {
       {{/isModel}}
     {{/isArray}}
     {{/complexType}}
-    {{/vars}}
+    {{/allResponseVars}}
 
     {{#instancePath}}
     this._solution = { {{#instancePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}{{#isApiV1}}: {{paramName}}{{/isApiV1}}{{^isApiV1}}: {{paramName}} || this.{{paramName}}{{#vendorExtensions.x-stringify}}.toString(){{/vendorExtensions.x-stringify}}{{/isApiV1}}{{/vendorExtensions.x-is-parent-param}}, {{/instancePathParams}} };
     {{/instancePath}}
   }
 
-  {{#vars}}
+  {{#allResponseVars}}
   {{#description}}
   /**
    * {{{description}}}
    */
   {{/description}}
   {{name}}{{#hasMultipleResponseModels}}?{{/hasMultipleResponseModels}}: {{{baseType}}};
-  {{/vars}}
+  {{/allResponseVars}}
   {{#instancePath}}
 
   private get _proxy(): {{apiName}}Context {
@@ -125,9 +127,9 @@ export class {{instanceName}} {
    */
   toJSON() {
     return {
-      {{#vars}}
+      {{#allResponseVars}}
       {{name}}: this.{{name}},
-      {{/vars}}
+      {{/allResponseVars}}
     };
   }
 

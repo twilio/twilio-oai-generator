@@ -68,6 +68,27 @@ public class FluentApiResources extends ApiResources {
     }
 
     /**
+     * Returns all unique vars from all response instance models combined.
+     * Used for generating Instance class that needs to handle all possible fields across different response types.
+     * Vars are deduplicated by name - if multiple models have the same var name, only the first is kept.
+     */
+    public List<org.openapitools.codegen.CodegenProperty> getAllResponseVars() {
+        if (!getHasMultipleResponseModels()) {
+            return responseModel != null ? responseModel.getVars() : new java.util.ArrayList<>();
+        }
+
+        java.util.Map<String, org.openapitools.codegen.CodegenProperty> uniqueVars = new java.util.LinkedHashMap<>();
+        for (org.openapitools.codegen.CodegenModel model : responseInstanceModels) {
+            for (org.openapitools.codegen.CodegenProperty var : model.getVars()) {
+                if (!uniqueVars.containsKey(var.getName())) {
+                    uniqueVars.put(var.getName(), var);
+                }
+            }
+        }
+        return new java.util.ArrayList<>(uniqueVars.values());
+    }
+
+    /**
      * Returns the collection of nested/complex models used in the resource.
      * These are models referenced within response models or parameters.
      */
