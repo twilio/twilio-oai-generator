@@ -4,6 +4,7 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
 import static java.util.function.Predicate.not;
@@ -65,6 +67,24 @@ public class FluentApiResources extends ApiResources {
      */
     public Collection<CodegenModel> getResponseInstanceModels() {
         return responseInstanceModels;
+    }
+
+    /**
+     * Returns all unique vars across all response instance models.
+     * Used by the template instead of {{#vars}} so the Instance class covers every field
+     * that any response type may carry.
+     */
+    public List<CodegenProperty> getAllResponseVars() {
+        if (!getHasMultipleResponseModels()) {
+            return responseModel != null ? responseModel.getVars() : new ArrayList<>();
+        }
+        java.util.Map<String, CodegenProperty> uniqueVars = new java.util.LinkedHashMap<>();
+        for (CodegenModel model : responseInstanceModels) {
+            for (CodegenProperty var : model.getVars()) {
+                uniqueVars.putIfAbsent(var.getName(), var);
+            }
+        }
+        return new ArrayList<>(uniqueVars.values());
     }
 
     /**

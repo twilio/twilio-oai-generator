@@ -24,6 +24,7 @@ public class ApiResources {
     Map<String, Object> metaProperties;
     String namespaceSubPart;
     boolean hasPaginationOperation;
+    boolean hasOperationWithPagination;
     Set<CodegenModel> nestedModels;
     private Boolean isApiV1 = null; // true or NULL
 
@@ -38,10 +39,15 @@ public class ApiResources {
         requiredPathParams = new ArrayList<>(apiResourceBuilder.requiredPathParams);
         namespaceSubPart = apiResourceBuilder.namespaceSubPart;
         hasPaginationOperation = apiResourceBuilder.hasPaginationOperation();
+        hasOperationWithPagination = hasPaginationOperation;
         nestedModels = apiResourceBuilder.nestedModels;
         if (ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1()) {
             isApiV1 = true;
         }
         responseInstanceModels = apiResourceBuilder.responseInstanceModels;
+    }
+
+    public boolean getHasOperationWithPagination() {
+        return hasOperationWithPagination;
     }
 }
