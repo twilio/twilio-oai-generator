@@ -21,7 +21,7 @@ public class JavaApiResource {
 
     Boolean responseFlag = null; // true or NUll
     Boolean isApiV1 = null; // true or NUll
-    
+
     public JavaApiResource(JavaApiResourceBuilder builder) {
         resourceName = ResourceCacheContext.get().getResourceName();
         recordKey = builder.recordKey;

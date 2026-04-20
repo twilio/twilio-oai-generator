@@ -1,5 +1,5 @@
     {{>Summary}}
-    public class Update{{apiName}}Options : IOptions<{{apiName}}{{resourceConstant}}>
+    public class Update{{apiName}}Options : IOptions<{{apiName}}{{#isApiV1}}Update{{/isApiV1}}{{resourceConstant}}>
     {
     {{>options/Params}}
 

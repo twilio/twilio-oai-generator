@@ -1,0 +1,59 @@
+@JsonIgnoreProperties(ignoreUnknown = true)
+static class Delete{{resourceName}}Response extends Resource {
+{{#responseDelete}}
+    @Getter
+    private final {{{dataType}}} {{name}};
+{{/responseDelete}}
+
+    @JsonCreator
+    private Delete{{resourceName}}Response(
+    {{#responseDelete}}
+        @JsonProperty("{{baseName}}")
+        final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}
+    {{/responseDelete}}
+    ){
+    {{#responseDelete}}
+        this.{{name}} = {{name}};
+    {{/responseDelete}}
+    }
+
+    public static Delete{{resourceName}}Response fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    // Convert all checked exceptions to Runtime
+        try {
+            return objectMapper.readValue(json, Delete{{resourceName}}Response.class);
+        } catch (final JsonMappingException | JsonParseException e) {
+            throw new ApiException(e.getMessage(), e);
+        } catch (final IOException e) {
+            throw new ApiConnectionException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+{{#responseDelete}}
+        Delete{{resourceName}}Response other = (Delete{{resourceName}}Response) o;
+        return (
+                Objects.equals({{name}}, other.{{name}}){{^-last}} && {{/-last}}
+        );
+{{/responseDelete}}
+{{^responseDelete}}
+  return true;
+{{/responseDelete}}
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            {{#responseDelete}}
+                {{name}}{{^-last}}, {{/-last}}
+            {{/responseDelete}}
+        );
+    }
+}

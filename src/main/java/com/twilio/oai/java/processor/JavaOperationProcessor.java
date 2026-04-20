@@ -41,7 +41,17 @@ public class JavaOperationProcessor {
         SetterMethodGenerator.getInstance().apply(codegenOperation);
         Inequality.getInstance().process(codegenOperation);
         Promoter.addPromoter(codegenOperation);
-        
+
+        // Check if delete operation has a response body defined in the spec
+        if (codegenOperation.operationId.toLowerCase().startsWith("delete")) {
+            boolean hasDeleteResponseBody = codegenOperation.responses != null && codegenOperation.responses.stream()
+                    .anyMatch(response -> response.dataType != null && !response.dataType.isEmpty()
+                            && response.code.startsWith("2"));
+            if (hasDeleteResponseBody) {
+                codegenOperation.vendorExtensions.put("x-delete-returns-model", true);
+            }
+        }
+
         // It is required to set response class for v1 APIs as it is used in the common action response.
         // v0.x APIs response is equal to ResourceName
         // Created class for response because as per v0.x APIs response class must inherit from Resource class.

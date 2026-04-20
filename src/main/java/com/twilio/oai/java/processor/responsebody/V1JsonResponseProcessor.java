@@ -17,15 +17,15 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
     
     @Override
     public void process(CodegenOperation codegenOperation) {
-        // delete operation does not have response body
-        if (codegenOperation.operationId.toLowerCase().startsWith("delete")) return;
+        // delete operation does not have response body unless explicitly defined in the spec
+        if (codegenOperation.operationId.toLowerCase().startsWith("delete") && !hasResponseBody(codegenOperation)) return;
         List<CodegenModel> allModels = ResourceCacheContext.get().getAllModelsByDefaultGenerator();
         CodegenResponse response = codegenOperation.responses.stream()
                 .filter(codegenResponse -> codegenResponse.is2xx || codegenResponse.is3xx)
                 .findFirst().get();
         if (response == null || response.getContent() == null) return;
 
-        String modelName = response.dataType;
+        String modelName = response.dataType; 
         String recordKey = ResourceCacheContext.get().getRecordKey();
 
         Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
@@ -43,6 +43,8 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponseCreate()::add);
         } else if (operationId.toLowerCase().startsWith("update")) {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponseUpdate()::add);
+        } else if (operationId.toLowerCase().startsWith("delete")) {
+            codegenModel.vars.forEach(ResourceCacheContext.get().getResponseDelete()::add);
         } else if (operationId.toLowerCase().startsWith("patch")) {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponsePatch()::add);
         } else if (operationId.toLowerCase().startsWith("list")) {
@@ -50,6 +52,13 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
         } else if (operationId.toLowerCase().startsWith("fetch")) {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponseFetch()::add);
         }
+    }
+
+    private boolean hasResponseBody(final CodegenOperation codegenOperation) {
+        if (codegenOperation.responses == null) return false;
+        return codegenOperation.responses.stream()
+                .filter(r -> r.is2xx || r.is3xx)
+                .anyMatch(r -> r.getContent() != null && !r.getContent().isEmpty());
     }
 
     @Override
