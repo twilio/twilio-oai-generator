@@ -6,7 +6,7 @@
             {{#vendorExtensions.x-jsonConverter}}
             [JsonConverter(typeof({{vendorExtensions.x-jsonConverter}}))]
             {{/vendorExtensions.x-jsonConverter}}
-            [JsonProperty("{{{baseName}}}")]
+            [JsonProperty("{{{baseName}}}", NullValueHandling = NullValueHandling.Ignore)]
             public {{{dataType}}} {{name}} {get; private set;}
         {{/vars}}
             public {{classname}}() { }
