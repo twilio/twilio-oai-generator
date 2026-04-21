@@ -8,6 +8,7 @@ import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.EnumConstants.CsharpHttpMethod;
 import com.twilio.oai.common.EnumConstants.CsharpDataTypes;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.common.CodegenModelOneOf;
 import com.twilio.oai.resolver.csharp.OperationStore;
@@ -18,10 +19,12 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.CodegenResponse;
 import org.openapitools.codegen.CodegenSecurity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -32,15 +35,28 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static com.twilio.oai.common.ApplicationConstants.HTTP_METHOD;
 import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOLDER;
+import static com.twilio.oai.common.ApplicationConstants.SUCCESS;
 
 public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
     public String authMethod = "";
     CodegenModelOneOf codegenModelOneOf = CodegenModelOneOf.getInstance();
+    Boolean readHasPrimitive = null;
+
+    // Operation-specific response models for V1
+    protected List<CodegenProperty> createResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> updateResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> patchResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> listResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> fetchResponseModels = new ArrayList<>();
+    protected List<CodegenProperty> deleteResponseModels = new ArrayList<>();
+
     /**
      * List of C# primitive types that require a nullable marker (?) when nullable
      */
@@ -290,9 +306,97 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         }
     }
 
+    private void recursivelyResolveV1(CodegenProperty codegenProperty) {
+        String modelName = codegenProperty.dataType;
+        if (CodegenUtils.isPropertySchemaEnum(codegenProperty)) {
+            processResponseEnum(codegenProperty);
+            return;
+        }
+        // extract the baseType for the modelName
+        modelName = handleContainerDatatype(modelName);
+        Optional<CodegenModel> model = Utility.getModelByClassname(allModels, modelName);
+        if ((model == null) || model.isEmpty()) {
+            return;
+        }
+
+
+        CodegenModel codegenModel = model.get();
+        if(codegenModel.getFormat() != null) { // skip generating classes for formats
+            return;
+        }
+
+        // Prefix the dataType with ResourceName so the generated C# code uses fully qualified nested type
+        String resourcePrefix = getApiName() + "Resource" + ApplicationConstants.DOT;
+        if (!codegenProperty.dataType.contains(resourcePrefix)) {
+            if (codegenProperty.dataType.equals(modelName)) {
+                // Simple type: e.g. "Foo" -> "ResourceName.Foo"
+                codegenProperty.dataType = resourcePrefix + codegenProperty.dataType;
+            } else {
+                // Container type: e.g. "List<Foo>" -> "List<ResourceName.Foo>"
+                codegenProperty.dataType = codegenProperty.dataType.replace(modelName, resourcePrefix + modelName);
+            }
+        }
+
+        for (CodegenProperty property : codegenModel.vars) {
+            // recursively resolve each var, since each var is itself a CodegenProperty
+            recursivelyResolveV1(property);
+        }
+
+        // Process oneOf variants - recursively resolve properties in oneOf variant models
+        // This ensures that nested models within oneOf variants (like ConfigurationEventLanguagesValue)
+        // are properly added to nestedModels for code generation
+        if (null != codegenModel.oneOf && !codegenModel.oneOf.isEmpty()) {
+            codegenModelOneOf.resolve(codegenModel);
+            for (String oneOfModelName : codegenModel.oneOf) {
+                Optional<CodegenModel> oneOfModel = Utility.getModelByClassname(allModels, oneOfModelName);
+                if (oneOfModel.isPresent()) {
+                    CodegenModel oneOfVariant = oneOfModel.get();
+                    for (CodegenProperty property : oneOfVariant.vars) {
+                        recursivelyResolve(property);
+                    }
+                    // Add the oneOf variant to nestedModels if not already there
+                    if (nestedModels.stream().noneMatch(m -> m.classname.equals(oneOfModelName))) {
+                        nestedModels.add(oneOfVariant);
+                    }
+                }
+            }
+        }
+        String finalModelName = modelName;
+        if (nestedModels.stream().noneMatch(m -> m.classname.equals(finalModelName))) {
+            nestedModels.add(codegenModel);
+        }
+    }
+    
+    private void processResponseEnum(CodegenProperty property) {
+        if (property == null) {
+            return;
+        }
+        OperationStore operationStore = OperationStore.getInstance();
+        property.isEnum = true;
+        if(property.complexType != null){
+            property.enumName = property.complexType.contains("Enum") || property.complexType.contains("enum")
+                    ? Utility.removeEnumName(property.complexType) + ApplicationConstants.ENUM
+                    : Utility.removeEnumName(property.complexType);
+        }
+        // In case enum is an array
+        if (property.items != null) {
+            property.items.enumName = property.enumName;
+        }
+        String className = OperationStore.getInstance().getClassName();
+        property.dataType = className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + property.enumName;
+        property.vendorExtensions.put("x-jsonConverter", "StringEnumConverter"); // TODO: Remove this.
+        operationStore.getEnums().put(property.enumName, property);
+        // Import enum into the resource if it contains enum class.
+        operationStore.setEnumPresentInResource(true);
+    }
+
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyIResolver, Resolver<CodegenModel> codegenModelResolver) {
+        if (ResourceCacheContext.get().isV1()) {
+            updateResponseModelV1(codegenModelResolver);
+            return this;
+        }
         List<CodegenModel> responseModels = new ArrayList<>();
         codegenOperationList.forEach(codegenOperation -> {
             codegenOperation.responses.forEach(response -> {
@@ -317,6 +421,132 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         return this;
     }
 
+    private void updateResponseModelV1(Resolver<CodegenModel> codegenModelResolver) {
+        codegenOperationList.forEach(codegenOperation -> {
+            List<CodegenModel> responseModels = new ArrayList<>();
+            codegenOperation.responses.forEach(response -> {
+                String modelName = response.dataType;
+                if (response.dataType != null && response.dataType.startsWith(EnumConstants.CsharpDataTypes.LIST.getValue())) {
+                    modelName = response.baseType;
+                }
+                Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
+                if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) >= 400)) {
+                    return;
+                }
+                CodegenModel codegenModel = responseModel.get();
+                for (CodegenProperty property : codegenModel.vars) {
+                    recursivelyResolveV1(property);
+                }
+                codegenModelResolver.resolve(codegenModel, this);
+                responseModels.add(codegenModel);
+                Set<CodegenProperty> distinctResponseModel = getDistinctResponseModel(responseModels);
+                
+                String operationId = codegenOperation.operationId.toLowerCase();
+                if (operationId.isEmpty()) {
+                    throw new RuntimeException("Csharp: Operation ID is missing for an operation.");
+                }
+                if (operationId.toLowerCase().startsWith("create")) {
+                    addWithoutDuplicates(this.createResponseModels, distinctResponseModel);
+                } else if (operationId.toLowerCase().startsWith("update")) {
+                    addWithoutDuplicates(this.updateResponseModels, distinctResponseModel);
+                } else if (operationId.toLowerCase().startsWith("patch")) {
+                    addWithoutDuplicates(this.patchResponseModels, distinctResponseModel);
+                } else if (codegenOperation.operationId.toLowerCase().startsWith("delete")) {
+                    if (hasDeleteBody(codegenOperation)) {
+                        codegenOperation.vendorExtensions.put(ApplicationConstants.X_DELETE_HAS_BODY, true);
+                        addWithoutDuplicates(this.deleteResponseModels, distinctResponseModel);
+                    }
+                } else if (operationId.toLowerCase().startsWith("list")) {
+                    // For list operations, use only the model inside the List<> property (skip pagination metadata like meta)
+                    // since the generated code wraps items in ResourceSet<>
+                    boolean metaPresent = doesContainPaginationMeta(codegenModel);
+                    if (!metaPresent) {
+                        List<CodegenModel> itemModels = new ArrayList<>();
+                        itemModels.add(codegenModel);
+                        addWithoutDuplicates(this.listResponseModels, getDistinctResponseModel(itemModels));
+                    } else {
+                        readHasPrimitive = true;
+                        removeMeta(distinctResponseModel);
+                        addWithoutDuplicates(this.listResponseModels, distinctResponseModel);
+                    }
+                } else if (operationId.toLowerCase().startsWith("fetch")) {
+                    addWithoutDuplicates(this.fetchResponseModels, distinctResponseModel);
+                }
+            });
+        });
+    }
+    
+    private String typeExtractor(String input) {
+        // Regex logic: Find everything between < and >
+        Pattern pattern = Pattern.compile("List<(.*)>");
+        Matcher matcher = pattern.matcher(input);
+        String innerType = "";
+        if (matcher.find()) {
+            innerType = matcher.group(1);
+        }
+        return innerType;
+    }
+    
+    private void removeMeta(Set<CodegenProperty> distinctResponseModel) {
+        Set<CodegenProperty> metaRemoved = new HashSet<>();
+        for (CodegenProperty property : distinctResponseModel) {
+            if (property.baseName.equals(recordKey)) {
+                if (property.dataType.startsWith("List<")) {
+                    property.dataType = typeExtractor(property.dataType);
+                }
+                metaRemoved.add(property);
+            }
+        }
+        distinctResponseModel.clear();
+        distinctResponseModel.addAll(metaRemoved);
+    }
+    
+    private boolean hasDeleteBody(CodegenOperation codegenOperation) {
+        System.out.println(codegenOperation);
+        List<CodegenResponse> responses = codegenOperation.responses.stream()
+                .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
+                .collect(Collectors.toList());
+        for (CodegenResponse codegenResponse:  responses) {
+            System.out.println(codegenResponse);
+            String statusCode = codegenResponse.code;
+            if (statusCode == "204" || statusCode == "205" || statusCode == "304") {
+                return false;
+            }
+            
+            if (codegenResponse.getContent() != null && codegenResponse.getContent().size() > 0) {
+                return true;
+            }
+                
+        }
+        return false;
+    }
+
+    // If this is true it means list response have primitive type.
+    // If false: Pagination already removed as a part of getModel.
+    private boolean doesContainPaginationMeta(CodegenModel responseModel) {
+        // If recordKey exists, find the array property matching it and extract the inner model
+        if (recordKey != null) {
+            for (CodegenProperty property: responseModel.vars) {
+                if ("meta".equals(property.baseName.toLowerCase())) {
+                   return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private void addWithoutDuplicates(List<CodegenProperty> target, Set<CodegenProperty> source) {
+        Set<String> existingBaseNames = target.stream()
+                .map(p -> p.baseName)
+                .collect(Collectors.toSet());
+        for (CodegenProperty property : source) {
+            if (!existingBaseNames.contains(property.baseName)) {
+                target.add(property);
+                existingBaseNames.add(property.baseName);
+            }
+        }
+    }
+
     public Set<CodegenProperty> getDistinctResponseModel(List<CodegenModel> responseModels) {
         HashMap<String, CodegenProperty> propertyMap = new HashMap<>();
         Set<CodegenProperty> distinctResponseModels = new LinkedHashSet<>();
@@ -334,7 +564,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
 
                 // Check if property with same name already exists, but has different metadata
                 // This handles cases where properties have the same name but different types or model flags
-                String propertyKey = property.name;
+                String propertyKey = property.baseName;
                 if (propertyMap.containsKey(propertyKey)) {
                     CodegenProperty existingProperty = propertyMap.get(propertyKey);
 
@@ -429,7 +659,8 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         rearrangeBeforeAfter(co.pathParams);
         rearrangeBeforeAfter(conditionalParameters);
         rearrangeBeforeAfter(optionalParameters);
-        co.optionalParams = co.optionalParams.stream().filter(parameter -> !parameter.paramName.equals("PageSize")).collect(Collectors.toList());
+        if (co.operationId.toLowerCase().startsWith("list"))
+            co.optionalParams = co.optionalParams.stream().filter(parameter -> !parameter.paramName.equals("PageSize")).collect(Collectors.toList());
 
         // Add to vendor extension
         LinkedHashMap<String, CodegenParameter> requestBodyArgument = new LinkedHashMap<>();

@@ -22,7 +22,10 @@ public class TitleCaseLambda implements Mustache.Lambda {
     @Override
     public void execute(Template.Fragment fragment, Writer writer) throws IOException {
         final String text = fragment.execute().toLowerCase();
-
+        if (text.isEmpty()) {
+            writer.write("Empty");
+            return;
+        }
         // Split accepts regex. \Q and \E wrap the delimiter to create a literal regex,
         // so things like "." and "|" aren't treated as their regex equivalents.
         final String[] parts = text.split("\\Q" + delimiter + "\\E");

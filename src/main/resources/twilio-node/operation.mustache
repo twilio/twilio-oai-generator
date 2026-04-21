@@ -16,9 +16,9 @@
   {{^hasRequiredParams}}
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
     } else {
-      params = params || {};
+      params = params || {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
     }
 
   {{/hasRequiredParams}}
@@ -53,7 +53,8 @@
     {{/bodyParams}}
 {{/hasParams}}
 {{^hasParams}}
-    const headers: any = {};
+    const headers: any = {};{{#vendorExtensions.x-is-read-operation}}{{#isApiV1}}
+    const data: any = {};{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}}
     {{#consumes}}
     {{#-first}}
     headers["Content-Type"] = "{{{mediaType}}}"
@@ -70,7 +71,7 @@
     const instance = this;
     {{/vendorExtensions.x-is-context-operation}}
     let operationVersion = {{#vendorExtensions.x-is-context-operation}}instance._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}},
-        operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers});
+        operationPromise = operationVersion.{{#vendorExtensions.x-delete-returns-model}}fetch{{/vendorExtensions.x-delete-returns-model}}{{^vendorExtensions.x-delete-returns-model}}{{vendorExtensions.x-name-lower}}{{/vendorExtensions.x-delete-returns-model}}({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers});
     {{^vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-delete-returns-model}}
     operationPromise = operationPromise.then(payload => new {{instanceName}}(operationVersion, payload{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}}));
     {{/vendorExtensions.x-delete-returns-model}}{{^vendorExtensions.x-is-delete-operation}}

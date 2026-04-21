@@ -95,6 +95,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                 .stream()
                 .flatMap(co -> co.responses
                         .stream()
+                        .filter(response -> !isApiV1 || (response.code != null && response.code.startsWith("2")))
                         .map(response -> response.dataType)
                         .filter(Objects::nonNull)
                         .flatMap(modelName -> getModel(modelName, co).stream())

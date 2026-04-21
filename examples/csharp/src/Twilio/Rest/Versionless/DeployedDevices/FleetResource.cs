@@ -32,9 +32,9 @@ namespace Twilio.Rest.Versionless.DeployedDevices
     
         public class VersionlessFleetTestNestedObjectNestedObject
         {
-            [JsonProperty("param1")]
+            [JsonProperty("param1", NullValueHandling = NullValueHandling.Ignore)]
             public string Param1 {get; private set;}
-            [JsonProperty("param2")]
+            [JsonProperty("param2", NullValueHandling = NullValueHandling.Ignore)]
             public int? Param2 {get; private set;}
             public VersionlessFleetTestNestedObjectNestedObject() { }
             public class Builder
@@ -61,7 +61,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         }
         public class VersionlessFleetTestNestedObject
         {
-            [JsonProperty("nestedObject")]
+            [JsonProperty("nestedObject", NullValueHandling = NullValueHandling.Ignore)]
             public VersionlessFleetTestNestedObjectNestedObject NestedObject {get; private set;}
             public VersionlessFleetTestNestedObject() { }
             public class Builder

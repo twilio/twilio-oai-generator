@@ -125,11 +125,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     private boolean contains2xxStatusCode(String modelName) {
         return Pattern.compile("2\\d{2}_").matcher(modelName).find();
     }
-
+    private void removeErrorModels(Map<String, ModelsMap> objs) {
+        objs.entrySet().removeIf(entry ->
+                Pattern.compile("[_.]([45]\\d{2})[_.]").matcher(entry.getKey()).find());
+    }
     @Override
     public Map<String, ModelsMap> updateAllModels(Map<String, ModelsMap> objs) {
         objs = super.updateAllModels(objs);
-
+        removeErrorModels(objs);
         Set<String> modelNames = objs.keySet()
                 .stream()
                 .filter(key -> (containsStatusCode(key) || containsAllOf(key)))

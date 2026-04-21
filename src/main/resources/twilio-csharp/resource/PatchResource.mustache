@@ -21,11 +21,11 @@
         /// <param name="options"> Patch {{apiName}} parameters </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnComments}}
-        public static {{apiName}}{{resourceConstant}} Patch(Patch{{apiName}}Options options, ITwilioRestClient client = null)
+        public static {{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}} Patch(Patch{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = client.Request(BuildPatchRequest(options, client));
-            return FromJson(response.Content);
+            return {{#isApiV1}}{{apiName}}Patch{{resourceConstant}}.{{/isApiV1}}FromJson(response.Content);
         }
 
         {{>Summary}}
@@ -33,18 +33,18 @@
         /// <param name="client"> Client to make requests to Twilio </param>
         {{>resource/ReturnCommentsAsync}}
         #if !NET35
-        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> PatchAsync(Patch{{apiName}}Options options,
+        public static async System.Threading.Tasks.Task<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}> PatchAsync(Patch{{apiName}}Options options,
             ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildPatchRequest(options, client));
-            return FromJson(response.Content);
+            return {{#isApiV1}}{{apiName}}Patch{{resourceConstant}}.{{/isApiV1}}FromJson(response.Content);
         }
         #endif
 
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnComments}}
-        public static {{apiName}}{{resourceConstant}} Patch({{#vendorExtensions.x-request-body-param}}
+        public static {{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}} Patch({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
             ITwilioRestClient client = null)
         {
@@ -55,7 +55,7 @@
         #if !NET35
         {{>Summary}}{{>resource/MethodsComments}}
         {{>resource/ReturnCommentsAsync}}
-        public static async System.Threading.Tasks.Task<{{apiName}}{{resourceConstant}}> PatchAsync({{#vendorExtensions.x-request-body-param}}
+        public static async System.Threading.Tasks.Task<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}> PatchAsync({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
             ITwilioRestClient client = null)
         {
@@ -65,26 +65,26 @@
         #endif
 
         {{! TwilioResponse Methods }}
-        public static TwilioResponse<{{apiName}}{{resourceConstant}}> PatchWithHeaders(Patch{{apiName}}Options options, ITwilioRestClient client = null)
+        public static TwilioResponse<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}> PatchWithHeaders(Patch{{apiName}}Options options, ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = client.Request(BuildPatchRequest(options, client));
-            var resource = FromJson(response.Content);
-            return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+            var resource = {{#isApiV1}}{{apiName}}Patch{{resourceConstant}}.{{/isApiV1}}FromJson(response.Content);
+            return new TwilioResponse<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{resourceConstant}}>> PatchWithHeadersAsync(Patch{{apiName}}Options options,
+        public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}>> PatchWithHeadersAsync(Patch{{apiName}}Options options,
                 ITwilioRestClient client = null)
         {
             client = client ?? TwilioClient.{{restClientMethodName}}();
             var response = await client.RequestAsync(BuildPatchRequest(options, client));
-            var resource = FromJson(response.Content);
-            return new TwilioResponse<{{apiName}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
+            var resource = {{#isApiV1}}{{apiName}}Patch{{resourceConstant}}.{{/isApiV1}}FromJson(response.Content);
+            return new TwilioResponse<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}>(resource, response.Headers, response.StatusCode);
         }
         #endif
 
-        public static TwilioResponse<{{apiName}}{{resourceConstant}}> PatchWithHeaders({{#vendorExtensions.x-request-body-param}}
+        public static TwilioResponse<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}> PatchWithHeaders({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                 ITwilioRestClient client = null)
         {
@@ -93,7 +93,7 @@
         }
 
         #if !NET35
-        public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{resourceConstant}}>> PatchWithHeadersAsync({{#vendorExtensions.x-request-body-param}}
+        public static async System.Threading.Tasks.Task<TwilioResponse<{{apiName}}{{#isApiV1}}Patch{{/isApiV1}}{{resourceConstant}}>> PatchWithHeadersAsync({{#vendorExtensions.x-request-body-param}}
             {{{dataType}}} {{#lambda.camelcase}}{{paramName}}{{/lambda.camelcase}}{{^required}} = null{{/required}},{{/vendorExtensions.x-request-body-param}}
                 ITwilioRestClient client = null)
         {
