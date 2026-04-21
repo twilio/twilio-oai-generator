@@ -106,8 +106,11 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
             allResponseModels.forEach(model -> {
                 codegenModelResolver.resolveResponseModel(model, this);
 
-                if (!isApiV1 || this.responseInstanceModels.size() <= 1)
+                if (!isApiV1 || this.responseInstanceModels.size() <= 1) {
                     model.setName(resourceName);
+                } else {
+                    model.setName(getModelName(model.getClassname()));
+                }
                 model.getVars().forEach(variable -> {
                     codegenPropertyResolver.resolve(variable, this);
                     variable.vendorExtensions.put("json-name", variable.baseName);
