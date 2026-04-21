@@ -162,8 +162,14 @@ public abstract class AbstractTwilioGoGenerator extends GoClientCodegen {
         operations.forEach(operation -> operation.httpMethod = StringHelper.camelize(operation.httpMethod));
 
         if (imports != null) {
+            // Preserve standard library imports before removing model imports.
+            // The codegen may add "time.Time" as a model import that needs to become a "time" stdlib import.
+            boolean needsTimeImport = imports.stream().anyMatch(item -> item.get("import").contains("time.Time"));
             // Remove model imports to avoid error.
             imports.removeIf(item -> item.get("import").startsWith(apiPackage()));
+            if (needsTimeImport) {
+                imports.add(createMapping("import", "time"));
+            }
         }
 
         return objs;
