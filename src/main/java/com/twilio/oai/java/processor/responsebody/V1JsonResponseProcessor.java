@@ -14,7 +14,7 @@ import java.util.Optional;
 
 public class V1JsonResponseProcessor implements  ResponseProcessor {
     RecursiveModelProcessor recursiveModelProcessor = new RecursiveModelProcessor();
-    
+
     @Override
     public void process(CodegenOperation codegenOperation) {
         // delete operation does not have response body unless explicitly defined in the spec
@@ -25,7 +25,7 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
                 .findFirst().get();
         if (response == null || response.getContent() == null) return;
 
-        String modelName = response.dataType; 
+        String modelName = response.dataType;
         String recordKey = ResourceCacheContext.get().getRecordKey();
 
         Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
@@ -48,7 +48,9 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
         } else if (operationId.toLowerCase().startsWith("patch")) {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponsePatch()::add);
         } else if (operationId.toLowerCase().startsWith("list")) {
-            codegenModel.vars.forEach(ResourceCacheContext.get().getResponseList()::add);
+            codegenModel.vars.stream()
+                    .filter(property -> !"meta".equalsIgnoreCase(property.baseName))
+                    .forEach(ResourceCacheContext.get().getResponseList()::add);
         } else if (operationId.toLowerCase().startsWith("fetch")) {
             codegenModel.vars.forEach(ResourceCacheContext.get().getResponseFetch()::add);
         }

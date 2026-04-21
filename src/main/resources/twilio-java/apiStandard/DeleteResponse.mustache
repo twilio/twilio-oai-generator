@@ -1,5 +1,5 @@
 @JsonIgnoreProperties(ignoreUnknown = true)
-static class Delete{{resourceName}}Response extends Resource {
+public static class Delete{{resourceName}}Response extends Resource {
 {{#responseDelete}}
     @Getter
     private final {{{dataType}}} {{name}};
@@ -37,15 +37,15 @@ static class Delete{{resourceName}}Response extends Resource {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-{{#responseDelete}}
         Delete{{resourceName}}Response other = (Delete{{resourceName}}Response) o;
-        return (
+        return
+        {{#responseDelete}}
                 Objects.equals({{name}}, other.{{name}}){{^-last}} && {{/-last}}
-        );
-{{/responseDelete}}
-{{^responseDelete}}
-  return true;
-{{/responseDelete}}
+        {{/responseDelete}}
+        {{^responseDelete}}
+                true
+        {{/responseDelete}}
+        ;
     }
 
     @Override

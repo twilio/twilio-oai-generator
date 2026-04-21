@@ -60,5 +60,17 @@
 
 {{/vendorExtensions.x-signature-list}}
 {{/vendorExtensions.x-update-operation}}
-    
+
+{{#vendorExtensions.x-patch-operation}}
+{{#vendorExtensions.x-signature-list}}
+
+    public static {{resourceName}}Patcher patcher({{#.}}final {{{dataType}}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}) {
+        return new {{resourceName}}Patcher(
+            {{#.}} {{paramName}}{{^-last}}, {{/-last}}{{/.}}
+        );
+    }
+
+{{/vendorExtensions.x-signature-list}}
+{{/vendorExtensions.x-patch-operation}}
+
 {{/operations}}
