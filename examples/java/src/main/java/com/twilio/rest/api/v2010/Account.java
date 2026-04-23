@@ -63,7 +63,8 @@ public class Account extends Resource {
 
 
 
-    
+
+
 
 
 
@@ -83,7 +84,8 @@ public class Account extends Resource {
 
 
 
-    
+
+
 
 
 
@@ -103,7 +105,8 @@ public class Account extends Resource {
 
 
 
-    
+
+
 
 
 
@@ -116,7 +119,8 @@ public class Account extends Resource {
     }
 
 
-    
+
+
 
 
 
@@ -136,7 +140,8 @@ public class Account extends Resource {
         );
     }
 
-    
+
+
 
 public enum Status {
     IN_PROGRESS("in-progress"),
