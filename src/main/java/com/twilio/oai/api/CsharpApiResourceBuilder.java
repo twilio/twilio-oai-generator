@@ -383,7 +383,11 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
             property.items.enumName = property.enumName;
         }
         String className = OperationStore.getInstance().getClassName();
-        property.dataType = className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + property.enumName;
+        if (property.dataType != null && property.dataType.startsWith("List")) {
+            property.dataType = "List<" + className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + property.enumName + ">";
+        } else {
+            property.dataType = className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + property.enumName;
+        }
         property.vendorExtensions.put("x-jsonConverter", "StringEnumConverter"); // TODO: Remove this.
         operationStore.getEnums().put(property.enumName, property);
         // Import enum into the resource if it contains enum class.
@@ -430,6 +434,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     modelName = response.baseType;
                 }
                 Optional<CodegenModel> responseModel = Utility.getModel(allModels, modelName, recordKey, codegenOperation);
+                
                 if ((responseModel == null) || responseModel.isEmpty() || (Integer.parseInt(response.code) >= 400)) {
                     return;
                 }
@@ -460,8 +465,11 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     // For list operations, use only the model inside the List<> property (skip pagination metadata like meta)
                     // since the generated code wraps items in ResourceSet<>
                     boolean metaPresent = doesContainPaginationMeta(codegenModel);
-                    if (!metaPresent) {
+                    boolean isPrimitive = Utility.isRecordKeyPrimitive(allModels, modelName, recordKey, codegenOperation);
+                    if (!metaPresent && !isPrimitive) {
+                        //isPrimitive();
                         List<CodegenModel> itemModels = new ArrayList<>();
+                        // itemsModels added to support multiple success response codes, All merged to one schema.
                         itemModels.add(codegenModel);
                         addWithoutDuplicates(this.listResponseModels, getDistinctResponseModel(itemModels));
                     } else {
@@ -533,6 +541,10 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
             }
         }
         return false;
+    }
+    
+    private boolean isNotPrimitive() {
+        return true;
     }
 
     private void addWithoutDuplicates(List<CodegenProperty> target, Set<CodegenProperty> source) {

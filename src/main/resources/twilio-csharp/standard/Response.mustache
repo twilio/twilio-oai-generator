@@ -11,6 +11,9 @@
     {{#vendorExtensions.x-is-update-operation}}
         {{>standard/UpdateResponse}}
     {{/vendorExtensions.x-is-update-operation}}
+    {{#vendorExtensions.x-is-patch-operation}}
+        {{>standard/PatchResponse}}
+    {{/vendorExtensions.x-is-patch-operation}}
     {{#vendorExtensions.x-is-delete-operation}}
         {{#vendorExtensions.x-delete-has-body}}
         {{>standard/DeleteResponse}}
