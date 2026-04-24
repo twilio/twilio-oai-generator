@@ -154,6 +154,24 @@ public class Utility {
         return models.stream().filter(model -> model.classname.equals(classname)).findFirst();
     }
 
+    public boolean isRecordKeyPrimitive(final List<CodegenModel> models,
+                                        final String className,
+                                        final String recordKey,
+                                        final CodegenOperation codegenOperation) {
+        if (recordKey == null ||
+            !(boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
+            return false;
+        }
+        return models.stream()
+            .filter(model -> model.getClassname().equals(className))
+            .map(CodegenModel::getVars)
+            .flatMap(Collection::stream)
+            .filter(prop -> prop.baseName.equals(recordKey))
+            .findFirst()
+            .map(property -> property.getComplexType() == null)
+            .orElse(false);
+    }
+
     public Optional<CodegenModel> getModelByName(final List<CodegenModel> models, final String modelname) {
         return models.stream().filter(model -> model.name.equals(modelname)).findFirst();
     }
