@@ -28,9 +28,9 @@ export default class {{apiVersionClass}} extends Version {
   /** Accessor for {{mountName}} resource - list operations */
   {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}): {{type}};
   /** Accessor for {{mountName}} resource - instance operations */
-  {{mountName}}({{#pathParams}}{{name}}: string, {{/pathParams}}{{instanceParam}}: string): {{instanceType}};
+  {{mountName}}({{#pathParams}}{{name}}: string, {{/pathParams}}{{instanceParam}}: {{instanceParamType}}): {{instanceType}};
   /** Implementation */
-  {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}, {{instanceParam}}?: string): {{type}} | {{instanceType}} {
+  {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}, {{instanceParam}}?: {{instanceParamType}}): {{type}} | {{instanceType}} {
     const listInstance = {{className}}(this, {{#pathParams}}{{name}}{{^-last}}, {{/-last}}{{/pathParams}});
     if ({{instanceParam}} !== undefined) {
       return listInstance.get({{instanceParam}});
@@ -39,10 +39,18 @@ export default class {{apiVersionClass}} extends Version {
   }
   {{/hasInstanceOperation}}
   {{^hasInstanceOperation}}
+  {{#instanceOnly}}
+  /** Accessor for {{mountName}} resource */
+  {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}): {{type}} {
+    return {{className}}(this)({{#pathParams}}{{name}}{{^-last}}, {{/-last}}{{/pathParams}});
+  }
+  {{/instanceOnly}}
+  {{^instanceOnly}}
   /** Accessor for {{mountName}} resource */
   {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}): {{type}} {
     return {{className}}(this, {{#pathParams}}{{name}}{{^-last}}, {{/-last}}{{/pathParams}});
   }
+  {{/instanceOnly}}
   {{/hasInstanceOperation}}
   {{/listWithPathParams}}
   {{^listWithPathParams}}

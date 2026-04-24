@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -44,7 +45,7 @@ public class ApiResources {
         hasPaginatedPrimitiveItems = Boolean.TRUE.equals(metaProperties.get("x-paginated-primitive-items"));
         nestedModels = apiResourceBuilder.nestedModels;
         if (ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1()) {
-            isApiV1 = true;
+            isApiV1 = Boolean.TRUE;
         }
         responseInstanceModels = apiResourceBuilder.responseInstanceModels;
     }

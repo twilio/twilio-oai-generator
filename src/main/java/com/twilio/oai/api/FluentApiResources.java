@@ -4,6 +4,7 @@ import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.PathUtils;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import java.util.stream.Stream;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
 
 import static com.twilio.oai.common.ApplicationConstants.IGNORE_EXTENSION_NAME;
 import static java.util.function.Predicate.not;
@@ -68,24 +70,21 @@ public class FluentApiResources extends ApiResources {
     }
 
     /**
-     * Returns all unique vars from all response instance models combined.
-     * Used for generating Instance class that needs to handle all possible fields across different response types.
-     * Vars are deduplicated by name - if multiple models have the same var name, only the first is kept.
+     * Returns all unique vars across all response instance models.
+     * Used by the template instead of {{#vars}} so the Instance class covers every field
+     * that any response type may carry.
      */
-    public List<org.openapitools.codegen.CodegenProperty> getAllResponseVars() {
+    public List<CodegenProperty> getAllResponseVars() {
         if (!getHasMultipleResponseModels()) {
-            return responseModel != null ? responseModel.getVars() : new java.util.ArrayList<>();
+            return responseModel != null ? responseModel.getVars() : new ArrayList<>();
         }
-
-        java.util.Map<String, org.openapitools.codegen.CodegenProperty> uniqueVars = new java.util.LinkedHashMap<>();
-        for (org.openapitools.codegen.CodegenModel model : responseInstanceModels) {
-            for (org.openapitools.codegen.CodegenProperty var : model.getVars()) {
-                if (!uniqueVars.containsKey(var.getName())) {
-                    uniqueVars.put(var.getName(), var);
-                }
+        java.util.Map<String, CodegenProperty> uniqueVars = new java.util.LinkedHashMap<>();
+        for (CodegenModel model : responseInstanceModels) {
+            for (CodegenProperty var : model.getVars()) {
+                uniqueVars.putIfAbsent(var.getName(), var);
             }
         }
-        return new java.util.ArrayList<>(uniqueVars.values());
+        return new ArrayList<>(uniqueVars.values());
     }
 
     /**

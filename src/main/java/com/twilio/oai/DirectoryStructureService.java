@@ -65,7 +65,16 @@ public class DirectoryStructureService {
         // New fields for function overload support
         private boolean hasInstanceOperation;
         private String instanceParam;
+        private String instanceParamType;
         private String instanceType;
+
+        // True for nested instance-only resources (no companion list path)
+        // e.g. /v1/Stores/{storeId}/Profiles/Bulk — factory takes only version, params passed on call
+        private boolean instanceOnly;
+
+        public boolean getInstanceOnly() {
+            return instanceOnly;
+        }
 
         public boolean getHasPathParams() {
             return pathParams != null && !pathParams.isEmpty();
@@ -196,10 +205,48 @@ public class DirectoryStructureService {
             });
         });
         pathsToSkipMap.keySet().forEach(openAPI.getPaths()::remove);
+
+        // Second pass: for v1 APIs, add instance-only resources that have no companion list path.
+        // These are nested instance paths (e.g. /v1/Stores/{storeId}/Profiles/Bulk) that were
+        // skipped in the first pass because only list paths were added then.
+        if (isV1ApiSpec) {
+            openAPI.getPaths().forEach((name, path) -> {
+                final Optional<String> pathType = PathUtils.getTwilioExtension(path, "pathType");
+                if (!pathType.isPresent() || !pathType.get().equals("instance")) return;
+
+                final String[] pathParts = name.split("/");
+                boolean hasParentPathParams = false;
+                for (int i = 0; i < pathParts.length - 1; i++) {
+                    if (pathParts[i].matches("\\{[^}]+\\}")) {
+                        hasParentPathParams = true;
+                        break;
+                    }
+                }
+                if (!hasParentPathParams) return; // top-level instance paths already handled
+
+                path.readOperations().stream().findFirst().ifPresent(operation -> {
+                    final DependentResource dependent = generateDependent(name, path, operation);
+                    // Only add if no list path already registered this resource (by filename or mountName)
+                    boolean mountNameAlreadyRegistered = versionResources.values().stream()
+                        .anyMatch(r -> r.getMountName().equals(dependent.getMountName()));
+                    if (!versionResources.containsKey(dependent.getFilename()) && !mountNameAlreadyRegistered) {
+                        dependent.setListWithPathParams(true);
+                        dependent.setInstanceOnly(true);
+                        // Import both ListInstance (factory) and Context (return type)
+                        String contextType = dependent.getResourceName() + "Context";
+                        dependent.setType(contextType);
+                        dependent.setImportName(dependent.getResourceName() + LIST_INSTANCE + ", " + contextType);
+                        List<Parameter> allPathParams = fetchAllPathParams(path, operation);
+                        dependent.setPathParams(allPathParams);
+                        versionResources.put(dependent.getFilename(), dependent);
+                    }
+                });
+            });
+        }
     }
 
     public void addVersionResources(DependentResource dependent, Map<String, DependentResource> versionResources) {
-        final boolean isV1ApiSpec = "true".equals(additionalProperties.get("isV1ApiSpec"));
+        final boolean isV1ApiSpec = Boolean.TRUE.equals(additionalProperties.get("isV1ApiSpec"));
         if (versionResources.containsKey(dependent.getFilename())) {
             DependentResource existingDependent = versionResources.get(dependent.getFilename());
             // For v1Api specs: also replace when new entry has listWithPathParams=true and existing
@@ -255,10 +302,8 @@ public class DirectoryStructureService {
                 });
 
             if (hasInstanceOp && resource.isListWithPathParams()) {
-                resource.setHasInstanceOperation(true);
-
                 // Find the instance parameter by looking at instance paths
-                String instanceParam = openAPI.getPaths().entrySet().stream()
+                Parameter instanceParam = openAPI.getPaths().entrySet().stream()
                     .filter(entry -> {
                         PathItem pathItem = entry.getValue();
                         Optional<String> pathType = PathUtils.getTwilioExtension(pathItem, "pathType");
@@ -291,15 +336,16 @@ public class DirectoryStructureService {
                             .collect(Collectors.toSet());
 
                         return pathParams.stream()
-                            .map(Parameter::getName)
-                            .filter(name -> !listParamNames.contains(name))
+                            .filter(p -> !listParamNames.contains(p.getName()))
                             .findFirst()
                             .orElse(null);
                     })
                     .orElse(null);
 
                 if (instanceParam != null) {
-                    resource.setInstanceParam(caseResolver.pathOperation(instanceParam));
+                    resource.setHasInstanceOperation(true);
+                    resource.setInstanceParam(caseResolver.pathOperation(instanceParam.getName()));
+                    resource.setInstanceParamType(openApiTypeToNodeType(instanceParam));
                     resource.setInstanceType(resource.getResourceName() + "Context");
                 }
             }
@@ -340,6 +386,13 @@ public class DirectoryStructureService {
 
     private Stream<Parameter> getParamStream(final Operation operation) {
         return Optional.ofNullable(operation.getParameters()).stream().flatMap(Collection::stream);
+    }
+
+    private String openApiTypeToNodeType(final Parameter param) {
+        if (param.getSchema() == null) return "string";
+        String type = param.getSchema().getType();
+        if ("integer".equals(type) || "number".equals(type)) return "number";
+        return "string";
     }
 
     public DependentResource generateDependent(final String path, final Operation operation) {
@@ -431,7 +484,7 @@ public class DirectoryStructureService {
 
         // For v1Api specs: merge path-item level params (which may use $ref components) with
         // operation-level params so nested list resources can detect their path parameters.
-        final boolean isV1ApiSpec = "true".equals(additionalProperties.get("isV1ApiSpec"));
+        final boolean isV1ApiSpec = Boolean.TRUE.equals(additionalProperties.get("isV1ApiSpec"));
         List<Parameter> allParams = new ArrayList<>();
         if (isV1ApiSpec && pathItem != null && pathItem.getParameters() != null) {
             pathItem.getParameters().stream()
