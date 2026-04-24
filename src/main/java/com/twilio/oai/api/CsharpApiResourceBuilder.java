@@ -383,10 +383,11 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
             property.items.enumName = property.enumName;
         }
         String className = OperationStore.getInstance().getClassName();
-        if (property.dataType != null && property.dataType.startsWith("List")) {
-            property.dataType = "List<" + className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + property.enumName + ">";
+        String enumDataType = className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + property.enumName;
+        if (property.dataType != null && property.dataType.startsWith(EnumConstants.CsharpDataTypes.LIST.getValue())) {
+            property.dataType = EnumConstants.CsharpDataTypes.LIST.getValue() + enumDataType + ">";
         } else {
-            property.dataType = className + ApplicationConstants.RESOURCE + ApplicationConstants.DOT + property.enumName;
+            property.dataType = enumDataType;
         }
         property.vendorExtensions.put("x-jsonConverter", "StringEnumConverter"); // TODO: Remove this.
         operationStore.getEnums().put(property.enumName, property);
@@ -467,7 +468,6 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
                     boolean metaPresent = doesContainPaginationMeta(codegenModel);
                     boolean isPrimitive = Utility.isRecordKeyPrimitive(allModels, modelName, recordKey, codegenOperation);
                     if (!metaPresent && !isPrimitive) {
-                        //isPrimitive();
                         List<CodegenModel> itemModels = new ArrayList<>();
                         // itemsModels added to support multiple success response codes, All merged to one schema.
                         itemModels.add(codegenModel);
@@ -541,10 +541,6 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
             }
         }
         return false;
-    }
-    
-    private boolean isNotPrimitive() {
-        return true;
     }
 
     private void addWithoutDuplicates(List<CodegenProperty> target, Set<CodegenProperty> source) {
