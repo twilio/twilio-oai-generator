@@ -247,6 +247,8 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
                 (operation.optionalParams.stream().anyMatch(param -> param.isHeaderParam)));
         operationMap.put("hasOptionalFormParams",
                 (operation.optionalParams.stream().anyMatch(param -> param.isFormParam)));
+        operationMap.put("hasOptionalBodyParams",
+                (operation.optionalParams.stream().anyMatch(param -> param.isBodyParam)));
         return operationMap;
     }
 
