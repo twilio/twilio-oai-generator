@@ -6,9 +6,11 @@ import com.twilio.oai.api.ApiResourceBuilder;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.IConventionMapper;
 import com.twilio.oai.resolver.common.CodegenModelDataTypeResolver;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -18,11 +20,17 @@ import org.openapitools.codegen.CodegenProperty;
 
 // Overriding default behavior and adding "x-jsonConverter" to enum
 public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeResolver {
-    
+    HashMap<String, String> serializerForJson = new HashMap<>();
     private CodegenModelResolver codegenModelResolver;
 
     public CsharpCodegenModelDataTypeResolver(IConventionMapper mapper, Map<String, String> modelFormatMap) {
         super(mapper, modelFormatMap);
+        // Populate serializerForJson with JSON converter mappings (mirrors "deserialize" section of csharp.json)
+        serializerForJson.put("date-time", "Converters.DateTimeConverter");
+        //serializerForJson.put("ienum", "StringEnumConverter");
+        serializerForJson.put("http-method", "HttpMethodConverter");
+        serializerForJson.put("phone-number", "PhoneNumberConverter");
+        serializerForJson.put("twiml", "TwimlConverter");
     }
 
     public void setCodegenModel(CodegenModelResolver codegenModelResolver) {
@@ -42,6 +50,10 @@ public class CsharpCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
             mapper.deserialize()
                     .getString(property.dataFormat)
                     .ifPresent(dataType -> property.vendorExtensions.put("x-jsonConverter", dataType));
+            if (ResourceCacheContext.get().isV1()) {
+                Optional.ofNullable(serializerForJson.get(property.dataFormat))
+                        .ifPresent(value -> property.vendorExtensions.put("x-jsonConverter", value));
+            }
         }
         return property;
     }
