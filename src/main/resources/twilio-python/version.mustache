@@ -25,10 +25,10 @@ class {{apiVersionClass}}(Version):
         :param {{snake_case resourceName}}_id: Optional instance ID to directly access {{resourceName}}Context
         :returns: {{listName}} instance if {{snake_case resourceName}}_id is None, otherwise {{resourceName}}Context
         """
-        list_instance = {{listName}}(self{{#pathParams}}, {{snake_case name}}{{/pathParams}})
-        if {{snake_case resourceName}}_id is not None:
+        list_instance = {{listName}}(self{{^instanceOnly}}{{#pathParams}}, {{snake_case name}}{{/pathParams}}{{/instanceOnly}})
+        {{#instanceOnly}}return list_instance({{#pathParams}}{{snake_case name}}{{/pathParams}}){{/instanceOnly}}{{^instanceOnly}}if {{snake_case resourceName}}_id is not None:
             return list_instance({{snake_case resourceName}}_id)
-        return list_instance
+        return list_instance{{/instanceOnly}}
 
     {{/listWithPathParams}}{{^listWithPathParams}}@property
     def {{mountName}}(self) -> {{listName}}:

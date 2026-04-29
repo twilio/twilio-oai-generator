@@ -2,15 +2,15 @@ class {{instanceName}}(InstanceResource):
 {{! For v1 APIs, nested models are in List class; for non-v1 APIs, keep them here for backward compatibility }}
 {{^isApiV1}}{{#if nestedModels}}{{>modelClasses}}{{/if}}{{/isApiV1}}
 {{>model}}
-    """{{#vars}}
-    :ivar {{name}}: {{{description}}}{{/vars}}
+    """{{#allResponseVars}}
+    :ivar {{name}}: {{{description}}}{{/allResponseVars}}
     """
 
     def __init__(self, version: Version, payload:{{#hasMultipleResponseModels}}ResponseResource{{/hasMultipleResponseModels}}{{^hasMultipleResponseModels}}Dict[str, Any]{{/hasMultipleResponseModels}}{{#instancePathParams}}, {{paramName}}: {{#if vendorExtensions.x-is-parent-param}}{{{contentType}}}{{else}}Optional[{{{contentType}}}] = None{{/if}}{{/instancePathParams}}):
         super().__init__(version)
 
-        {{#vars}}
-        self.{{name}}: Optional[{{{baseType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{baseName}}}")){{else}}payload.get("{{{baseName}}}"){{/if}}{{/vars}}
+        {{#allResponseVars}}
+        self.{{name}}: Optional[{{{baseType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{baseName}}}")){{else}}payload.get("{{{baseName}}}"){{/if}}{{/allResponseVars}}
 
         {{#if instancePathParams}}
         {{#if ../../isApiV1}}
