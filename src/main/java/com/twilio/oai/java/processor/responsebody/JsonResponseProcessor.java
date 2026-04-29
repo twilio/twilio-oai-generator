@@ -19,10 +19,10 @@ public class JsonResponseProcessor implements ResponseProcessor {
     @Override
     public void process(final CodegenOperation codegenOperation) {
         System.out.println(codegenOperation.operationId);
-        
+
         // delete operation does not have response body
         if (codegenOperation.operationId.toLowerCase().startsWith("delete")) return;
-        
+
         CodegenModel codegenModel = getModel(codegenOperation);
         if (codegenModel == null) return;
         CodegenModel responseModel = codegenModel;
@@ -31,13 +31,14 @@ public class JsonResponseProcessor implements ResponseProcessor {
             responseModel = getModelFromListOperation(codegenModel);
             if (responseModel == null) return;
         }
-        
+
         responseModel.vars.forEach(codegenProperty -> {
             enumProcessorFactory.applyProcessor(codegenProperty);
             Deserializer.addDeserializer(codegenProperty);
+            Deserializer.addSerializer(codegenProperty);
         });
         responseModel.vars.stream().forEach(property -> recursiveModelProcessor.process(property));
-        
+
         // Adding responseModel vars to cache
         responseModel.vars.forEach(ResourceCacheContext.get().getResponse()::add);
     }
@@ -73,7 +74,7 @@ public class JsonResponseProcessor implements ResponseProcessor {
     public String getContentType() {
         return "application/json";
     }
-    
+
     // if $ref, model name: codegenOperation.responses.get(0).content.get("application/json").schema.getRef()
     // output: #/components/schemas/api.v2010.account.message
     private CodegenModel getModel(final CodegenOperation codegenOperation) {
@@ -95,7 +96,7 @@ public class JsonResponseProcessor implements ResponseProcessor {
                     if (ref == null) return null;
                     CodegenModel model = Utility.getModelFromRef(ref);
                     return model;
-                    
+
                 }
             }
         }

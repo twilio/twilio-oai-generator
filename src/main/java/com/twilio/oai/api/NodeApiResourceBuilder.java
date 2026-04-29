@@ -113,10 +113,13 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
             allResponseModels.forEach(model -> {
                 codegenModelResolver.resolveResponseModel(model, this);
 
-                // For V1 APIs with multiple response models, keep original model names distinct
-                // For other cases, rename to resourceName for consistency
+                // For V1 APIs with multiple response models, use sanitized classname to avoid
+                // dot-notation identifiers (e.g. voice.v3.transcription.Foo → VoiceV3TranscriptionFoo).
+                // For other cases, rename to resourceName for consistency.
                 if (!isApiV1 || distinctResponseModels.size() <= 1) {
                     model.setName(resourceName);
+                } else {
+                    model.setName(getModelName(model.getClassname()));
                 }
 
                 model.getVars().forEach(variable -> {

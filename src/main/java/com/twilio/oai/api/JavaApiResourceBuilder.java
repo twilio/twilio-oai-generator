@@ -33,6 +33,8 @@ import java.util.TreeSet;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import com.twilio.oai.java.cache.ResourceCacheContext;
+
 import static com.twilio.oai.common.ApplicationConstants.ACCOUNT_SID_VEND_EXT;
 import static com.twilio.oai.common.ApplicationConstants.ARRAY;
 import static com.twilio.oai.common.ApplicationConstants.ENUM_VARS;
@@ -184,6 +186,16 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
 
             requiredPathParams.addAll(co.pathParams);
             co.vendorExtensions = mapOperation(co);
+
+            // Check if delete operation has a response body defined in the spec
+            if (co.operationId.toLowerCase().startsWith("delete")) {
+                boolean hasDeleteResponseBody = co.responses != null && co.responses.stream()
+                        .anyMatch(response -> response.dataType != null && !response.dataType.isEmpty()
+                                && response.code.startsWith("2") && !response.code.contains("204"));
+                if (hasDeleteResponseBody) {
+                    co.vendorExtensions.put("x-delete-returns-model", true);
+                }
+            }
         });
         return this;
     }

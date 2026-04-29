@@ -124,7 +124,8 @@ public class DirectoryStructureService {
                 }
 
                 updateAccountSidParam(operation);
-                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1()) {
+                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1() 
+                        || "twilio-csharp".equals(ResourceCacheContext.get().getAdditionalProperties().get(GENERATOR_NAME))) {
                     updatePaginationParams(operation);
                 }
 
