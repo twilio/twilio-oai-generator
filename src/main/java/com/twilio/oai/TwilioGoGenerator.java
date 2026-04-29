@@ -26,6 +26,8 @@ import static com.twilio.oai.common.ApplicationConstants.STRING;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
+    private final Set<String> patchOperationIds = new HashSet<>();
+
     @Override
     public void processOpts() {
         super.processOpts();
@@ -93,7 +95,14 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
         if(modelName == null || modelName.isEmpty())
             return modelName;
 
-        // Don't process primitive types or array types
+        // For array types, process the element type
+        if (modelName.startsWith("[]")) {
+            String elementType = modelName.substring(2);
+            String cleanedElement = modelNameWithoutStatusCode(elementType);
+            return "[]" + cleanedElement;
+        }
+
+        // Don't process primitive types
         if (isPrimitiveOrArrayType(modelName)) {
             return modelName;
         }
@@ -241,7 +250,71 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             }
         });
 
+        // Rename request models for PATCH operations from Update* to Patch*
+        renamePatchRequestModels(updatedObjs);
+
         return updatedObjs;
+    }
+
+    private void renamePatchRequestModels(Map<String, ModelsMap> objs) {
+        Map<String, String> renames = new HashMap<>();
+        for (String opId : patchOperationIds) {
+            if (opId.startsWith("Update")) {
+                String suffix = opId.substring("Update".length());
+                renames.put("Update" + suffix + "Request", "Patch" + suffix + "Request");
+            }
+        }
+        if (renames.isEmpty()) return;
+
+        // Rename model keys, names, classnames, and filenames
+        Map<String, ModelsMap> toAdd = new HashMap<>();
+        Set<String> toRemove = new HashSet<>();
+        objs.forEach((key, value) -> {
+            ModelMap modelMap = value.getModels().get(0);
+            CodegenModel model = modelMap.getModel();
+            String newName = renames.get(model.classname);
+            if (newName != null) {
+                toRemove.add(key);
+                model.setName(newName);
+                model.setClassname(newName);
+                model.setClassVarName(newName);
+                model.setClassFilename(model.classFilename.replace("update_", "patch_"));
+                modelMap.setModel(model);
+                toAdd.put(key.replace("Update", "Patch"), value);
+            }
+        });
+        toRemove.forEach(objs::remove);
+        objs.putAll(toAdd);
+
+        // Fix property references across all models
+        objs.forEach((key, value) -> {
+            ModelMap modelMap = value.getModels().get(0);
+            CodegenModel model = modelMap.getModel();
+            for (CodegenProperty property : model.allVars) {
+                String renamed = renames.get(property.dataType);
+                if (renamed != null) property.dataType = renamed;
+                if (property.baseType != null) {
+                    renamed = renames.get(property.baseType);
+                    if (renamed != null) property.baseType = renamed;
+                }
+                if (property.complexType != null) {
+                    renamed = renames.get(property.complexType);
+                    if (renamed != null) property.complexType = renamed;
+                }
+            }
+            for (CodegenProperty property : model.vars) {
+                String renamed = renames.get(property.dataType);
+                if (renamed != null) property.dataType = renamed;
+                if (property.baseType != null) {
+                    renamed = renames.get(property.baseType);
+                    if (renamed != null) property.baseType = renamed;
+                }
+                if (property.complexType != null) {
+                    renamed = renames.get(property.complexType);
+                    if (renamed != null) property.complexType = renamed;
+                }
+            }
+        });
     }
 
     @Override
@@ -288,20 +361,6 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                 .map(CodegenModel.class::cast)
                 .collect(Collectors.toMap(CodegenModel::getName, Function.identity()));
 
-        // get the model for the return type
-        Optional<CodegenModel> returnModel = opList.stream()
-            .filter(op -> ( op.returnType != null && ( op.returnType.contains("Page") || op.returnType.contains("page") ) ) && models.containsKey(op.returnType))
-            .map(op -> models.get(op.returnType))
-            .findFirst();
-
-        if (returnModel.isEmpty() ) {
-            returnModel = opList
-                    .stream()
-                    .filter(op -> models.containsKey(op.returnType))
-                    .map(op -> models.get(op.returnType))
-                .findFirst();
-        }
-
         for (final CodegenOperation co : opList) {
             Utility.populateCrudOperations(co);
             Utility.resolveContentType(co);
@@ -310,6 +369,36 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             // Add isApiV1 flag for template usage
             if (com.twilio.oai.java.cache.ResourceCacheContext.get() != null && com.twilio.oai.java.cache.ResourceCacheContext.get().isV1()) {
                 co.vendorExtensions.put("isApiV1", true);
+            }
+
+            // Rename PATCH operations from Update* to Patch*
+            if (co.httpMethod.equalsIgnoreCase("Patch") && co.nickname.startsWith("Update")) {
+                String suffix = co.nickname.substring("Update".length());
+                co.nickname = "Patch" + suffix;
+
+                // Rename body param from Update*Request to Patch*Request
+                for (CodegenParameter p : co.allParams) {
+                    if (p.paramName.startsWith("Update") && p.paramName.endsWith("Request")) {
+                        String newName = "Patch" + p.paramName.substring("Update".length());
+                        p.paramName = newName;
+                        p.baseName = newName;
+                        p.dataType = newName;
+                    }
+                }
+                for (CodegenParameter p : co.optionalParams) {
+                    if (p.paramName.startsWith("Update") && p.paramName.endsWith("Request")) {
+                        String newName = "Patch" + p.paramName.substring("Update".length());
+                        p.paramName = newName;
+                        p.baseName = newName;
+                        p.dataType = newName;
+                    }
+                }
+                if (co.bodyParam != null && co.bodyParam.paramName.startsWith("Update") && co.bodyParam.paramName.endsWith("Request")) {
+                    String newName = "Patch" + co.bodyParam.paramName.substring("Update".length());
+                    co.bodyParam.paramName = newName;
+                    co.bodyParam.baseName = newName;
+                    co.bodyParam.dataType = newName;
+                }
             }
 
             if (co.nickname.startsWith("List")) {
@@ -327,17 +416,21 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                     }
                 });
 
+                // Resolve return model per operation
+                Optional<CodegenModel> returnModel = Optional.ofNullable(models.get(co.returnType));
+
                 // filter the fields in the model and get only the array typed field. Also, make sure there is only one field of type list/array
-                if (returnModel.isPresent() && returnModel.get().allVars.stream().filter( v -> !v.baseName.contains("schemas")).filter(v -> v.dataType.startsWith("[]")).collect(Collectors.toList()).size() == 1) {
+                if (returnModel.isPresent() && returnModel.get().allVars.stream().filter( v -> !v.baseName.contains("schemas")).filter(v -> v.dataType.startsWith("[]")).filter(v -> !v.baseName.contains("meta")).collect(Collectors.toList()).size() == 1) {
                     CodegenProperty field = returnModel.get().allVars
                             .stream()
                             .filter( v -> !v.baseName.contains("schemas"))
                             .filter(v -> v.dataType.startsWith("[]"))
+                        .filter(v -> !v.baseName.contains("meta"))
                             .collect(toSingleton());
 
                     co.returnContainer = co.returnType;
                     co.returnType = field.dataType;
-                    co.returnBaseType = field.complexType;
+                    co.returnBaseType = field.complexType != null ? field.complexType : field.dataType.replaceFirst("^\\[\\]", "");
 
                     co.vendorExtensions.put("x-payload-field-name", field.name);
                 }
@@ -349,11 +442,12 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
                     CodegenProperty field = returnModelOther.get().allVars
                             .stream()
                             .filter(v -> v.dataType.startsWith("[]"))
+                            .filter(v -> !v.baseName.contains("meta"))
                             .collect(toSingleton());
 
                     co.returnContainer = co.returnType;
                     co.returnType = field.dataType;
-                    co.returnBaseType = field.complexType;
+                    co.returnBaseType = field.complexType != null ? field.complexType : field.dataType.replaceFirst("^\\[\\]", "");
 
                     co.vendorExtensions.put("x-payload-field-name", field.name);
                 }
@@ -400,6 +494,13 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     @Override
     public void processOpenAPI(final OpenAPI openAPI) {
         super.processOpenAPI(openAPI);
+
+        // Collect PATCH operation IDs for model renaming
+        openAPI.getPaths().forEach((name, path) -> {
+            if (path.getPatch() != null && path.getPatch().getOperationId() != null) {
+                patchOperationIds.add(path.getPatch().getOperationId());
+            }
+        });
 
         openAPI
                 .getPaths()
