@@ -35,6 +35,9 @@ public class RubyParameterResolver extends LanguageParamResolver {
         if (codegenParameter.paramName.equals("end")) {
             codegenParameter.paramName = "end_";
         }
+        if (codegenParameter.paramName.equals("version")) {
+            codegenParameter.paramName = "version_";
+        }
         if (codegenParameter.dataType.equals("Integer")) {
             codegenParameter.dataType = "String";
         }
