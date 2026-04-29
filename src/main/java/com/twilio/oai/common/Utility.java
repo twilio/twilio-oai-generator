@@ -154,6 +154,24 @@ public class Utility {
         return models.stream().filter(model -> model.classname.equals(classname)).findFirst();
     }
 
+    public boolean isRecordKeyPrimitive(final List<CodegenModel> models,
+                                        final String className,
+                                        final String recordKey,
+                                        final CodegenOperation codegenOperation) {
+        if (recordKey == null ||
+            !(boolean) codegenOperation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
+            return false;
+        }
+        return models.stream()
+            .filter(model -> model.getClassname().equals(className))
+            .map(CodegenModel::getVars)
+            .flatMap(Collection::stream)
+            .filter(prop -> prop.baseName.equals(recordKey))
+            .findFirst()
+            .map(property -> property.getComplexType() == null)
+            .orElse(false);
+    }
+
     public Optional<CodegenModel> getModelByName(final List<CodegenModel> models, final String modelname) {
         return models.stream().filter(model -> model.name.equals(modelname)).findFirst();
     }
@@ -254,12 +272,23 @@ public class Utility {
         // 1. one when there is no ref, in that case the name will contain parent names.
         // 2. When model is defined using ref(reusable), name will not contain parent names.
         if (StringUtils.isBlank(codegenProperty.openApiType)) {
-            return null;
+            String modelClassName = codegenProperty.isContainer ? codegenProperty.items.openApiType : codegenProperty.openApiType;
+            for (CodegenModel codegenModel : ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
+                if (modelClassName.equals(codegenModel.classname)) {
+                    return codegenModel;
+                }
+            }
         }
-        String modelClassName = codegenProperty.isContainer ? codegenProperty.items.openApiType: codegenProperty.openApiType;
-        for (CodegenModel codegenModel: ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
-            if (modelClassName.equals(codegenModel.classname)) {
-                return codegenModel;
+        // Fallback: try matching by dataType for response properties where openApiType
+        // may not match the model classname (e.g., openApiType is "object" for $ref types).
+        String dataType = codegenProperty.isContainer && codegenProperty.items != null
+            ? codegenProperty.items.dataType
+            : codegenProperty.dataType;
+        if (!StringUtils.isBlank(dataType)) {
+            for (CodegenModel codegenModel : ResourceCacheContext.get().getAllModelsByDefaultGenerator()) {
+                if (dataType.equals(codegenModel.classname)) {
+                    return codegenModel;
+                }
             }
         }
         return null;

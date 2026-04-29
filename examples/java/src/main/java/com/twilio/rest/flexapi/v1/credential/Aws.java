@@ -55,7 +55,8 @@ public class Aws extends Resource {
 
 
 
-    
+
+
 
 
 
@@ -68,7 +69,8 @@ public class Aws extends Resource {
 
 
 
-    
+
+
 
 
 
@@ -81,13 +83,22 @@ public class Aws extends Resource {
     }
 
 
-    
 
 
 
 
 
-    
+
+
+
+
+    public static AwsPatcher patcher(final String pathSid) {
+        return new AwsPatcher(
+             pathSid
+        );
+    }
+
+
 
 
 
@@ -100,7 +111,8 @@ public class Aws extends Resource {
         );
     }
 
-    
+
+
 
 
 
