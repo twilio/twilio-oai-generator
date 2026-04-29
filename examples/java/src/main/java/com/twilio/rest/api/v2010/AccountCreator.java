@@ -126,6 +126,7 @@ public AccountCreator setXTwilioWebhookEnabled(final Account.XTwilioWebhookEnabl
         Account content = Account.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
+
     private void addPostParams(final Request request) {
 
     if (recordingStatusCallback != null) {
