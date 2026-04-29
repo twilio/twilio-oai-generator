@@ -397,6 +397,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
+        if (ResourceCacheContext.get().isV1()) {
+            updateResponseModelV1(codegenPropertyResolver);
+            return this;
+        }
         List<CodegenModel> responseModels = new ArrayList<>();
         Set<CodegenModel> responseInstanceModels = new HashSet<>();
         codegenOperationList.forEach(codegenOperation -> {
@@ -419,6 +423,105 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         this.responseInstanceModels = responseInstanceModels;
         this.apiResponseModels = getDistinctResponseModel(responseModels);
         return this;
+    }
+
+    private void updateResponseModelV1(Resolver<CodegenProperty> codegenPropertyResolver) {
+        Set<CodegenModel> responseInstanceModels = new HashSet<>();
+
+        codegenOperationList.forEach(codegenOperation -> {
+            String operationId = codegenOperation.operationId.toLowerCase();
+            if (operationId.isEmpty()) {
+                throw new RuntimeException("PHP: Operation ID is missing for an operation.");
+            }
+
+            codegenOperation.responses
+                    .stream()
+                    .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
+                    .forEach(response -> {
+                        String modelName = response.baseType;
+                        if (modelName == null) {
+                            return;
+                        }
+
+                        Optional<CodegenModel> responseModel = this.getModel(modelName, codegenOperation);
+                        if (responseModel.isEmpty()) {
+                            return;
+                        }
+
+                        CodegenModel codegenModel = responseModel.get();
+
+                        // Discover nested models from response properties
+                        for (CodegenProperty property : codegenModel.vars) {
+                            recursivelyResolveV1(property);
+                        }
+
+                        // Set data format for nested properties (same as non-V1 path)
+                        codegenModel.allVars.stream()
+                                .filter(var -> var.isModel && var.dataFormat == null)
+                                .forEach(this::setDataFormatForNestedProperties);
+                        codegenModel.vars.stream()
+                                .filter(var -> var.isModel && var.dataFormat == null)
+                                .forEach(this::setDataFormatForNestedProperties);
+
+                        // Resolve properties through PHP property resolver (handles enums -> string, etc.)
+                        codegenModel.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+                        codegenModel.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+
+                        // Handle delete operations with response body
+                        if (operationId.startsWith("delete") && hasDeleteBody(response)) {
+                            codegenOperation.vendorExtensions.put(X_DELETE_HAS_BODY, true);
+                        }
+
+                        responseInstanceModels.add(codegenModel);
+                    });
+        });
+
+        this.responseInstanceModels = responseInstanceModels;
+    }
+
+    /**
+     * Recursively discover nested models from response properties.
+     * Enums are skipped — they are resolved to string by PhpPropertyResolver.
+     */
+    private void recursivelyResolveV1(CodegenProperty codegenProperty) {
+        // Enums in PHP are resolved to string by the property resolver; skip them here
+        if (CodegenUtils.isPropertySchemaEnum(codegenProperty)) {
+            return;
+        }
+
+        String modelName = codegenProperty.dataType;
+
+        // Extract base type from container (e.g. "List<Foo>" -> "Foo")
+        if (modelName != null && modelName.startsWith(LIST_START)) {
+            modelName = modelName.substring(LIST_START.length(), modelName.length() - LIST_END.length());
+        }
+
+        Optional<CodegenModel> model = getModelByClassname(modelName);
+        if (model.isEmpty()) {
+            return;
+        }
+
+        CodegenModel codegenModel = model.get();
+        if (codegenModel.getFormat() != null) {
+            return;
+        }
+
+        for (CodegenProperty property : codegenModel.vars) {
+            recursivelyResolveV1(property);
+        }
+
+        String finalModelName = modelName;
+        if (nestedModels.stream().noneMatch(m -> m.classname.equals(finalModelName))) {
+            nestedModels.add(codegenModel);
+        }
+    }
+
+    private boolean hasDeleteBody(CodegenResponse response) {
+        String statusCode = response.code.trim();
+        if ("204".equals(statusCode) || "205".equals(statusCode) || "304".equals(statusCode)) {
+            return false;
+        }
+        return response.getContent() != null && !response.getContent().isEmpty();
     }
 
     private void setDataFormatForNestedProperties(CodegenProperty codegenProperty) {

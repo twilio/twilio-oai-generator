@@ -29,10 +29,10 @@ class {{classname}}Instance extends InstanceResource
         $this->properties = [
             {{#vars}}
             {{^vendorExtensions.x-deserialize}}
-            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => Values::array_get($payload, '{{name}}'),
+            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => Values::array_get($payload, '{{^isApiV1}}{{name}}{{/isApiV1}}{{#isApiV1}}{{baseName}}{{/isApiV1}}'),
             {{/vendorExtensions.x-deserialize}}
             {{#vendorExtensions.x-deserialize}}
-            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => {{.}}(Values::array_get($payload, '{{name}}')),
+            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => {{.}}(Values::array_get($payload, '{{^isApiV1}}{{name}}{{/isApiV1}}{{#isApiV1}}{{baseName}}{{/isApiV1}}')),
             {{/vendorExtensions.x-deserialize}}
             {{/vars}}
         ];
