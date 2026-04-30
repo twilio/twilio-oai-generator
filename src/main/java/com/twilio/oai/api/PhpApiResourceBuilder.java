@@ -51,6 +51,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         template.clean();
         template.addSupportVersion();
 
+        resolveNestedModelNameCollisions();
+
         codegenOperationList.forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
             if (metaAPIProperties.containsKey("hasInstanceOperation") && !codegenOperation.vendorExtensions.containsKey("x-ignore"))
@@ -73,6 +75,56 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_MODELS);
         });
         return this;
+    }
+
+    /**
+     * Renames nested model classes whose names collide with generated resource file names
+     * (e.g., {apiName}Context, {apiName}List, {apiName}Page, {apiName}Options, {apiName}Instance).
+     * Appends "Model" suffix to the colliding class name and updates all references in other models.
+     */
+    private void resolveNestedModelNameCollisions() {
+        String apiName = getApiName();
+        Set<String> reservedNames = new HashSet<>(Arrays.asList(
+            apiName + "Context",
+            apiName + "List",
+            apiName + "Page",
+            apiName + "Options",
+            apiName + "Instance",
+            apiName + "Models"
+        ));
+
+        Map<String, String> renames = new HashMap<>();
+        for (CodegenModel model : nestedModels) {
+            if (reservedNames.contains(model.classname)) {
+                String newName = model.classname + "Model";
+                renames.put(model.classname, newName);
+                model.classname = newName;
+            }
+        }
+
+        if (renames.isEmpty()) return;
+
+        for (CodegenModel model : nestedModels) {
+            for (CodegenProperty prop : model.vars) {
+                renamePropertyType(prop, renames);
+            }
+            for (CodegenProperty prop : model.allVars) {
+                renamePropertyType(prop, renames);
+            }
+        }
+    }
+
+    private void renamePropertyType(CodegenProperty prop, Map<String, String> renames) {
+        String renamed = renames.get(prop.dataType);
+        if (renamed != null) {
+            prop.dataType = renamed;
+        }
+        if (prop.complexType != null) {
+            renamed = renames.get(prop.complexType);
+            if (renamed != null) {
+                prop.complexType = renamed;
+            }
+        }
     }
 
     /**
@@ -201,8 +253,19 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     private String lowerCasePathParam(String path) {
-        return Pattern.compile("\\{(\\w)").matcher(path)
-                .replaceAll(match -> "{" + match.group(1).toLowerCase());
+        // Lowercase only the first character of path parameters that are all lowercase or start with single capital
+        // Don't lowercase camelCase parameters (e.g., pathVersion) as they need to match the actual variable name
+        java.util.regex.Matcher matcher = Pattern.compile("\\{(\\w+)\\}").matcher(path);
+        StringBuffer result = new StringBuffer();
+        while (matcher.find()) {
+            String param = matcher.group(1);
+            // Check if this is camelCase (has uppercase letter after first char)
+            boolean isCamelCase = param.length() > 1 && param.substring(1).matches(".*[A-Z].*");
+            String replacement = isCamelCase ? "{" + param + "}" : "{" + param.substring(0, 1).toLowerCase() + param.substring(1) + "}";
+            matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(replacement));
+        }
+        matcher.appendTail(result);
+        return result.toString();
     }
 
     private String replaceBraces(String path) {
@@ -235,6 +298,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyIResolver);
         this.codegenOperationList.forEach(co -> {
+            // Apply path parameter renames for collision avoidance (e.g., version -> pathVersion)
+            // This must happen before formatPath() is called in updateApiPath()
+            if (co.path.contains("{version}")) {
+                co.path = co.path.replace("{version}", "{pathVersion}");
+            }
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);

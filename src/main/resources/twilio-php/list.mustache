@@ -60,9 +60,8 @@ class {{apiName}}List extends ListResource
         {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
         ];
         {{#metaProperties.hasListOperation}}
-        {{^isApiV1}}
+
         $this->uri = '{{{apiListPath}}}';
-        {{/isApiV1}}
         {{/metaProperties.hasListOperation}}
     }
 
