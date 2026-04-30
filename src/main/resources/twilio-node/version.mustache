@@ -2,7 +2,7 @@
 import {{domainName}}Base from "../{{domainName}}Base";
 import Version from "../../base/Version";
 {{#versionResources}}
-import { {{importName}} } from "./{{apiVersion}}/{{filename}}";
+import { {{importName}}{{#hasInstanceOperation}}, {{instanceType}}{{/hasInstanceOperation}} } from "./{{apiVersion}}/{{filename}}";
 {{/versionResources}}
 
 export default class {{apiVersionClass}} extends Version {
@@ -24,10 +24,34 @@ export default class {{apiVersionClass}} extends Version {
 
   {{#versionResources}}
   {{#listWithPathParams}}
+  {{#hasInstanceOperation}}
+  /** Accessor for {{mountName}} resource - list operations */
+  {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}): {{type}};
+  /** Accessor for {{mountName}} resource - instance operations */
+  {{mountName}}({{#pathParams}}{{name}}: string, {{/pathParams}}{{instanceParam}}: {{instanceParamType}}): {{instanceType}};
+  /** Implementation */
+  {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}, {{instanceParam}}?: {{instanceParamType}}): {{type}} | {{instanceType}} {
+    const listInstance = {{className}}(this, {{#pathParams}}{{name}}{{^-last}}, {{/-last}}{{/pathParams}});
+    if ({{instanceParam}} !== undefined) {
+      return listInstance.get({{instanceParam}});
+    }
+    return listInstance;
+  }
+  {{/hasInstanceOperation}}
+  {{^hasInstanceOperation}}
+  {{#instanceOnly}}
+  /** Accessor for {{mountName}} resource */
+  {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}): {{type}} {
+    return {{className}}(this)({{#pathParams}}{{name}}{{^-last}}, {{/-last}}{{/pathParams}});
+  }
+  {{/instanceOnly}}
+  {{^instanceOnly}}
   /** Accessor for {{mountName}} resource */
   {{mountName}}({{#pathParams}}{{name}}: string{{^-last}}, {{/-last}}{{/pathParams}}): {{type}} {
     return {{className}}(this, {{#pathParams}}{{name}}{{^-last}}, {{/-last}}{{/pathParams}});
   }
+  {{/instanceOnly}}
+  {{/hasInstanceOperation}}
   {{/listWithPathParams}}
   {{^listWithPathParams}}
   /** Getter for {{mountName}} resource */

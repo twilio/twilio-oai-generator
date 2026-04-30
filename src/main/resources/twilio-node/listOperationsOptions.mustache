@@ -1,3 +1,4 @@
+{{#isApiV1}}{{#vendorExtensions.x-supports-pagination}}
 /**
  * Options to pass to each
  */
@@ -13,6 +14,23 @@ export interface {{vendorExtensions.x-resource-name}}EachOptions {
   /** Upper limit for the number of records to return. each() guarantees never to return more than limit. Default is no limit */
   limit?: number;
 }
+{{/vendorExtensions.x-supports-pagination}}{{/isApiV1}}{{^isApiV1}}
+/**
+ * Options to pass to each
+ */
+export interface {{vendorExtensions.x-resource-name}}EachOptions {
+  {{#allParams}}
+  /** {{{description}}} */
+  "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
+  {{/allParams}}
+  /** Function to process each record. If this and a positional callback are passed, this one will be used */
+  callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void;
+  /** Function to be called upon completion of streaming */
+  done?: Function;
+  /** Upper limit for the number of records to return. each() guarantees never to return more than limit. Default is no limit */
+  limit?: number;
+}
+{{/isApiV1}}
 
 /**
  * Options to pass to list
@@ -26,6 +44,7 @@ export interface {{vendorExtensions.x-resource-name}}Options {
   limit?: number;
 }
 
+{{#isApiV1}}{{#vendorExtensions.x-supports-pagination}}
 /**
  * Options to pass to page
  */
@@ -33,9 +52,20 @@ export interface {{vendorExtensions.x-resource-name}}PageOptions {
   {{#allParams}}
   /** {{{description}}} */
   "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
-  {{/allParams}}{{^isApiV1}}
+  {{/allParams}}
+}
+{{/vendorExtensions.x-supports-pagination}}{{/isApiV1}}{{^isApiV1}}
+/**
+ * Options to pass to page
+ */
+export interface {{vendorExtensions.x-resource-name}}PageOptions {
+  {{#allParams}}
+  /** {{{description}}} */
+  "{{paramName}}"{{^required}}?{{/required}}: {{{dataType}}};
+  {{/allParams}}
   /** Page Number, this value is simply for client state */
   pageNumber?: number;
   /** PageToken provided by the API */
-  pageToken?: string;{{/isApiV1}}
+  pageToken?: string;
 }
+{{/isApiV1}}

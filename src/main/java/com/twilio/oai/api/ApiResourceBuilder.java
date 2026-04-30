@@ -6,6 +6,7 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -235,6 +236,26 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             addOperationName(operation, Operation.FETCH.getValue());
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "list")) {
             addOperationName(operation, Operation.READ.getValue());
+            // For v1 APIs, check if pagination is supported via meta field in response.
+            // For non-v1 APIs, always treat as paginated (standard Twilio APIs always support pagination).
+            boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+            boolean supportsPagination = !isApiV1 || hasMetaInResponse(operation);
+            operationMap.put("x-supports-pagination", supportsPagination);
+
+            // Check if array items are primitives (strings, numbers) vs objects
+            boolean isPrimitiveArray = isRecordKeyArrayOfPrimitives(operation);
+
+            // For non-paginated endpoints with primitive arrays: return string[] directly
+            boolean arrayItemsArePrimitives = !supportsPagination && isPrimitiveArray;
+            operationMap.put("x-array-items-are-primitives", arrayItemsArePrimitives);
+
+            // For paginated endpoints with primitive arrays: Page exists but instances are primitives
+            boolean paginatedPrimitiveItems = supportsPagination && isPrimitiveArray;
+            operationMap.put("x-paginated-primitive-items", paginatedPrimitiveItems);
+            // Also add to metaAPIProperties so it's available at resource level
+            if (paginatedPrimitiveItems) {
+                metaAPIProperties.put("x-paginated-primitive-items", true);
+            }
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "patch")) {
             addOperationName(operation, Operation.PATCH.getValue());
         }
@@ -316,6 +337,75 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
 
     public boolean hasPaginationOperation() {
         return codegenOperationList.stream().anyMatch(co -> co.operationId.toLowerCase().startsWith("list"));
+    }
+
+    /**
+     * Check if any operation in this resource supports pagination (has meta in response).
+     * This is used for conditional Page class generation in Node.js.
+     *
+     * @return true if at least one operation has x-supports-pagination vendor extension set to true
+     */
+    public boolean hasAnyOperationSupportingPagination() {
+        return codegenOperationList.stream()
+            .anyMatch(co -> Boolean.TRUE.equals(co.vendorExtensions.get("x-supports-pagination")));
+    }
+
+    /**
+     * Check if a read operation supports pagination by verifying the response schema has a 'meta' property.
+     * This is used to conditionally generate pagination methods (page, each, getPage) for Node.js.
+     *
+     * @param operation The CodegenOperation to check
+     * @return true if the operation's response schema contains a 'meta' property, false otherwise
+     */
+    protected boolean hasMetaInResponse(CodegenOperation operation) {
+        // Only check for read (list) operations
+        if (!operation.operationId.toLowerCase().startsWith("list")) {
+            return false;
+        }
+
+        // Check if the response schema has a 'meta' property
+        // The response model should contain a 'meta' field alongside the data array
+        Optional<CodegenModel> responseModel = getModelByClassname(operation.returnBaseType);
+
+        if (responseModel.isPresent()) {
+            return responseModel.get().getAllVars().stream()
+                .anyMatch(var -> var.baseName.equals("meta"));
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if the recordKey array contains primitive values (strings, numbers) instead of objects.
+     * This is needed to generate correct code for endpoints like Profile Imports that return
+     * arrays of ImportID strings rather than ImportInstance objects.
+     *
+     * @param operation The list operation to check
+     * @return true if the array items are primitives, false if they are objects
+     */
+    protected boolean isRecordKeyArrayOfPrimitives(CodegenOperation operation) {
+        // Only check for read (list) operations
+        if (!operation.operationId.toLowerCase().startsWith("list") || recordKey == null) {
+            return false;
+        }
+
+        // Get the response model
+        Optional<CodegenModel> responseModel = getModelByClassname(operation.returnBaseType);
+
+        if (responseModel.isPresent()) {
+            // Find the recordKey property in the response model
+            Optional<CodegenProperty> recordKeyProp = responseModel.get().getAllVars().stream()
+                .filter(var -> var.baseName.equals(recordKey))
+                .findFirst();
+
+            if (recordKeyProp.isPresent()) {
+                // If complexType is null, it means the array contains primitives (strings, numbers, etc.)
+                // If complexType is present, the array contains objects
+                return recordKeyProp.get().getComplexType() == null;
+            }
+        }
+
+        return false;
     }
 
     public String getApiName() {

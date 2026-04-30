@@ -23,6 +23,7 @@ import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static com.twilio.oai.common.ApplicationConstants.*;
 
@@ -61,8 +62,32 @@ public class DirectoryStructureService {
         private String listName;
         private boolean listWithPathParams;
 
+        // New fields for function overload support
+        private boolean hasInstanceOperation;
+        private String instanceParam;
+        private String instanceParamType;
+        private String instanceType;
+
+        // True for nested instance-only resources (no companion list path)
+        // e.g. /v1/Stores/{storeId}/Profiles/Bulk — factory takes only version, params passed on call
+        private boolean instanceOnly;
+
+        public boolean getInstanceOnly() {
+            return instanceOnly;
+        }
+
         public boolean getHasPathParams() {
             return pathParams != null && !pathParams.isEmpty();
+        }
+
+        // Custom getters for boolean field listWithPathParams
+        // Need both is() and get() prefixes: is() for Java code, get() for Handlebars templates
+        public boolean isListWithPathParams() {
+            return listWithPathParams;
+        }
+
+        public boolean getListWithPathParams() {
+            return listWithPathParams;
         }
     }
 
@@ -87,7 +112,7 @@ public class DirectoryStructureService {
         additionalProperties.put("isVersionLessSpec", isVersionLess ? "true" : "false");
 
         final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-        additionalProperties.put("isV1ApiSpec", isV1ApiSpec ? "true" : "false");
+        additionalProperties.put("isV1ApiSpec", isV1ApiSpec);  // Boolean, not string!
 
         openAPI.getPaths().forEach(resourceTree::addResource);
         openAPI.getPaths().forEach((name, path) -> {
@@ -109,17 +134,57 @@ public class DirectoryStructureService {
                 operation.setTags(null);
                 operation.addTagsItem(tag);
 
-                if (!tag.contains(PATH_SEPARATOR_PLACEHOLDER)) {
+                // Determine if resource is top-level.
+                // For non-v1: original behavior — top-level if tag has no path separator.
+                // For v1: also check that there are no parent path params in the URL (e.g. /v1/Stores/{id}/Profiles
+                // is nested, not top-level).
+                final String[] pathParts = name.split("/");
+                boolean hasParentPathParams = false;
+                for (int i = 0; i < pathParts.length - 1; i++) {
+                    if (pathParts[i].matches("\\{[^}]+\\}")) {
+                        hasParentPathParams = true;
+                        break;
+                    }
+                }
+
+                final boolean isTopLevel = isV1ApiSpec
+                    ? !tag.contains(PATH_SEPARATOR_PLACEHOLDER) && !hasParentPathParams
+                    : !tag.contains(PATH_SEPARATOR_PLACEHOLDER);
+                final boolean shouldProcessResource = isTopLevel || isV1ApiSpec;
+
+                if (shouldProcessResource) {
                     final DependentResource dependent = generateDependent(name, path, operation);
                     final boolean isIgnoredOperation = Optional.ofNullable(operation.getExtensions())
                         .map(ext -> ext.get(IGNORE_EXTENSION_NAME))
                         .map(Boolean.class::cast)
                         .orElse(false);
-                    if (pathType.isPresent() && pathType.get().equals("list")
-                            && dependent.getHasPathParams() && !isIgnoredOperation) {
-                        dependent.setListWithPathParams(true);
+
+                    // For v1 APIs: set listWithPathParams for nested list resources (with parent path params)
+                    // Non-top-level resources in v1 APIs need parent path parameters passed to constructor
+                    if (pathType.isPresent() && pathType.get().equals("list") && !isIgnoredOperation) {
+                        if (isV1ApiSpec && !isTopLevel) {
+                            // For v1 nested list resources, always set flag (they need parent params)
+                            dependent.setListWithPathParams(true);
+
+                            // For v1 nested resources, we need ALL path params (including parent ones)
+                            // The standard generateDependent filters out parent params, so we need to add them back
+                            List<Parameter> allPathParams = fetchAllPathParams(path, operation);
+                            dependent.setPathParams(allPathParams);
+                        } else if (dependent.getHasPathParams()) {
+                            // For non-v1 or top-level resources, only set if actually has path params
+                            dependent.setListWithPathParams(true);
+                        }
                     }
-                    addVersionResources(dependent, versionResources);
+
+                    // Add to version resources if:
+                    // - It's a top-level resource (non-v1 or v1), OR
+                    // - For v1 APIs: it's a list resource with path params (nested resources)
+                    if (isTopLevel) {
+                        addVersionResources(dependent, versionResources);
+                    } else if (isV1ApiSpec && pathType.isPresent() && pathType.get().equals("list")) {
+                        // For v1 nested list resources, add to version resources
+                        addVersionResources(dependent, versionResources);
+                    }
                 }
 
                 updateAccountSidParam(operation);
@@ -141,10 +206,48 @@ public class DirectoryStructureService {
             });
         });
         pathsToSkipMap.keySet().forEach(openAPI.getPaths()::remove);
+
+        // Second pass: for v1 APIs, add instance-only resources that have no companion list path.
+        // These are nested instance paths (e.g. /v1/Stores/{storeId}/Profiles/Bulk) that were
+        // skipped in the first pass because only list paths were added then.
+        if (isV1ApiSpec) {
+            openAPI.getPaths().forEach((name, path) -> {
+                final Optional<String> pathType = PathUtils.getTwilioExtension(path, "pathType");
+                if (!pathType.isPresent() || !pathType.get().equals("instance")) return;
+
+                final String[] pathParts = name.split("/");
+                boolean hasParentPathParams = false;
+                for (int i = 0; i < pathParts.length - 1; i++) {
+                    if (pathParts[i].matches("\\{[^}]+\\}")) {
+                        hasParentPathParams = true;
+                        break;
+                    }
+                }
+                if (!hasParentPathParams) return; // top-level instance paths already handled
+
+                path.readOperations().stream().findFirst().ifPresent(operation -> {
+                    final DependentResource dependent = generateDependent(name, path, operation);
+                    // Only add if no list path already registered this resource (by filename or mountName)
+                    boolean mountNameAlreadyRegistered = versionResources.values().stream()
+                        .anyMatch(r -> r.getMountName().equals(dependent.getMountName()));
+                    if (!versionResources.containsKey(dependent.getFilename()) && !mountNameAlreadyRegistered) {
+                        dependent.setListWithPathParams(true);
+                        dependent.setInstanceOnly(true);
+                        // Import both ListInstance (factory) and Context (return type)
+                        String contextType = dependent.getResourceName() + "Context";
+                        dependent.setType(contextType);
+                        dependent.setImportName(dependent.getResourceName() + LIST_INSTANCE + ", " + contextType);
+                        List<Parameter> allPathParams = fetchAllPathParams(path, operation);
+                        dependent.setPathParams(allPathParams);
+                        versionResources.put(dependent.getFilename(), dependent);
+                    }
+                });
+            });
+        }
     }
 
     public void addVersionResources(DependentResource dependent, Map<String, DependentResource> versionResources) {
-        final boolean isV1ApiSpec = "true".equals(additionalProperties.get("isV1ApiSpec"));
+        final boolean isV1ApiSpec = Boolean.TRUE.equals(additionalProperties.get("isV1ApiSpec"));
         if (versionResources.containsKey(dependent.getFilename())) {
             DependentResource existingDependent = versionResources.get(dependent.getFilename());
             // For v1Api specs: also replace when new entry has listWithPathParams=true and existing
@@ -155,6 +258,98 @@ public class DirectoryStructureService {
             }
         } else {
             versionResources.put(dependent.getFilename(), dependent);
+        }
+    }
+
+    /**
+     * Enriches version resources with instance operation detection.
+     * For resources that have both list and instance operations, sets:
+     * - hasInstanceOperation: true
+     * - instanceParam: the instance parameter name (e.g., "summaryId")
+     * - instanceType: the Context type name (e.g., "ConversationSummaryContext")
+     */
+    private void enrichVersionResourcesWithInstanceOperations(List<DependentResource> versionResources) {
+        for (DependentResource resource : versionResources) {
+            // Find matching resource in resourceTree to check for instance operations
+            Optional<Resource> resourceOptional = StreamSupport.stream(
+                    resourceTree.getResources().spliterator(), false)
+                .filter(r -> caseResolver.filenameOperation(r.getResourceAliases().getClassName()).equals(resource.getFilename()))
+                .findFirst();
+
+            if (resourceOptional.isEmpty()) {
+                continue;
+            }
+
+            Resource treeResource = resourceOptional.get();
+
+            // Check if this resource has instance operations by looking for pathType: instance
+            boolean hasInstanceOp = openAPI.getPaths().entrySet().stream()
+                .filter(entry -> {
+                    String pathKey = entry.getKey();
+                    PathItem pathItem = entry.getValue();
+                    // Check if this path belongs to the same resource
+                    return pathItem.readOperations().stream()
+                        .anyMatch(op -> {
+                            String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(pathKey, op));
+                            // Compare the tag (converted to filename format) with the resource filename
+                            String tagFilename = caseResolver.filenameOperation(tag);
+                            return tagFilename.equals(resource.getFilename());
+                        });
+                })
+                .anyMatch(entry -> {
+                    PathItem pathItem = entry.getValue();
+                    Optional<String> pathType = PathUtils.getTwilioExtension(pathItem, "pathType");
+                    return pathType.isPresent() && pathType.get().equals("instance");
+                });
+
+            if (hasInstanceOp && resource.isListWithPathParams()) {
+                // Find the instance parameter by looking at instance paths
+                Parameter instanceParam = openAPI.getPaths().entrySet().stream()
+                    .filter(entry -> {
+                        PathItem pathItem = entry.getValue();
+                        Optional<String> pathType = PathUtils.getTwilioExtension(pathItem, "pathType");
+                        if (pathType.isEmpty() || !pathType.get().equals("instance")) {
+                            return false;
+                        }
+
+                        return pathItem.readOperations().stream()
+                            .anyMatch(op -> {
+                                String pathKey = entry.getKey();
+                                String tag = String.join(PATH_SEPARATOR_PLACEHOLDER, resourceTree.ancestors(pathKey, op));
+                                String tagFilename = caseResolver.filenameOperation(tag);
+                                return tagFilename.equals(resource.getFilename());
+                            });
+                    })
+                    .findFirst()
+                    .map(entry -> {
+                        // Get the last path parameter from instance path
+                        String path = entry.getKey();
+                        List<Parameter> allParams = Optional.ofNullable(entry.getValue().readOperations().get(0).getParameters())
+                            .orElse(Collections.emptyList());
+
+                        List<Parameter> pathParams = allParams.stream()
+                            .filter(p -> "path".equals(p.getIn()))
+                            .collect(Collectors.toList());
+
+                        // The instance param is the one not in listWithPathParams
+                        Set<String> listParamNames = resource.getPathParams().stream()
+                            .map(Parameter::getName)
+                            .collect(Collectors.toSet());
+
+                        return pathParams.stream()
+                            .filter(p -> !listParamNames.contains(p.getName()))
+                            .findFirst()
+                            .orElse(null);
+                    })
+                    .orElse(null);
+
+                if (instanceParam != null) {
+                    resource.setHasInstanceOperation(true);
+                    resource.setInstanceParam(caseResolver.pathOperation(instanceParam.getName()));
+                    resource.setInstanceParamType(openApiTypeToNodeType(instanceParam));
+                    resource.setInstanceType(resource.getResourceName() + "Context");
+                }
+            }
         }
     }
 
@@ -192,6 +387,13 @@ public class DirectoryStructureService {
 
     private Stream<Parameter> getParamStream(final Operation operation) {
         return Optional.ofNullable(operation.getParameters()).stream().flatMap(Collection::stream);
+    }
+
+    private String openApiTypeToNodeType(final Parameter param) {
+        if (param.getSchema() == null) return "string";
+        String type = param.getSchema().getType();
+        if ("integer".equals(type) || "number".equals(type)) return "number";
+        return "string";
     }
 
     public DependentResource generateDependent(final String path, final Operation operation) {
@@ -240,6 +442,39 @@ public class DirectoryStructureService {
             resourceList.add(dependent);
     }
 
+    private List<Parameter> fetchAllPathParams(PathItem pathItem, Operation operation) {
+        List<Parameter> params = new ArrayList<>();
+        if (null == operation) return params;
+
+        // Merge path-item level params (which may use $ref components) with operation-level params
+        List<Parameter> allParams = new ArrayList<>();
+        if (pathItem != null && pathItem.getParameters() != null) {
+            pathItem.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .forEach(allParams::add);
+        }
+        if (operation.getParameters() != null) {
+            Set<String> operationParamNames = operation.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .filter(p -> p.getName() != null)
+                    .map(Parameter::getName)
+                    .collect(Collectors.toSet());
+            allParams.removeIf(p -> p.getName() != null && operationParamNames.contains(p.getName()));
+            operation.getParameters().stream()
+                    .map(this::resolveParameterRef)
+                    .filter(Objects::nonNull)
+                    .forEach(allParams::add);
+        }
+
+        // Return ALL path parameters (including parent ones)
+        return allParams.stream()
+                .filter(param -> Objects.nonNull(param.getIn()))
+                .filter(PathUtils::isPathParam)
+                .collect(Collectors.toList());
+    }
+
     private List<Parameter> fetchNonParentPathParams(Operation operation) {
         return fetchNonParentPathParams(null, operation);
     }
@@ -250,7 +485,7 @@ public class DirectoryStructureService {
 
         // For v1Api specs: merge path-item level params (which may use $ref components) with
         // operation-level params so nested list resources can detect their path parameters.
-        final boolean isV1ApiSpec = "true".equals(additionalProperties.get("isV1ApiSpec"));
+        final boolean isV1ApiSpec = Boolean.TRUE.equals(additionalProperties.get("isV1ApiSpec"));
         List<Parameter> allParams = new ArrayList<>();
         if (isV1ApiSpec && pathItem != null && pathItem.getParameters() != null) {
             pathItem.getParameters().stream()
@@ -357,6 +592,10 @@ public class DirectoryStructureService {
                     .stream()
                     .filter(resource -> resource.getVersion().equals(version))
                 .collect(Collectors.toList());
+
+        // Detect instance operations for each version resource
+        enrichVersionResourcesWithInstanceOperations(versionResources);
+
         additionalProperties.put(VERSION_RESOURCES, versionResources);
 
         if (((String)additionalProperties.get(API_VERSION)).equalsIgnoreCase("v2010")) {

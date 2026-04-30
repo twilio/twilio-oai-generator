@@ -14,9 +14,23 @@ class {{apiVersionClass}}(Version):
         :param domain: The Twilio.{{domainPackage}} domain
         """
         super().__init__(domain, "{{version}}")
-        {{#versionResources}}self._{{mountName}}: Optional[{{listName}}] = None
-        {{/versionResources}}
-    {{#versionResources}}@property
+        {{#versionResources}}{{^listWithPathParams}}self._{{mountName}}: Optional[{{listName}}] = None
+        {{/listWithPathParams}}{{/versionResources}}
+    {{#versionResources}}{{#listWithPathParams}}def {{mountName}}(self{{#pathParams}}, {{snake_case name}}: str{{/pathParams}}, {{snake_case resourceName}}_id: str = None):
+        """
+        Access the {{listName}} resource
+        {{#pathParams}}
+        :param {{snake_case name}}: {{description}}
+        {{/pathParams}}
+        :param {{snake_case resourceName}}_id: Optional instance ID to directly access {{resourceName}}Context
+        :returns: {{listName}} instance if {{snake_case resourceName}}_id is None, otherwise {{resourceName}}Context
+        """
+        list_instance = {{listName}}(self{{^instanceOnly}}{{#pathParams}}, {{snake_case name}}{{/pathParams}}{{/instanceOnly}})
+        {{#instanceOnly}}return list_instance({{#pathParams}}{{snake_case name}}{{/pathParams}}){{/instanceOnly}}{{^instanceOnly}}if {{snake_case resourceName}}_id is not None:
+            return list_instance({{snake_case resourceName}}_id)
+        return list_instance{{/instanceOnly}}
+
+    {{/listWithPathParams}}{{^listWithPathParams}}@property
     def {{mountName}}(self) -> {{listName}}:
         if self._{{mountName}} is None:
             self._{{mountName}} = {{listName}}(self{{#param}}, self.domain.twilio.{{param}}{{/param}})
@@ -30,7 +44,7 @@ class {{apiVersionClass}}(Version):
         """
         self._{{mountName}} = value
 {{/param}}
-    {{/versionResources}}def __repr__(self) -> str:
+    {{/listWithPathParams}}{{/versionResources}}def __repr__(self) -> str:
         """
         Provide a friendly representation
         :returns: Machine friendly representation
