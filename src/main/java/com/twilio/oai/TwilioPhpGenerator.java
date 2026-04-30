@@ -194,9 +194,9 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         // Build the apiResource
         PhpApiResources apiResources = builder.build();
 
-        // Register dynamic templates with the full apiResource if there are multiple response models
-        // This must be done after build() so the apiResource has all properties set
-        if (builder.hasMultipleResponseModels()) {
+        // Register dynamic templates for V1 APIs so each response model gets its own file
+        // named {model.classname}Instance.php, matching the class name inside
+        if (builder.hasDynamicResponseModels()) {
             phpApiActionTemplate.addDynamicTemplates(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE_CLASS, apiResources);
         }
 

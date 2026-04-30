@@ -60,12 +60,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
 
-            // Only add regular instance template when there's 1 or fewer response models
-            // OR when isApiV1 is false (dynamic templates only work with API V1 standard)
-            // When there are multiple distinct response models AND isApiV1 is true, dynamic templates will be
-            // added after build() in the generator with the full apiResource
+            // For non-V1 APIs, use the regular instance template.
+            // For V1 APIs, dynamic templates (added after build()) generate one file per response model
+            // with the correct filename ({model.classname}Instance.php) matching the class name.
             boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-            if (!isApiV1 || responseInstanceModels == null || responseInstanceModels.size() <= 1) {
+            if (!isApiV1) {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
             }
 
@@ -77,19 +76,19 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     /**
-     * Returns true if this builder has multiple distinct response models that require
-     * separate instance class files AND isApiV1 is true.
-     * Dynamic instance templates are only generated for API V1 standard specs.
+     * Returns true if this builder has response models that require dynamic instance
+     * class files. For V1 APIs, all response models use dynamic templates so the
+     * filename matches the class name ({model.classname}Instance.php).
      */
-    public boolean hasMultipleResponseModels() {
+    public boolean hasDynamicResponseModels() {
         boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-        return isApiV1 && responseInstanceModels != null && responseInstanceModels.size() > 1;
+        return isApiV1 && responseInstanceModels != null && !responseInstanceModels.isEmpty();
     }
 
     /**
      * Returns the instance class name that the Page's buildInstance() should use.
-     * For V1 APIs, the read/list operation's returnBaseType is the correct class
-     * (e.g., "ListConfiguration200ResponseConfigurations" instead of "Configuration").
+     * For V1 APIs, resolves through the recordKey to find the nested items model
+     * (e.g., "ListConfiguration200ResponseConfigurations" instead of "ListConfiguration200Response").
      * For non-V1 APIs, returns null so the template falls back to apiName.
      */
     public String getPageInstanceClassName() {
@@ -100,12 +99,20 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         for (CodegenOperation op : listOperations) {
             boolean isReadOp = (boolean) op.vendorExtensions.getOrDefault("x-is-read-operation", false);
             if (isReadOp && op.returnBaseType != null) {
+                Optional<CodegenModel> resolved = this.getModel(op.returnBaseType, op);
+                if (resolved.isPresent()) {
+                    return resolved.get().classname;
+                }
                 return op.returnBaseType;
             }
         }
         for (CodegenOperation op : instanceOperations) {
             boolean isFetchOp = (boolean) op.vendorExtensions.getOrDefault("x-is-fetch-operation", false);
             if (isFetchOp && op.returnBaseType != null) {
+                Optional<CodegenModel> resolved = this.getModel(op.returnBaseType, op);
+                if (resolved.isPresent()) {
+                    return resolved.get().classname;
+                }
                 return op.returnBaseType;
             }
         }
