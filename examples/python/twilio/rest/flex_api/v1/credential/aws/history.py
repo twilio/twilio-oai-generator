@@ -44,6 +44,7 @@ class HistoryInstance(InstanceResource):
         self._solution = {
             "sid": sid,
         }
+
         self._context: Optional[HistoryContext] = None
 
     @property

@@ -154,7 +154,12 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
 
     @Override
     public String toParamName(final String name) {
-        return StringHelper.toSnakeCase(twilioCodegen.toParamName(name));
+        String paramName = StringHelper.toSnakeCase(twilioCodegen.toParamName(name));
+        // "version" collides with the SDK base class constructor param `version: Version`
+        if ("version".equals(paramName)) {
+            return "resource_version";
+        }
+        return paramName;
     }
 
     @Override

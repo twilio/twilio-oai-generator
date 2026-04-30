@@ -8,10 +8,12 @@ import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.node.NodeCodegenModelResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -69,8 +71,16 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                     co.produces = null;
                 }
             } else if (co.nickname.startsWith("list")) {
-                addOperationName(co, "Page");
-                co.returnType = apiName + "Page";
+                // Check if this list operation supports pagination (has meta in response)
+                boolean supportsPagination = (Boolean) co.vendorExtensions.getOrDefault("x-supports-pagination", true);
+                if (isApiV1 && !supportsPagination) {
+                    // For non-paginated Sierra (v1) list operations, return array of instances directly
+                    addOperationName(co, "List");
+                    co.returnType = resourceName + "[]";
+                } else {
+                    addOperationName(co, "Page");
+                    co.returnType = apiName + "Page";
+                }
             } else {
                 co.returnType = resourceName;
             }
@@ -182,6 +192,7 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
 
         return this;
     }
+
 
     @Override
     public ApiResourceBuilder updateModel(Resolver<CodegenModel> codegenModelResolver) {

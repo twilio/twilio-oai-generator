@@ -2,10 +2,10 @@
 {{#resources}}
 
 import { inspect, InspectOptions } from "util";
-{{#hasPaginationOperation}}{{#isApiV1}}import TokenPage, { TokenPaginationPayload } from "{{apiVersionPath}}/../../base/TokenPage";{{/isApiV1}}{{^isApiV1}}
+{{#hasOperationWithPagination}}{{#isApiV1}}import TokenPage, { TokenPaginationPayload } from "{{apiVersionPath}}/../../base/TokenPage";{{/isApiV1}}{{^isApiV1}}
 import Page, { TwilioResponsePayload } from "{{apiVersionPath}}/../../base/Page";{{/isApiV1}}
 import Response from "{{apiVersionPath}}/../../http/response";
-{{/hasPaginationOperation}}
+{{/hasOperationWithPagination}}
 import {{apiVersionClass}} from "{{apiVersionPath}}/{{apiVersionClass}}";
 const deserialize = require("{{apiVersionPath}}/../../base/deserialize");
 const serialize = require("{{apiVersionPath}}/../../base/serialize");
@@ -215,14 +215,16 @@ export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathP
 {{#operations}}
 {{^vendorExtensions.x-twilio.ignoreOperation}}
 {{#vendorExtensions.x-is-list-operation}}
-  instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: {{returnType}}) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
-{{>operation}}
+  {{#vendorExtensions.x-array-items-are-primitives}}instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: string[]) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: string[]) => any): Promise<string[]> {
+{{/vendorExtensions.x-array-items-are-primitives}}{{^vendorExtensions.x-array-items-are-primitives}}instance.{{vendorExtensions.x-name-lower}} = function {{vendorExtensions.x-name-lower}}({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: {{returnType}}) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: {{returnType}}) => any): Promise<{{returnType}}> {
+{{/vendorExtensions.x-array-items-are-primitives}}{{>operation}}
 {{^vendorExtensions.x-is-read-operation}}
     }
 {{/vendorExtensions.x-is-read-operation}}
 
-  instance.{{vendorExtensions.x-name-lower}}WithHttpInfo = function {{vendorExtensions.x-name-lower}}WithHttpInfo({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: ApiResponse<{{returnType}}>) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>> {
-{{>operationWithHttpInfo}}
+  {{#vendorExtensions.x-array-items-are-primitives}}instance.{{vendorExtensions.x-name-lower}}WithHttpInfo = function {{vendorExtensions.x-name-lower}}WithHttpInfo({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: ApiResponse<string[]>) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: ApiResponse<string[]>) => any): Promise<ApiResponse<string[]>> {
+{{/vendorExtensions.x-array-items-are-primitives}}{{^vendorExtensions.x-array-items-are-primitives}}instance.{{vendorExtensions.x-name-lower}}WithHttpInfo = function {{vendorExtensions.x-name-lower}}WithHttpInfo({{#hasParams}}params{{^hasRequiredParams}}?{{/hasRequiredParams}}: {{#bodyParam}}{{dataType}}{{/bodyParam}}{{^bodyParam}}{{vendorExtensions.x-resource-name}}{{vendorExtensions.x-name}}Options{{/bodyParam}}{{^hasRequiredParams}} | ((error: Error | null, items: ApiResponse<{{returnType}}>) => any){{/hasRequiredParams}}{{#bodyParams.0}}, headers?: any{{/bodyParams.0}},{{/hasParams}} callback?: (error: Error | null, items: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>> {
+{{/vendorExtensions.x-array-items-are-primitives}}{{>operationWithHttpInfo}}
 {{^vendorExtensions.x-is-read-operation}}
     }
 {{/vendorExtensions.x-is-read-operation}}
@@ -241,5 +243,5 @@ export function {{apiName}}ListInstance(version: {{apiVersionClass}}{{#listPathP
   return instance;
 }
 {{^instancePath}}{{>responseModel}}{{/instancePath}}
-{{#hasPaginationOperation}}{{#isApiV1}}{{>tokenPagination}}{{/isApiV1}}{{^isApiV1}}{{>pagination}}{{/isApiV1}}{{/hasPaginationOperation}}
+{{#hasOperationWithPagination}}{{#isApiV1}}{{>tokenPagination}}{{/isApiV1}}{{^isApiV1}}{{>pagination}}{{/isApiV1}}{{/hasOperationWithPagination}}
 {{/resources}}

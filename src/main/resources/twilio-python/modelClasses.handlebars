@@ -12,6 +12,6 @@
         def to_dict(self):
             return {
                 {{#vars}}
-                    "{{{vendorExtensions.json-name}}}": {{#if complexType}}{{#containerType}}[{{name}}.to_dict() for {{name}} in self.{{name}}] if self.{{name}} is not None else None{{/containerType}}{{^containerType}}self.{{name}}{{^vendorExtensions.x-enum-object}}.to_dict() if self.{{name}} is not None else None {{/vendorExtensions.x-enum-object}}{{/containerType}}{{else}}self.{{name}}{{/if}},{{/vars}}
+                    "{{{vendorExtensions.json-name}}}": {{#if complexType}}{{#isArray}}[{{name}}.to_dict() for {{name}} in self.{{name}}] if self.{{name}} is not None else None{{/isArray}}{{#isMap}}{k: v.to_dict() for k, v in self.{{name}}.items()} if self.{{name}} is not None else None{{/isMap}}{{^isArray}}{{^isMap}}{{^containerType}}self.{{name}}{{^vendorExtensions.x-enum-object}}.to_dict() if self.{{name}} is not None else None {{/vendorExtensions.x-enum-object}}{{/containerType}}{{/isMap}}{{/isArray}}{{else}}self.{{name}}{{/if}},{{/vars}}
             }
 {{/hasVars}}{{/vendorExtensions.part-of-response-model}}{{/models}}

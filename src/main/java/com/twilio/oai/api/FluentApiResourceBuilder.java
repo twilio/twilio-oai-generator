@@ -245,6 +245,10 @@ public abstract class FluentApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public FluentApiResources build() {
+        // Propagate paginated primitive items flag to responseModel vendor extensions
+        if (Boolean.TRUE.equals(metaAPIProperties.get("x-paginated-primitive-items")) && responseModel != null) {
+            responseModel.vendorExtensions.put("x-paginated-primitive-items", true);
+        }
         return new FluentApiResources(this);
     }
 

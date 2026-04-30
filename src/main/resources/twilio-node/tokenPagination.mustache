@@ -1,6 +1,6 @@
 {{#operations}}
 {{#vendorExtensions.x-is-read-operation}}
-export class {{apiName}}Page extends TokenPage<{{apiVersionClass}}, {{apiName}}Payload, {{apiName}}Resource, {{instanceName}}> {
+export class {{apiName}}Page extends TokenPage<{{apiVersionClass}}, {{apiName}}Payload, {{apiName}}Resource, {{#hasPaginatedPrimitiveItems}}string{{/hasPaginatedPrimitiveItems}}{{^hasPaginatedPrimitiveItems}}{{instanceName}}{{/hasPaginatedPrimitiveItems}}> {
 /**
 * Initialize the {{apiName}}Page
 *
@@ -19,7 +19,11 @@ constructor(version: {{apiVersionClass}}, response: Response<string>, uri: strin
     *
     * @param payload - Payload response from the API
     */
-    getInstance(payload: {{apiName}}Resource): {{instanceName}} {
+    getInstance(payload: {{apiName}}Resource): {{#hasPaginatedPrimitiveItems}}string{{/hasPaginatedPrimitiveItems}}{{^hasPaginatedPrimitiveItems}}{{instanceName}}{{/hasPaginatedPrimitiveItems}} {
+    {{#hasPaginatedPrimitiveItems}}
+    // Array items are primitives (strings, numbers), return directly
+    return payload as any;
+    {{/hasPaginatedPrimitiveItems}}{{^hasPaginatedPrimitiveItems}}
     return new {{instanceName}}(
     this._version,
     payload,
@@ -27,6 +31,7 @@ constructor(version: {{apiVersionClass}}, response: Response<string>, uri: strin
         this._solution.{{paramName}},
 {{/listPathParams}}
     );
+    {{/hasPaginatedPrimitiveItems}}
     }
 
     [inspect.custom](depth: any, options: InspectOptions) {

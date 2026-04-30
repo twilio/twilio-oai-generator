@@ -1,3 +1,32 @@
+{{^vendorExtensions.x-supports-pagination}}
+  /**
+   * Lists {{instanceName}} records from the API as a list.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { {{vendorExtensions.x-resource-name}}Options } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records
+   */
+  {{#vendorExtensions.x-array-items-are-primitives}}{{^hasRequiredParams}}list(callback?: (error: Error | null, items: string[]) => any): Promise<string[]>;{{/hasRequiredParams}}
+  {{#hasParams}}list(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: string[]) => any): Promise<string[]>;{{/hasParams}}{{/vendorExtensions.x-array-items-are-primitives}}{{^vendorExtensions.x-array-items-are-primitives}}{{^hasRequiredParams}}list(callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;{{/hasRequiredParams}}
+  {{#hasParams}}list(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;{{/hasParams}}{{/vendorExtensions.x-array-items-are-primitives}}
+  /**
+   * Lists {{instanceName}} records from the API as a list with HTTP metadata.
+   *
+   * Returns all records along with HTTP metadata from the first page fetched.
+   *
+   * If a function is passed as the first argument, it will be used as the callback
+   * function.
+   *
+   * @param { {{vendorExtensions.x-resource-name}}Options } [params] - Options for request
+   * @param { function } [callback] - Callback to handle list of records with metadata
+   */
+  {{#vendorExtensions.x-array-items-are-primitives}}{{^hasRequiredParams}}listWithHttpInfo(callback?: (error: Error | null, items: ApiResponse<string[]>) => any): Promise<ApiResponse<string[]>>;{{/hasRequiredParams}}
+  {{#hasParams}}listWithHttpInfo(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: ApiResponse<string[]>) => any): Promise<ApiResponse<string[]>>;{{/hasParams}}{{/vendorExtensions.x-array-items-are-primitives}}{{^vendorExtensions.x-array-items-are-primitives}}{{^hasRequiredParams}}listWithHttpInfo(callback?: (error: Error | null, items: ApiResponse<{{instanceName}}[]>) => any): Promise<ApiResponse<{{instanceName}}[]>>;{{/hasRequiredParams}}
+  {{#hasParams}}listWithHttpInfo(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: ApiResponse<{{instanceName}}[]>) => any): Promise<ApiResponse<{{instanceName}}[]>>;{{/hasParams}}{{/vendorExtensions.x-array-items-are-primitives}}
+{{/vendorExtensions.x-supports-pagination}}
+{{#vendorExtensions.x-supports-pagination}}
   /**
    * Streams {{instanceName}} records from the API.
    *
@@ -13,8 +42,8 @@
    * @param { {{vendorExtensions.x-resource-name}}EachOptions } [params] - Options for request
    * @param { function } [callback] - Function to process each record
    */
-  {{^hasRequiredParams}}each(callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;{{/hasRequiredParams}}
-  each(params: {{vendorExtensions.x-resource-name}}EachOptions, callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
+  {{^hasRequiredParams}}each(callback?: (item: {{#vendorExtensions.x-paginated-primitive-items}}string{{/vendorExtensions.x-paginated-primitive-items}}{{^vendorExtensions.x-paginated-primitive-items}}{{instanceName}}{{/vendorExtensions.x-paginated-primitive-items}}, done: (err?: Error) => void) => void): void;{{/hasRequiredParams}}
+  each(params: {{vendorExtensions.x-resource-name}}EachOptions, callback?: (item: {{#vendorExtensions.x-paginated-primitive-items}}string{{/vendorExtensions.x-paginated-primitive-items}}{{^vendorExtensions.x-paginated-primitive-items}}{{instanceName}}{{/vendorExtensions.x-paginated-primitive-items}}, done: (err?: Error) => void) => void): void;
   /**
    * Streams {{instanceName}} records from the API with HTTP metadata captured per page.
    *
@@ -30,8 +59,8 @@
    * @param { {{vendorExtensions.x-resource-name}}EachOptions } [params] - Options for request
    * @param { function } [callback] - Function to process each record
    */
-  {{^hasRequiredParams}}eachWithHttpInfo(callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;{{/hasRequiredParams}}
-  eachWithHttpInfo(params: {{vendorExtensions.x-resource-name}}EachOptions, callback?: (item: {{instanceName}}, done: (err?: Error) => void) => void): void;
+  {{^hasRequiredParams}}eachWithHttpInfo(callback?: (item: {{#vendorExtensions.x-paginated-primitive-items}}string{{/vendorExtensions.x-paginated-primitive-items}}{{^vendorExtensions.x-paginated-primitive-items}}{{instanceName}}{{/vendorExtensions.x-paginated-primitive-items}}, done: (err?: Error) => void) => void): void;{{/hasRequiredParams}}
+  eachWithHttpInfo(params: {{vendorExtensions.x-resource-name}}EachOptions, callback?: (item: {{#vendorExtensions.x-paginated-primitive-items}}string{{/vendorExtensions.x-paginated-primitive-items}}{{^vendorExtensions.x-paginated-primitive-items}}{{instanceName}}{{/vendorExtensions.x-paginated-primitive-items}}, done: (err?: Error) => void) => void): void;
   /**
    * Retrieve a single target page of {{instanceName}} records from the API.
    *
@@ -59,8 +88,9 @@
    * @param { {{vendorExtensions.x-resource-name}}Options } [params] - Options for request
    * @param { function } [callback] - Callback to handle list of records
    */
-  {{^hasRequiredParams}}list(callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;{{/hasRequiredParams}}
-  list(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;
+  {{#vendorExtensions.x-paginated-primitive-items}}{{^hasRequiredParams}}list(callback?: (error: Error | null, items: string[]) => any): Promise<string[]>;{{/hasRequiredParams}}
+  list(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: string[]) => any): Promise<string[]>;{{/vendorExtensions.x-paginated-primitive-items}}{{^vendorExtensions.x-paginated-primitive-items}}{{^hasRequiredParams}}list(callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;{{/hasRequiredParams}}
+  list(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: {{instanceName}}[]) => any): Promise<{{instanceName}}[]>;{{/vendorExtensions.x-paginated-primitive-items}}
   /**
    * Lists {{instanceName}} records from the API as a list with HTTP metadata.
    *
@@ -72,8 +102,9 @@
    * @param { {{vendorExtensions.x-resource-name}}Options } [params] - Options for request
    * @param { function } [callback] - Callback to handle list of records with metadata
    */
-  {{^hasRequiredParams}}listWithHttpInfo(callback?: (error: Error | null, items: ApiResponse<{{instanceName}}[]>) => any): Promise<ApiResponse<{{instanceName}}[]>>;{{/hasRequiredParams}}
-  listWithHttpInfo(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: ApiResponse<{{instanceName}}[]>) => any): Promise<ApiResponse<{{instanceName}}[]>>;
+  {{#vendorExtensions.x-paginated-primitive-items}}{{^hasRequiredParams}}listWithHttpInfo(callback?: (error: Error | null, items: ApiResponse<string[]>) => any): Promise<ApiResponse<string[]>>;{{/hasRequiredParams}}
+  listWithHttpInfo(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: ApiResponse<string[]>) => any): Promise<ApiResponse<string[]>>;{{/vendorExtensions.x-paginated-primitive-items}}{{^vendorExtensions.x-paginated-primitive-items}}{{^hasRequiredParams}}listWithHttpInfo(callback?: (error: Error | null, items: ApiResponse<{{instanceName}}[]>) => any): Promise<ApiResponse<{{instanceName}}[]>>;{{/hasRequiredParams}}
+  listWithHttpInfo(params: {{vendorExtensions.x-resource-name}}Options, callback?: (error: Error | null, items: ApiResponse<{{instanceName}}[]>) => any): Promise<ApiResponse<{{instanceName}}[]>>;{{/vendorExtensions.x-paginated-primitive-items}}
   /**
    * Retrieve a single page of {{instanceName}} records from the API.
    *
@@ -100,4 +131,5 @@
    */
   {{^hasRequiredParams}}pageWithHttpInfo(callback?: (error: Error | null, items: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>>;{{/hasRequiredParams}}
   pageWithHttpInfo(params: {{vendorExtensions.x-resource-name}}PageOptions, callback?: (error: Error | null, items: ApiResponse<{{returnType}}>) => any): Promise<ApiResponse<{{returnType}}>>;
+{{/vendorExtensions.x-supports-pagination}}
 
