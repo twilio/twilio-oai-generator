@@ -90,7 +90,7 @@
     ));
     {{/vendorExtensions.x-array-items-are-primitives}}
     {{/vendorExtensions.x-supports-pagination}}{{/isApiV1}}{{^isApiV1}}
-    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, instance._uri, data, instance._solution));
+    operationPromise = operationPromise.then(payload => new {{returnType}}(operationVersion, payload, instance._solution));
     {{/isApiV1}}
     {{/vendorExtensions.x-is-read-operation}}
 

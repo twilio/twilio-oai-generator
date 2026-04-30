@@ -73,13 +73,13 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
             } else if (co.nickname.startsWith("list")) {
                 // Check if this list operation supports pagination (has meta in response)
                 boolean supportsPagination = (Boolean) co.vendorExtensions.getOrDefault("x-supports-pagination", true);
-                if (supportsPagination) {
-                    addOperationName(co, "Page");
-                    co.returnType = apiName + "Page";
-                } else {
-                    // For non-paginated list operations, return array of instances directly
+                if (isApiV1 && !supportsPagination) {
+                    // For non-paginated Sierra (v1) list operations, return array of instances directly
                     addOperationName(co, "List");
                     co.returnType = resourceName + "[]";
+                } else {
+                    addOperationName(co, "Page");
+                    co.returnType = apiName + "Page";
                 }
             } else {
                 co.returnType = resourceName;

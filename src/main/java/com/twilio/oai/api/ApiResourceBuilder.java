@@ -6,6 +6,7 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
@@ -235,8 +236,10 @@ public abstract class ApiResourceBuilder implements IApiResourceBuilder {
             addOperationName(operation, Operation.FETCH.getValue());
         } else if (StringUtils.startsWithIgnoreCase(operation.operationId, "list")) {
             addOperationName(operation, Operation.READ.getValue());
-            // Add flag to indicate if pagination is supported (for Node.js conditional pagination)
-            boolean supportsPagination = hasMetaInResponse(operation);
+            // For v1 APIs, check if pagination is supported via meta field in response.
+            // For non-v1 APIs, always treat as paginated (standard Twilio APIs always support pagination).
+            boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+            boolean supportsPagination = !isApiV1 || hasMetaInResponse(operation);
             operationMap.put("x-supports-pagination", supportsPagination);
 
             // Check if array items are primitives (strings, numbers) vs objects

@@ -128,7 +128,7 @@
     let operationPromise = operationVersion.page({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers}).then((response) : ApiResponse<{{returnType}}> => ({
       statusCode: response.statusCode,
       headers: response.headers,
-      body: new {{returnType}}(operationVersion, response, instance._uri, data, instance._solution)
+      body: new {{returnType}}(operationVersion, response, instance._solution)
     }));
     {{/isApiV1}}
     {{/vendorExtensions.x-is-read-operation}}
