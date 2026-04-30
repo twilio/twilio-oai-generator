@@ -289,7 +289,7 @@ public class Fleet extends Resource {
     @Getter
     private final List<Map<String, Integer>> testNestedArray;
     @Getter
-    private final List<Map<String, VersionlessFleetTestNestedObjectNestedObject>> testNestedArrayOfObjects;
+    private final List<Map<String, VersionlessFleetTestNestedArrayOfObjectsValue>> testNestedArrayOfObjects;
     @Getter
     private final VersionlessFleetTestNestedObject testNestedObject;
 
@@ -306,7 +306,7 @@ private Fleet(
     @JsonProperty("test_nested_array")
     final List<Map<String, Integer>> testNestedArray, 
     @JsonProperty("test_nested_array_of_objects")
-    final List<Map<String, VersionlessFleetTestNestedObjectNestedObject>> testNestedArrayOfObjects, 
+    final List<Map<String, VersionlessFleetTestNestedArrayOfObjectsValue>> testNestedArrayOfObjects, 
     @JsonProperty("test_nested_object")
     final VersionlessFleetTestNestedObject testNestedObject
 ){
