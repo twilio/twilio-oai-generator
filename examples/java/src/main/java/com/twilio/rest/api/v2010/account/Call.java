@@ -40,6 +40,7 @@ import java.util.Objects;
 import com.twilio.base.Resource;
 import java.io.IOException;
 import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.twilio.base.Resource;
@@ -130,6 +131,7 @@ public enum Status {
         this.value = value;
     }
 
+    @JsonValue
     public String toString() {
         return value;
     }
@@ -153,6 +155,7 @@ public enum AccountStatus {
         this.value = value;
     }
 
+    @JsonValue
     public String toString() {
         return value;
     }
@@ -176,6 +179,7 @@ public enum CallAccountStatus {
         this.value = value;
     }
 
+    @JsonValue
     public String toString() {
         return value;
     }

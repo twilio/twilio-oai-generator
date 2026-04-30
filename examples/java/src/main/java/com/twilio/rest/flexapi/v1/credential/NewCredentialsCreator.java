@@ -236,6 +236,7 @@ public NewCredentialsCreator setSomeA2PThing(final String someA2PThing){
         NewCredentials content = NewCredentials.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
+
     private void addPostParams(final Request request) {
 
     if (testString != null) {
