@@ -53,6 +53,7 @@ public class ApiResources {
 
     public boolean getHasPaginatedPrimitiveItems() {
         return hasPaginatedPrimitiveItems;
+    }
     public boolean getHasOperationWithPagination() {
         return hasOperationWithPagination;
     }
