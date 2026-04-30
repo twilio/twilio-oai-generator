@@ -1,7 +1,7 @@
 FROM php:7.4
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
-RUN apt-get update -y && apt-get install -y git zip autoconf g++ make
+RUN apt-get update -y && apt-get install -y git zip
 
 ENV XDEBUG_MODE=coverage
 ENV PATH="vendor/bin:$PATH"
