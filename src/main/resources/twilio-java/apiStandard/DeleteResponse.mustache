@@ -1,26 +1,26 @@
 @JsonIgnoreProperties(ignoreUnknown = true)
-public static class Create{{resourceName}}Response extends Resource {
-{{#responseCreate}}
+public static class Delete{{resourceName}}Response extends Resource {
+{{#responseDelete}}
     @Getter
     private final {{{dataType}}} {{name}};
-{{/responseCreate}}
+{{/responseDelete}}
 
     @JsonCreator
-    private Create{{resourceName}}Response(
-    {{#responseCreate}}
+    private Delete{{resourceName}}Response(
+    {{#responseDelete}}
         @JsonProperty("{{baseName}}")
         final {{{dataType}}} {{name}}{{^-last}}, {{/-last}}
-    {{/responseCreate}}
+    {{/responseDelete}}
     ){
-    {{#responseCreate}}
+    {{#responseDelete}}
         this.{{name}} = {{name}};
-    {{/responseCreate}}
+    {{/responseDelete}}
     }
 
-    public static Create{{resourceName}}Response fromJson(final InputStream json, final ObjectMapper objectMapper) {
+    public static Delete{{resourceName}}Response fromJson(final InputStream json, final ObjectMapper objectMapper) {
     // Convert all checked exceptions to Runtime
         try {
-            return objectMapper.readValue(json, Create{{resourceName}}Response.class);
+            return objectMapper.readValue(json, Delete{{resourceName}}Response.class);
         } catch (final JsonMappingException | JsonParseException e) {
             throw new ApiException(e.getMessage(), e);
         } catch (final IOException e) {
@@ -37,23 +37,23 @@ public static class Create{{resourceName}}Response extends Resource {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Create{{resourceName}}Response other = (Create{{resourceName}}Response) o;
+        Delete{{resourceName}}Response other = (Delete{{resourceName}}Response) o;
         return
-        {{#responseCreate}}
-                        Objects.equals({{name}}, other.{{name}}){{^-last}} && {{/-last}}
-        {{/responseCreate}}
-        {{^responseCreate}}
-        true
-        {{/responseCreate}}
+        {{#responseDelete}}
+                Objects.equals({{name}}, other.{{name}}){{^-last}} && {{/-last}}
+        {{/responseDelete}}
+        {{^responseDelete}}
+                true
+        {{/responseDelete}}
         ;
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(
-            {{#responseCreate}}
+            {{#responseDelete}}
                 {{name}}{{^-last}}, {{/-last}}
-            {{/responseCreate}}
+            {{/responseDelete}}
         );
     }
 }

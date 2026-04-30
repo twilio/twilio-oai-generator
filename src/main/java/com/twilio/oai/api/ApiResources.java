@@ -29,6 +29,7 @@ public class ApiResources {
     boolean hasPaginatedPrimitiveItems;
     Set<CodegenModel> nestedModels;
     private Boolean isApiV1 = null; // true or NULL
+    private Boolean deleteHasBody = null; // true or NULL
 
     public ApiResources(ApiResourceBuilder apiResourceBuilder) {
         apiOperations = apiResourceBuilder.codegenOperationList;
@@ -52,5 +53,7 @@ public class ApiResources {
 
     public boolean getHasPaginatedPrimitiveItems() {
         return hasPaginatedPrimitiveItems;
+    public boolean getHasOperationWithPagination() {
+        return hasOperationWithPagination;
     }
 }
