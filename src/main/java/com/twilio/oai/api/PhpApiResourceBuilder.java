@@ -91,6 +91,12 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
      * (e.g., "ListConfiguration200ResponseConfigurations" instead of "ListConfiguration200Response").
      * For non-V1 APIs, returns null so the template falls back to apiName.
      */
+    
+    
+    
+    
+    
+    
     public String getPageInstanceClassName() {
         boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
         if (!isApiV1) {
@@ -113,32 +119,6 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
                 if (resolved.isPresent()) {
                     return resolved.get().classname;
                 }
-                return op.returnBaseType;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Returns the instance class name that the Page's buildInstance() should use.
-     * For V1 APIs, the read/list operation's returnBaseType is the correct class
-     * (e.g., "ListConfiguration200ResponseConfigurations" instead of "Configuration").
-     * For non-V1 APIs, returns null so the template falls back to apiName.
-     */
-    public String getPageInstanceClassName() {
-        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-        if (!isApiV1) {
-            return null;
-        }
-        for (CodegenOperation op : listOperations) {
-            boolean isReadOp = (boolean) op.vendorExtensions.getOrDefault("x-is-read-operation", false);
-            if (isReadOp && op.returnBaseType != null) {
-                return op.returnBaseType;
-            }
-        }
-        for (CodegenOperation op : instanceOperations) {
-            boolean isFetchOp = (boolean) op.vendorExtensions.getOrDefault("x-is-fetch-operation", false);
-            if (isFetchOp && op.returnBaseType != null) {
                 return op.returnBaseType;
             }
         }
