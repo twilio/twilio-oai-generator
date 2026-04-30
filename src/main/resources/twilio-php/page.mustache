@@ -27,11 +27,11 @@ class {{apiName}}Page extends {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isAp
 
     /**
      * @param array $payload Payload response from the API
-     * @return {{apiName}}Instance \Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}}\{{apiName}}Instance
+     * @return {{^isApiV1}}{{apiName}}{{/isApiV1}}{{#isApiV1}}{{#pageInstanceClassName}}{{pageInstanceClassName}}{{/pageInstanceClassName}}{{^pageInstanceClassName}}{{apiName}}{{/pageInstanceClassName}}{{/isApiV1}}Instance \Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}}\{{^isApiV1}}{{apiName}}{{/isApiV1}}{{#isApiV1}}{{#pageInstanceClassName}}{{pageInstanceClassName}}{{/pageInstanceClassName}}{{^pageInstanceClassName}}{{apiName}}{{/pageInstanceClassName}}{{/isApiV1}}Instance
      */
-    public function buildInstance(array $payload): {{apiName}}Instance
+    public function buildInstance(array $payload): {{^isApiV1}}{{apiName}}{{/isApiV1}}{{#isApiV1}}{{#pageInstanceClassName}}{{pageInstanceClassName}}{{/pageInstanceClassName}}{{^pageInstanceClassName}}{{apiName}}{{/pageInstanceClassName}}{{/isApiV1}}Instance
     {
-        return new {{apiName}}Instance($this->version, $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{paramName}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
+        return new {{^isApiV1}}{{apiName}}{{/isApiV1}}{{#isApiV1}}{{#pageInstanceClassName}}{{pageInstanceClassName}}{{/pageInstanceClassName}}{{^pageInstanceClassName}}{{apiName}}{{/pageInstanceClassName}}{{/isApiV1}}Instance($this->version, $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{paramName}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
     }
 
     /**

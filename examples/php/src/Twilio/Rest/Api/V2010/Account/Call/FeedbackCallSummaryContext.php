@@ -59,14 +59,18 @@ class FeedbackCallSummaryContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param \DateTime $endDate
+     
      * @param \DateTime $startDate
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(\DateTime $endDate, \DateTime $startDate, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -85,8 +89,11 @@ class FeedbackCallSummaryContext extends InstanceContext
     /**
      * Update the FeedbackCallSummaryInstance
      *
+     
      * @param \DateTime $endDate
+     
      * @param \DateTime $startDate
+     
      * @param array|Options $options Optional Arguments
      * @return FeedbackCallSummaryInstance Updated FeedbackCallSummaryInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -106,8 +113,11 @@ class FeedbackCallSummaryContext extends InstanceContext
     /**
      * Update the FeedbackCallSummaryInstance with Metadata
      *
+     
      * @param \DateTime $endDate
+     
      * @param \DateTime $startDate
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -121,6 +131,7 @@ class FeedbackCallSummaryContext extends InstanceContext
                         $this->solution['accountSid'],
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

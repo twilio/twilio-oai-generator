@@ -7,11 +7,13 @@ import java.util.List;
 public class PhpApiResources extends ApiResources{
     private String apiListPath;
     private String apiContextPath;
+    private String pageInstanceClassName;
 
     public PhpApiResources(PhpApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
 
         apiListPath = apiResourceBuilder.apiListPath;
         apiContextPath = apiResourceBuilder.apiContextPath;
+        pageInstanceClassName = apiResourceBuilder.getPageInstanceClassName();
     }
 }
