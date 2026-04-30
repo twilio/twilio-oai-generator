@@ -59,10 +59,12 @@ class {{apiName}}List extends ListResource
             ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}},
         {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}
         ];
-        {{#metaProperties.hasListOperation}}
+        {{#metaProperties.hasListOperation}}{{^isApiV1}}
+        $this->uri = '{{{apiListPath}}}';
+        {{/isApiV1}}{{#isApiV1}}
 
         $this->uri = '{{{apiListPath}}}';
-        {{/metaProperties.hasListOperation}}
+        {{/isApiV1}}{{/metaProperties.hasListOperation}}
     }
 
 {{#apiOperations}}

@@ -45,7 +45,9 @@ class AccountList extends ListResource
         // Path Solution
         $this->solution = [
         ];
+        
         $this->uri = '/Accounts.json';
+        
     }
 
     /**

@@ -253,16 +253,28 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     private String lowerCasePathParam(String path) {
-        // Lowercase only the first character of path parameters that are all lowercase or start with single capital
-        // Don't lowercase camelCase parameters (e.g., pathVersion) as they need to match the actual variable name
+        // Lowercase the first character of path parameters
+        // Special case: preserve camelCase for renamed collision params (e.g., pathVersion)
+        // that start with lowercase letter followed by uppercase (e.g., "pathX")
         java.util.regex.Matcher matcher = Pattern.compile("\\{(\\w+)\\}").matcher(path);
         StringBuffer result = new StringBuffer();
         while (matcher.find()) {
             String param = matcher.group(1);
-            // Check if this is camelCase (has uppercase letter after first char)
-            boolean isCamelCase = param.length() > 1 && param.substring(1).matches(".*[A-Z].*");
-            String replacement = isCamelCase ? "{" + param + "}" : "{" + param.substring(0, 1).toLowerCase() + param.substring(1) + "}";
-            matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(replacement));
+            // Check if this is a renamed collision param: starts with lowercase, then uppercase
+            // (e.g., "pathVersion" but not "AccountSid")
+            boolean isRenamedParam = param.length() > 1 &&
+                                     Character.isLowerCase(param.charAt(0)) &&
+                                     param.substring(1).matches(".*[A-Z].*");
+
+            if (isRenamedParam) {
+                // Keep renamed params as-is (e.g., pathVersion)
+                String replacement = "{" + param + "}";
+                matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(replacement));
+            } else {
+                // Lowercase first character for all others (e.g., AccountSid -> accountSid)
+                String replacement = "{" + param.substring(0, 1).toLowerCase() + param.substring(1) + "}";
+                matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(replacement));
+            }
         }
         matcher.appendTail(result);
         return result.toString();

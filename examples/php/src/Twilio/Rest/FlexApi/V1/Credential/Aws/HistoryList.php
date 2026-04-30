@@ -40,6 +40,7 @@ class HistoryList extends ListResource
             $sid,
         
         ];
+        
     }
 
     /**
