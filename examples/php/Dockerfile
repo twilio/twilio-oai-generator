@@ -6,14 +6,8 @@ RUN apt-get update -y && apt-get install -y git zip autoconf g++ make
 ENV XDEBUG_MODE=coverage
 ENV PATH="vendor/bin:$PATH"
 
-RUN git clone --depth=1 --branch 3.1.6 https://github.com/xdebug/xdebug.git /tmp/xdebug \
-    && cd /tmp/xdebug && phpize && ./configure && make && make install \
-    && docker-php-ext-enable xdebug \
-    && rm -rf /tmp/xdebug
-RUN git clone --depth=1 --branch v1.0.12 https://github.com/krakjoe/pcov.git /tmp/pcov \
-    && cd /tmp/pcov && phpize && ./configure --enable-pcov && make && make install \
-    && docker-php-ext-enable pcov \
-    && rm -rf /tmp/pcov
+RUN pecl install xdebug-2.9.0
+RUN pecl install pcov && docker-php-ext-enable pcov
 
 RUN git clone https://github.com/twilio/twilio-php.git twilio
 WORKDIR /twilio
