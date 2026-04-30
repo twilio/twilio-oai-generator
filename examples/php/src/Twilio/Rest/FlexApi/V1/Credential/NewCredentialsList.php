@@ -41,7 +41,6 @@ class NewCredentialsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/Credentials/AWS';
     }
 
@@ -49,12 +48,14 @@ class NewCredentialsList extends ListResource
      * Helper function for Create
      *
      * @param string $testString
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $testString, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -102,6 +103,7 @@ class NewCredentialsList extends ListResource
      * Create the NewCredentialsInstance
      *
      * @param string $testString
+     
      * @param array|Options $options Optional Arguments
      * @return NewCredentialsInstance Created NewCredentialsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -120,6 +122,7 @@ class NewCredentialsList extends ListResource
      * Create the NewCredentialsInstance with Metadata
      *
      * @param string $testString
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -131,6 +134,7 @@ class NewCredentialsList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

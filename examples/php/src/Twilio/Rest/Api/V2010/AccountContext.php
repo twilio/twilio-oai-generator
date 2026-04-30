@@ -66,6 +66,7 @@ class AccountContext extends InstanceContext
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -93,6 +94,7 @@ class AccountContext extends InstanceContext
     {
         $response = $this->_delete();
         
+        
         return new ResourceMetadata(
             null,
             $response->getStatusCode(),
@@ -109,6 +111,7 @@ class AccountContext extends InstanceContext
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -144,6 +147,7 @@ class AccountContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -156,12 +160,14 @@ class AccountContext extends InstanceContext
      * Helper function for Update
      *
      * @param string $status
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(string $status, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -179,6 +185,7 @@ class AccountContext extends InstanceContext
      * Update the AccountInstance
      *
      * @param string $status
+     
      * @param array|Options $options Optional Arguments
      * @return AccountInstance Updated AccountInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -198,6 +205,7 @@ class AccountContext extends InstanceContext
      * Update the AccountInstance with Metadata
      *
      * @param string $status
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -210,6 +218,7 @@ class AccountContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

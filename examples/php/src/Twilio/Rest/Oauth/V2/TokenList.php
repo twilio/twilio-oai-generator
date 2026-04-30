@@ -40,7 +40,6 @@ class TokenList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-
         $this->uri = '/token';
     }
 
@@ -53,6 +52,7 @@ class TokenList extends ListResource
      */
     private function _create(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -109,6 +109,7 @@ class TokenList extends ListResource
                         $this->version,
                         $response->getContent()
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

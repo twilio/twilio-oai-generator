@@ -38,15 +38,15 @@ class {{classname}}Instance extends InstanceResource
         $this->properties = [
             {{#vars}}
             {{^vendorExtensions.x-deserialize}}
-            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => Values::array_get($payload, '{{name}}'),
+            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => Values::array_get($payload, '{{^isApiV1}}{{name}}{{/isApiV1}}{{#isApiV1}}{{baseName}}{{/isApiV1}}'),
             {{/vendorExtensions.x-deserialize}}
             {{#vendorExtensions.x-deserialize}}
-            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => {{.}}(Values::array_get($payload, '{{name}}')),
+            '{{#lambda.customcamelcase}}{{baseName}}{{/lambda.customcamelcase}}' => {{.}}(Values::array_get($payload, '{{^isApiV1}}{{name}}{{/isApiV1}}{{#isApiV1}}{{baseName}}{{/isApiV1}}')),
             {{/vendorExtensions.x-deserialize}}
             {{/vars}}
         ];
 
-        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} ?: $this->properties['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}];
+        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} ?: ($this->properties['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'] ?? null), {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}];
     }
 
 {{#metaProperties.x-is-context-operation}}
