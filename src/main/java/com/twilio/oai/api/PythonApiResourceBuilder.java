@@ -3,22 +3,17 @@ package com.twilio.oai.api;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
-import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.python.PythonCodegenModelResolver;
-import com.twilio.oai.resolver.python.PythonClassOrderResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -99,17 +94,7 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                         .stream())
                 .collect(Collectors.toList());
 
-        // set all unique models in responseInstanceModels
-        // For v1 APIs, reorder models to avoid forward reference issues
         this.responseInstanceModels = new HashSet<>(allResponseModels);
-        if (isApiV1 && this.responseInstanceModels.size() > 1) {
-            // Convert to list, reorder based on dependencies, then back to set
-            List<CodegenModel> reorderedModels = PythonClassOrderResolver.reorderModels(
-                this.responseInstanceModels,
-                isApiV1
-            );
-            this.responseInstanceModels = new LinkedHashSet<>(reorderedModels);
-        }
 
         allResponseModels.stream().findFirst().ifPresent(firstModel -> {
             responseModel = firstModel;
@@ -255,16 +240,6 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
 
     @Override
     public FluentApiResources build() {
-        // For v1 APIs, reorder nested models to avoid forward reference issues
-        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-        if (isApiV1 && nestedModels != null && nestedModels.size() > 1) {
-            List<CodegenModel> reorderedModels = PythonClassOrderResolver.reorderModels(
-                nestedModels,
-                isApiV1
-            );
-            nestedModels = new LinkedHashSet<>(reorderedModels);
-        }
-
         return super.build();
     }
 
