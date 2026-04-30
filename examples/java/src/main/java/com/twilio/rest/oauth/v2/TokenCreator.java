@@ -143,6 +143,7 @@ public TokenCreator setScope(final String scope){
         Token content = Token.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
+
     private void addPostParams(final Request request) {
 
     if (grantType != null) {
