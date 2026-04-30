@@ -134,12 +134,10 @@ public class DirectoryStructureService {
                 operation.setTags(null);
                 operation.addTagsItem(tag);
 
-                // For v1 APIs: also add nested list resources (with path params) to version class
-                // For non-v1 APIs: only add top-level resources (no path separator in tag)
-
-                // Determine if resource is top-level by checking path structure
-                // A resource is nested if its path contains path parameters before the resource name
-                // Example: /v1/Stores/{storeId}/Profiles - storeId is a parent parameter
+                // Determine if resource is top-level.
+                // For non-v1: original behavior — top-level if tag has no path separator.
+                // For v1: also check that there are no parent path params in the URL (e.g. /v1/Stores/{id}/Profiles
+                // is nested, not top-level).
                 final String[] pathParts = name.split("/");
                 boolean hasParentPathParams = false;
                 for (int i = 0; i < pathParts.length - 1; i++) {
@@ -149,7 +147,9 @@ public class DirectoryStructureService {
                     }
                 }
 
-                final boolean isTopLevel = !tag.contains(PATH_SEPARATOR_PLACEHOLDER) && !hasParentPathParams;
+                final boolean isTopLevel = isV1ApiSpec
+                    ? !tag.contains(PATH_SEPARATOR_PLACEHOLDER) && !hasParentPathParams
+                    : !tag.contains(PATH_SEPARATOR_PLACEHOLDER);
                 final boolean shouldProcessResource = isTopLevel || isV1ApiSpec;
 
                 if (shouldProcessResource) {
