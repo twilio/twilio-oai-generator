@@ -147,8 +147,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     
     
     
-    
-    
+
+
     public String getPageInstanceClassName() {
         boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
         if (!isApiV1) {
@@ -159,6 +159,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             if (isReadOp && op.returnBaseType != null) {
                 Optional<CodegenModel> resolved = this.getModel(op.returnBaseType, op);
                 if (resolved.isPresent()) {
+                    // Check if the list items are primitives
+                    checkListItemsArePrimitive(op, resolved.get());
                     return resolved.get().classname;
                 }
                 return op.returnBaseType;
@@ -175,6 +177,56 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             }
         }
         return null;
+    }
+
+    /**
+     * Check if list items in the response are primitives (string, integer, etc.)
+     * Sets vendor extension 'x-list-items-are-primitive' on the operation if true
+     */
+    private void checkListItemsArePrimitive(CodegenOperation op, CodegenModel responseModel) {
+        // Look for the list property in the response model
+        // For V1 APIs, the response typically has a property that is an array
+        for (CodegenProperty prop : responseModel.vars) {
+            if (prop.isArray) {
+                // Check if the items in this array are primitives
+                // In OpenAPI Generator, primitives have isPrimitiveType = true
+                // or the items reference a schema that is a primitive type
+                if (prop.items != null) {
+                    // Check if items are primitive: string, integer, number, boolean
+                    boolean isPrimitive = prop.items.isPrimitiveType ||
+                                        "string".equals(prop.items.dataType) ||
+                                        "int".equals(prop.items.dataType) ||
+                                        "integer".equals(prop.items.dataType) ||
+                                        "number".equals(prop.items.dataType) ||
+                                        "float".equals(prop.items.dataType) ||
+                                        "double".equals(prop.items.dataType) ||
+                                        "boolean".equals(prop.items.dataType) ||
+                                        "bool".equals(prop.items.dataType);
+
+                    if (isPrimitive) {
+                        op.vendorExtensions.put("x-list-items-are-primitive", true);
+                        return;
+                    }
+                }
+                // If no items info, check the baseType
+                if (prop.baseType != null) {
+                    // Check if baseType is a primitive
+                    boolean isPrimitive = "string".equals(prop.baseType) ||
+                                        "int".equals(prop.baseType) ||
+                                        "integer".equals(prop.baseType) ||
+                                        "number".equals(prop.baseType) ||
+                                        "float".equals(prop.baseType) ||
+                                        "double".equals(prop.baseType) ||
+                                        "boolean".equals(prop.baseType) ||
+                                        "bool".equals(prop.baseType);
+
+                    if (isPrimitive) {
+                        op.vendorExtensions.put("x-list-items-are-primitive", true);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -315,6 +367,12 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             if (co.path.contains("{version}")) {
                 co.path = co.path.replace("{version}", "{pathVersion}");
             }
+
+            // Special hardcoding for ListOperatorVersions API
+            if ("ListOperatorVersions".equals(co.operationId)) {
+                co.vendorExtensions.put("x-is-list-operator-versions", true);
+            }
+
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
