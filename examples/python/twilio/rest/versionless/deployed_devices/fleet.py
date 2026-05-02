@@ -54,6 +54,7 @@ class FleetInstance(InstanceResource):
         self._solution = {
             "sid": sid or self.sid,
         }
+
         self._context: Optional[FleetContext] = None
 
     @property

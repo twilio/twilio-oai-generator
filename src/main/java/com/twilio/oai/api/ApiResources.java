@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -25,6 +26,7 @@ public class ApiResources {
     String namespaceSubPart;
     boolean hasPaginationOperation;
     boolean hasOperationWithPagination;
+    boolean hasPaginatedPrimitiveItems;
     Set<CodegenModel> nestedModels;
     private Boolean isApiV1 = null; // true or NULL
     private Boolean deleteHasBody = null; // true or NULL
@@ -40,14 +42,18 @@ public class ApiResources {
         requiredPathParams = new ArrayList<>(apiResourceBuilder.requiredPathParams);
         namespaceSubPart = apiResourceBuilder.namespaceSubPart;
         hasPaginationOperation = apiResourceBuilder.hasPaginationOperation();
-        hasOperationWithPagination = hasPaginationOperation;
+        hasOperationWithPagination = apiResourceBuilder.hasAnyOperationSupportingPagination();
+        hasPaginatedPrimitiveItems = Boolean.TRUE.equals(metaProperties.get("x-paginated-primitive-items"));
         nestedModels = apiResourceBuilder.nestedModels;
         if (ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1()) {
-            isApiV1 = true;
+            isApiV1 = Boolean.TRUE;
         }
         responseInstanceModels = apiResourceBuilder.responseInstanceModels;
     }
 
+    public boolean getHasPaginatedPrimitiveItems() {
+        return hasPaginatedPrimitiveItems;
+    }
     public boolean getHasOperationWithPagination() {
         return hasOperationWithPagination;
     }

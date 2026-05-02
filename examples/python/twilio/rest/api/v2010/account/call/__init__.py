@@ -107,6 +107,7 @@ class CallInstance(InstanceResource):
             "account_sid": account_sid,
             "test_integer": test_integer or self.test_integer,
         }
+
         self._context: Optional[CallContext] = None
 
     @property

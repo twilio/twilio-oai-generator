@@ -7,4 +7,9 @@ class {{name}}:
     {{#vars}}self.{{name}} = {{name}}
     {{/vars}}
 
+  def to_dict(self):
+      return {
+          {{#vars}}"{{vendorExtensions.json-name}}": self.{{name}}{{#unless @last}},{{/unless}}
+          {{/vars}}
+      }
 {{/if}}{{/models}}
