@@ -41,9 +41,7 @@ class AwsList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-        
         $this->uri = '/Credentials/AWS';
-        
     }
 
     /**

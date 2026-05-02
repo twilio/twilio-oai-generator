@@ -43,6 +43,7 @@ class NewCredentialsPage extends Page
         return new NewCredentialsInstance($this->version, $payload);
     }
 
+
     /**
      * Provide a friendly representation
      *

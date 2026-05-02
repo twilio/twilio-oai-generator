@@ -35,7 +35,6 @@ class CallList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-        
     }
 
     /**

@@ -47,7 +47,6 @@ class CredentialList extends ListResource
         // Path Solution
         $this->solution = [
         ];
-        
     }
 
     /**

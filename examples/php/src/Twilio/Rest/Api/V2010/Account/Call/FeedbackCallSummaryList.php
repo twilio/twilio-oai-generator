@@ -40,7 +40,6 @@ class FeedbackCallSummaryList extends ListResource
             $accountSid,
         
         ];
-        
     }
 
     /**
