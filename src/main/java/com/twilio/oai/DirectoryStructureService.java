@@ -189,7 +189,7 @@ public class DirectoryStructureService {
                 }
 
                 updateAccountSidParam(operation);
-                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1() 
+                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1()
                         || "twilio-csharp".equals(ResourceCacheContext.get().getAdditionalProperties().get(GENERATOR_NAME))) {
                     updatePaginationParams(operation);
                 }
@@ -254,10 +254,9 @@ public class DirectoryStructureService {
             // Replace if: new has MORE params,
             // OR existing is empty,
             // OR (v1 spec AND equal params AND list-with-params ordering issue)
-            if (dependent.getPathParams().size() > existingDependent.getPathParams().size()
-                    || existingDependent.getPathParams().isEmpty()
+            if (existingDependent.getPathParams().isEmpty()
                     || (isV1ApiSpec
-                        && dependent.getPathParams().size() == existingDependent.getPathParams().size()
+                        && dependent.getPathParams().size() >= existingDependent.getPathParams().size()
                         && dependent.isListWithPathParams()
                         && !existingDependent.isListWithPathParams())) {
                 versionResources.put(dependent.getFilename(), dependent);
@@ -397,6 +396,10 @@ public class DirectoryStructureService {
     }
 
     private boolean isInstanceDependent(final Operation operation, final List<Parameter> pathParams) {
+        final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        if(!isV1ApiSpec){
+            return false;
+        }
         if (operation == null || operation.getOperationId() == null || pathParams == null) {
             return false;
         }
