@@ -53,7 +53,6 @@ class CallList extends ListResource
             $accountSid,
         
         ];
-
         $this->uri = '/Accounts/' . \rawurlencode($accountSid)
         .'/Calls.json';
     }
@@ -62,13 +61,16 @@ class CallList extends ListResource
      * Helper function for Create
      *
      * @param string $requiredStringProperty
+     
      * @param string $testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
+     
      * @param array|Options $options Optional Arguments
      * @return Response Created Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _create(string $requiredStringProperty, string $testMethod, array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -90,7 +92,9 @@ class CallList extends ListResource
      * Create the CallInstance
      *
      * @param string $requiredStringProperty
+     
      * @param string $testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
+     
      * @param array|Options $options Optional Arguments
      * @return CallInstance Created CallInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -110,7 +114,9 @@ class CallList extends ListResource
      * Create the CallInstance with Metadata
      *
      * @param string $requiredStringProperty
+     
      * @param string $testMethod The HTTP method that we should use to request the `TestArrayOfUri`.
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Created Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -123,6 +129,7 @@ class CallList extends ListResource
                         $response->getContent(),
                         $this->solution['accountSid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

@@ -52,11 +52,13 @@ class CallContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('POST', $this->uri, [], [], $headers, "update");
     }
@@ -64,6 +66,7 @@ class CallContext extends InstanceContext
     /**
      * Update the CallInstance
      *
+     
      * @return CallInstance Updated CallInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -81,6 +84,7 @@ class CallContext extends InstanceContext
     /**
      * Update the CallInstance with Metadata
      *
+     
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -92,6 +96,7 @@ class CallContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

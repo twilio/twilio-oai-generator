@@ -62,11 +62,13 @@ class AwsContext extends InstanceContext
     /**
      * Helper function for Delete
      *
+     
      * @return Response Deleted Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _delete(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded' ]);
         return $this->version->handleRequest('DELETE', $this->uri, [], [], $headers, "delete");
     }
@@ -74,6 +76,7 @@ class AwsContext extends InstanceContext
     /**
      * Delete the AwsInstance
      *
+     
      * @return bool True if delete succeeds, false otherwise
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -87,12 +90,14 @@ class AwsContext extends InstanceContext
     /**
      * Delete the AwsInstance with Metadata
      *
+     
      * @return ResourceMetadata The Deleted Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
     public function deleteWithMetadata(): ResourceMetadata
     {
         $response = $this->_delete();
+        
         
         return new ResourceMetadata(
             null,
@@ -105,11 +110,13 @@ class AwsContext extends InstanceContext
     /**
      * Helper function for Fetch
      *
+     
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _fetch(): Response
     {
+        
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
         return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
     }
@@ -117,6 +124,7 @@ class AwsContext extends InstanceContext
     /**
      * Fetch the AwsInstance
      *
+     
      * @return AwsInstance Fetched AwsInstance
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -134,6 +142,7 @@ class AwsContext extends InstanceContext
     /**
      * Fetch the AwsInstance with Metadata
      *
+     
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
@@ -145,6 +154,7 @@ class AwsContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -156,12 +166,14 @@ class AwsContext extends InstanceContext
     /**
      * Helper function for Patch
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Patchd Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _patch(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -178,6 +190,7 @@ class AwsContext extends InstanceContext
     /**
      * Patch the AwsInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return AwsInstance Patchd AwsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -196,6 +209,7 @@ class AwsContext extends InstanceContext
     /**
      * Patch the AwsInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Patchd Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -208,6 +222,7 @@ class AwsContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),
@@ -219,12 +234,14 @@ class AwsContext extends InstanceContext
     /**
      * Helper function for Update
      *
+     
      * @param array|Options $options Optional Arguments
      * @return Response Updated Response
      * @throws TwilioException When an HTTP error occurs.
      */
     private function _update(array $options = []): Response
     {
+        
         $options = new Values($options);
 
         $data = Values::of([
@@ -241,6 +258,7 @@ class AwsContext extends InstanceContext
     /**
      * Update the AwsInstance
      *
+     
      * @param array|Options $options Optional Arguments
      * @return AwsInstance Updated AwsInstance
      * @throws TwilioException When an HTTP error occurs.
@@ -259,6 +277,7 @@ class AwsContext extends InstanceContext
     /**
      * Update the AwsInstance with Metadata
      *
+     
      * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Updated Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
@@ -271,6 +290,7 @@ class AwsContext extends InstanceContext
                         $response->getContent(),
                         $this->solution['sid']
                     );
+        
         return new ResourceMetadata(
             $resource,
             $response->getStatusCode(),

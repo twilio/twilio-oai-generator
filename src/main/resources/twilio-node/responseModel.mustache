@@ -1,9 +1,9 @@
 {{#responseModel}}
 
 {{^isApiV1}}  interface {{apiName}}Payload extends {{^hasPaginationOperation}}{{apiName}}Resource {}{{/hasPaginationOperation}}{{#hasPaginationOperation}}TwilioResponsePayload {
-    {{recordKey}}: {{apiName}}Resource[];
+    {{recordKey}}: {{#hasPaginatedPrimitiveItems}}string[]{{/hasPaginatedPrimitiveItems}}{{^hasPaginatedPrimitiveItems}}{{apiName}}Resource[]{{/hasPaginatedPrimitiveItems}};
 }{{/hasPaginationOperation}}{{/isApiV1}}{{#isApiV1}}{{#hasOperationWithPagination}}  interface {{apiName}}Payload extends TokenPaginationPayload {
-    {{recordKey}}: {{apiName}}Resource[];
+    {{recordKey}}: {{#hasPaginatedPrimitiveItems}}string[]{{/hasPaginatedPrimitiveItems}}{{^hasPaginatedPrimitiveItems}}{{apiName}}Resource[]{{/hasPaginatedPrimitiveItems}};
 }{{/hasOperationWithPagination}}{{/isApiV1}}
 
 {{#hasMultipleResponseModels}}

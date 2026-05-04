@@ -105,6 +105,7 @@ class FeedbackCallSummaryInstance(InstanceResource):
             "account_sid": account_sid,
             "sid": sid or self.sid,
         }
+
         self._context: Optional[FeedbackCallSummaryContext] = None
 
     @property

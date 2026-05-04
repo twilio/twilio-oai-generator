@@ -2,13 +2,17 @@
 {{#vendorExtensions.x-is-read-operation}}
 class {{apiName}}Page({{#isApiV1}}TokenPagination{{/isApiV1}}{{^isApiV1}}Page{{/isApiV1}}):
 
-    def get_instance(self, payload: Dict[str, Any]) -> {{instanceName}}:
+    def get_instance(self, payload: {{#if vendorExtensions.x-list-items-are-primitives}}str{{else}}Dict[str, Any]{{/if}}) -> {{#if vendorExtensions.x-list-items-are-primitives}}str{{else}}{{instanceName}}{{/if}}:
         """
-        Build an instance of {{instanceName}}
+        Build an instance of {{#if vendorExtensions.x-list-items-are-primitives}}str{{else}}{{instanceName}}{{/if}}
 
         :param payload: Payload response from the API
         """
+        {{#if vendorExtensions.x-list-items-are-primitives}}
+        return payload  # Return string ID directly
+        {{else}}
         return {{instanceName}}(self._version, payload{{#listPathParams}}, {{paramName}}=self._solution["{{paramName}}"]{{/listPathParams}})
+        {{/if}}
 
     def __repr__(self) -> str:
         """

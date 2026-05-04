@@ -3,20 +3,17 @@ package com.twilio.oai.api;
 import com.twilio.oai.DirectoryStructureService;
 import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
-import com.twilio.oai.common.EnumConstants;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.python.PythonCodegenModelResolver;
 import com.twilio.oai.template.IApiActionTemplate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.openapitools.codegen.CodegenModel;
@@ -97,11 +94,15 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                         .stream())
                 .collect(Collectors.toList());
 
-        // set all unique models in responseInstanceModels
         this.responseInstanceModels = new HashSet<>(allResponseModels);
 
         allResponseModels.stream().findFirst().ifPresent(firstModel -> {
             responseModel = firstModel;
+
+            // For v1 APIs, detect if list operations return primitive arrays
+            if (isApiV1) {
+                detectPrimitiveListItems(allResponseModels);
+            }
 
             allResponseModels.forEach(model -> {
                 codegenModelResolver.resolveResponseModel(model, this);
@@ -236,6 +237,12 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         super.updateModel(codegenModelResolver);
         return this;
     }
+
+    @Override
+    public FluentApiResources build() {
+        return super.build();
+    }
+
     private void processModelVariables(CodegenModel model) {
         model.getVars().forEach(variable -> {
             addModel(modelTree, variable.complexType, variable.dataType);
@@ -244,5 +251,39 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
                 variable.baseType = dataType;
             });
         });
+    }
+
+    /**
+     * Detects if list operations return arrays of primitives (strings) instead of objects.
+     * Sets vendor extension x-list-items-are-primitives on the list operation if true.
+     */
+    private void detectPrimitiveListItems(final List<CodegenModel> models) {
+        // Find list operations
+        codegenOperationList.stream()
+            .filter(co -> co.operationId.startsWith("list") || co.operationId.startsWith("List"))
+            .forEach(co -> {
+                // Get the response model for this operation from allModels (not just responseModels)
+                co.responses.stream()
+                    .filter(response -> "200".equals(response.code))
+                    .filter(response -> response.dataType != null)
+                    .findFirst()
+                    .flatMap(response -> allModels.stream()
+                        .filter(model -> model.getClassname().equals(response.dataType) ||
+                                       model.getName().equals(response.dataType))
+                        .findFirst())
+                    .ifPresent(responseModel -> {
+                        // Check if model has an array property with primitive items
+                        boolean hasPrimitiveArray = responseModel.getVars().stream()
+                            .filter(prop -> prop.isArray)
+                            .filter(prop -> prop.items != null)
+                            .anyMatch(prop -> "String".equals(prop.items.dataType) ||
+                                            "string".equals(prop.items.dataType) ||
+                                            "str".equals(prop.items.dataType));
+
+                        if (hasPrimitiveArray) {
+                            co.vendorExtensions.put("x-list-items-are-primitives", true);
+                        }
+                    });
+            });
     }
 }

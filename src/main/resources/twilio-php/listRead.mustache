@@ -4,6 +4,9 @@
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     {{#isApiV1}}{{#requiredParams}}{{#isPathParam}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
+     {{/isPathParam}}{{/requiredParams}}{{/isApiV1}}
      {{#vendorExtensions.x-has-non-pagination-params}}
      * @param array|Options $options Optional Arguments
      {{/vendorExtensions.x-has-non-pagination-params}}
@@ -17,9 +20,10 @@
      *                        efficient page size, i.e. min(limit, 1000)
      * @return {{apiName}}Instance[] Array of results
      */
-    public function read({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}?int $limit = null, $pageSize = null): array
+    public function read({{#isApiV1}}{{#requiredParams}}{{#isPathParam}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/isPathParam}}{{/requiredParams}}{{/isApiV1}}{{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}?int $limit = null, $pageSize = null): array
     {
-        return \iterator_to_array($this->stream({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limit, $pageSize), false);
+        {{#isApiV1}}$this->uri = '{{{apiListPath}}}';
+        {{/isApiV1}}return \iterator_to_array($this->stream({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limit, $pageSize), false);
     }
 
     /**
@@ -27,6 +31,9 @@
      * Unlike stream(), this operation is eager and will load `limit` records into
      * memory before returning.
      *
+     {{#isApiV1}}{{#requiredParams}}{{#isPathParam}}
+     * @param {{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}{{#description}} {{{description}}}{{/description}}
+     {{/isPathParam}}{{/requiredParams}}{{/isApiV1}}
      {{#vendorExtensions.x-has-non-pagination-params}}
      * @param array|Options $options Optional Arguments
      {{/vendorExtensions.x-has-non-pagination-params}}
@@ -40,9 +47,10 @@
      *                        efficient page size, i.e. min(limit, 1000)
      * @return ArrayMetadata Array of results along with metadata
      */
-    public function readWithMetadata({{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}?int $limit = null, $pageSize = null): ArrayMetadata
+    public function readWithMetadata({{#isApiV1}}{{#requiredParams}}{{#isPathParam}}{{{dataType}}} ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/isPathParam}}{{/requiredParams}}{{/isApiV1}}{{#vendorExtensions.x-has-non-pagination-params}}array $options = [], {{/vendorExtensions.x-has-non-pagination-params}}?int $limit = null, $pageSize = null): ArrayMetadata
     {
-        $streamWithMetadata = $this->streamWithMetadata({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limit, $pageSize);
+        {{#isApiV1}}$this->uri = '{{{apiListPath}}}';
+        {{/isApiV1}}$streamWithMetadata = $this->streamWithMetadata({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$limit, $pageSize);
         $readResponse = \iterator_to_array($streamWithMetadata, false);
         return new ArrayMetadata(
             $readResponse,

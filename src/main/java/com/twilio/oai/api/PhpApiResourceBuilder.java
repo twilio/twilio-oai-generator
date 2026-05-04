@@ -51,6 +51,8 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         template.clean();
         template.addSupportVersion();
 
+        resolveNestedModelNameCollisions();
+
         codegenOperationList.forEach(codegenOperation -> {
             updateNamespaceSubPart(codegenOperation);
             if (metaAPIProperties.containsKey("hasInstanceOperation") && !codegenOperation.vendorExtensions.containsKey("x-ignore"))
@@ -60,12 +62,11 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_PAGE);
             template.add(PhpApiActionTemplate.TEMPLATE_TYPE_LIST);
 
-            // Only add regular instance template when there's 1 or fewer response models
-            // OR when isApiV1 is false (dynamic templates only work with API V1 standard)
-            // When there are multiple distinct response models AND isApiV1 is true, dynamic templates will be
-            // added after build() in the generator with the full apiResource
+            // For non-V1 APIs, use the regular instance template.
+            // For V1 APIs, dynamic templates (added after build()) generate one file per response model
+            // with the correct filename ({model.classname}Instance.php) matching the class name.
             boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-            if (!isApiV1 || responseInstanceModels == null || responseInstanceModels.size() <= 1) {
+            if (!isApiV1) {
                 template.add(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE);
             }
 
@@ -77,13 +78,155 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     /**
-     * Returns true if this builder has multiple distinct response models that require
-     * separate instance class files AND isApiV1 is true.
-     * Dynamic instance templates are only generated for API V1 standard specs.
+     * Renames nested model classes whose names collide with generated resource file names
+     * (e.g., {apiName}Context, {apiName}List, {apiName}Page, {apiName}Options, {apiName}Instance).
+     * Appends "Model" suffix to the colliding class name and updates all references in other models.
      */
-    public boolean hasMultipleResponseModels() {
+    private void resolveNestedModelNameCollisions() {
+        String apiName = getApiName();
+        Set<String> reservedNames = new HashSet<>(Arrays.asList(
+            apiName + "Context",
+            apiName + "List",
+            apiName + "Page",
+            apiName + "Options",
+            apiName + "Instance",
+            apiName + "Models"
+        ));
+
+        Map<String, String> renames = new HashMap<>();
+        for (CodegenModel model : nestedModels) {
+            if (reservedNames.contains(model.classname)) {
+                String newName = model.classname + "Model";
+                renames.put(model.classname, newName);
+                model.classname = newName;
+            }
+        }
+
+        if (renames.isEmpty()) return;
+
+        for (CodegenModel model : nestedModels) {
+            for (CodegenProperty prop : model.vars) {
+                renamePropertyType(prop, renames);
+            }
+            for (CodegenProperty prop : model.allVars) {
+                renamePropertyType(prop, renames);
+            }
+        }
+    }
+
+    private void renamePropertyType(CodegenProperty prop, Map<String, String> renames) {
+        String renamed = renames.get(prop.dataType);
+        if (renamed != null) {
+            prop.dataType = renamed;
+        }
+        if (prop.complexType != null) {
+            renamed = renames.get(prop.complexType);
+            if (renamed != null) {
+                prop.complexType = renamed;
+            }
+        }
+    }
+
+    /**
+     * Returns true if this builder has response models that require dynamic instance
+     * class files. For V1 APIs, all response models use dynamic templates so the
+     * filename matches the class name ({model.classname}Instance.php).
+     */
+    public boolean hasDynamicResponseModels() {
         boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-        return isApiV1 && responseInstanceModels != null && responseInstanceModels.size() > 1;
+        return isApiV1 && responseInstanceModels != null && !responseInstanceModels.isEmpty();
+    }
+
+    /**
+     * Returns the instance class name that the Page's buildInstance() should use.
+     * For V1 APIs, resolves through the recordKey to find the nested items model
+     * (e.g., "ListConfiguration200ResponseConfigurations" instead of "ListConfiguration200Response").
+     * For non-V1 APIs, returns null so the template falls back to apiName.
+     */
+    
+    
+    
+    
+
+
+    public String getPageInstanceClassName() {
+        boolean isApiV1 = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        if (!isApiV1) {
+            return null;
+        }
+        for (CodegenOperation op : listOperations) {
+            boolean isReadOp = (boolean) op.vendorExtensions.getOrDefault("x-is-read-operation", false);
+            if (isReadOp && op.returnBaseType != null) {
+                Optional<CodegenModel> resolved = this.getModel(op.returnBaseType, op);
+                if (resolved.isPresent()) {
+                    // Check if the list items are primitives
+                    checkListItemsArePrimitive(op, resolved.get());
+                    return resolved.get().classname;
+                }
+                return op.returnBaseType;
+            }
+        }
+        for (CodegenOperation op : instanceOperations) {
+            boolean isFetchOp = (boolean) op.vendorExtensions.getOrDefault("x-is-fetch-operation", false);
+            if (isFetchOp && op.returnBaseType != null) {
+                Optional<CodegenModel> resolved = this.getModel(op.returnBaseType, op);
+                if (resolved.isPresent()) {
+                    return resolved.get().classname;
+                }
+                return op.returnBaseType;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if list items in the response are primitives (string, integer, etc.)
+     * Sets vendor extension 'x-list-items-are-primitive' on the operation if true
+     */
+    private void checkListItemsArePrimitive(CodegenOperation op, CodegenModel responseModel) {
+        // Look for the list property in the response model
+        // For V1 APIs, the response typically has a property that is an array
+        for (CodegenProperty prop : responseModel.vars) {
+            if (prop.isArray) {
+                // Check if the items in this array are primitives
+                // In OpenAPI Generator, primitives have isPrimitiveType = true
+                // or the items reference a schema that is a primitive type
+                if (prop.items != null) {
+                    // Check if items are primitive: string, integer, number, boolean
+                    boolean isPrimitive = prop.items.isPrimitiveType ||
+                                        "string".equals(prop.items.dataType) ||
+                                        "int".equals(prop.items.dataType) ||
+                                        "integer".equals(prop.items.dataType) ||
+                                        "number".equals(prop.items.dataType) ||
+                                        "float".equals(prop.items.dataType) ||
+                                        "double".equals(prop.items.dataType) ||
+                                        "boolean".equals(prop.items.dataType) ||
+                                        "bool".equals(prop.items.dataType);
+
+                    if (isPrimitive) {
+                        op.vendorExtensions.put("x-list-items-are-primitive", true);
+                        return;
+                    }
+                }
+                // If no items info, check the baseType
+                if (prop.baseType != null) {
+                    // Check if baseType is a primitive
+                    boolean isPrimitive = "string".equals(prop.baseType) ||
+                                        "int".equals(prop.baseType) ||
+                                        "integer".equals(prop.baseType) ||
+                                        "number".equals(prop.baseType) ||
+                                        "float".equals(prop.baseType) ||
+                                        "double".equals(prop.baseType) ||
+                                        "boolean".equals(prop.baseType) ||
+                                        "bool".equals(prop.baseType);
+
+                    if (isPrimitive) {
+                        op.vendorExtensions.put("x-list-items-are-primitive", true);
+                        return;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -162,8 +305,31 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     }
 
     private String lowerCasePathParam(String path) {
-        return Pattern.compile("\\{(\\w)").matcher(path)
-                .replaceAll(match -> "{" + match.group(1).toLowerCase());
+        // Lowercase the first character of path parameters
+        // Special case: preserve camelCase for renamed collision params (e.g., pathVersion)
+        // that start with lowercase letter followed by uppercase (e.g., "pathX")
+        java.util.regex.Matcher matcher = Pattern.compile("\\{(\\w+)\\}").matcher(path);
+        StringBuffer result = new StringBuffer();
+        while (matcher.find()) {
+            String param = matcher.group(1);
+            // Check if this is a renamed collision param: starts with lowercase, then uppercase
+            // (e.g., "pathVersion" but not "AccountSid")
+            boolean isRenamedParam = param.length() > 1 &&
+                                     Character.isLowerCase(param.charAt(0)) &&
+                                     param.substring(1).matches(".*[A-Z].*");
+
+            if (isRenamedParam) {
+                // Keep renamed params as-is (e.g., pathVersion)
+                String replacement = "{" + param + "}";
+                matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(replacement));
+            } else {
+                // Lowercase first character for all others (e.g., AccountSid -> accountSid)
+                String replacement = "{" + param.substring(0, 1).toLowerCase() + param.substring(1) + "}";
+                matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(replacement));
+            }
+        }
+        matcher.appendTail(result);
+        return result.toString();
     }
 
     private String replaceBraces(String path) {
@@ -196,6 +362,17 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
     public ApiResourceBuilder updateOperations(Resolver<CodegenParameter> codegenParameterIResolver) {
         PhpJsonRequestBodyResolver jsonRequestBodyResolver = new PhpJsonRequestBodyResolver(this, codegenPropertyIResolver);
         this.codegenOperationList.forEach(co -> {
+            // Apply path parameter renames for collision avoidance (e.g., version -> pathVersion)
+            // This must happen before formatPath() is called in updateApiPath()
+            if (co.path.contains("{version}")) {
+                co.path = co.path.replace("{version}", "{pathVersion}");
+            }
+
+            // Special hardcoding for ListOperatorVersions API
+            if ("ListOperatorVersions".equals(co.operationId)) {
+                co.vendorExtensions.put("x-is-list-operator-versions", true);
+            }
+
             updateNestedContent(co);
             List<String> filePathArray = new ArrayList<>(Arrays.asList(co.baseName.split(PATH_SEPARATOR_PLACEHOLDER)));
             String resourceName = filePathArray.remove(filePathArray.size()-1);
@@ -397,6 +574,10 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
 
     @Override
     public ApiResourceBuilder updateResponseModel(Resolver<CodegenProperty> codegenPropertyResolver) {
+        if (ResourceCacheContext.get().isV1()) {
+            updateResponseModelV1(codegenPropertyResolver);
+            return this;
+        }
         List<CodegenModel> responseModels = new ArrayList<>();
         Set<CodegenModel> responseInstanceModels = new HashSet<>();
         codegenOperationList.forEach(codegenOperation -> {
@@ -419,6 +600,105 @@ public class PhpApiResourceBuilder extends ApiResourceBuilder {
         this.responseInstanceModels = responseInstanceModels;
         this.apiResponseModels = getDistinctResponseModel(responseModels);
         return this;
+    }
+
+    private void updateResponseModelV1(Resolver<CodegenProperty> codegenPropertyResolver) {
+        Set<CodegenModel> responseInstanceModels = new HashSet<>();
+
+        codegenOperationList.forEach(codegenOperation -> {
+            String operationId = codegenOperation.operationId.toLowerCase();
+            if (operationId.isEmpty()) {
+                throw new RuntimeException("PHP: Operation ID is missing for an operation.");
+            }
+
+            codegenOperation.responses
+                    .stream()
+                    .filter(response -> SUCCESS.test(Integer.parseInt(response.code.trim())))
+                    .forEach(response -> {
+                        String modelName = response.baseType;
+                        if (modelName == null) {
+                            return;
+                        }
+
+                        Optional<CodegenModel> responseModel = this.getModel(modelName, codegenOperation);
+                        if (responseModel.isEmpty()) {
+                            return;
+                        }
+
+                        CodegenModel codegenModel = responseModel.get();
+
+                        // Discover nested models from response properties
+                        for (CodegenProperty property : codegenModel.vars) {
+                            recursivelyResolveV1(property);
+                        }
+
+                        // Set data format for nested properties (same as non-V1 path)
+                        codegenModel.allVars.stream()
+                                .filter(var -> var.isModel && var.dataFormat == null)
+                                .forEach(this::setDataFormatForNestedProperties);
+                        codegenModel.vars.stream()
+                                .filter(var -> var.isModel && var.dataFormat == null)
+                                .forEach(this::setDataFormatForNestedProperties);
+
+                        // Resolve properties through PHP property resolver (handles enums -> string, etc.)
+                        codegenModel.vars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+                        codegenModel.allVars.forEach(e -> codegenPropertyResolver.resolve(e, this));
+
+                        // Handle delete operations with response body
+                        if (operationId.startsWith("delete") && hasDeleteBody(response)) {
+                            codegenOperation.vendorExtensions.put(X_DELETE_HAS_BODY, true);
+                        }
+
+                        responseInstanceModels.add(codegenModel);
+                    });
+        });
+
+        this.responseInstanceModels = responseInstanceModels;
+    }
+
+    /**
+     * Recursively discover nested models from response properties.
+     * Enums are skipped — they are resolved to string by PhpPropertyResolver.
+     */
+    private void recursivelyResolveV1(CodegenProperty codegenProperty) {
+        // Enums in PHP are resolved to string by the property resolver; skip them here
+        if (CodegenUtils.isPropertySchemaEnum(codegenProperty)) {
+            return;
+        }
+
+        String modelName = codegenProperty.dataType;
+
+        // Extract base type from container (e.g. "List<Foo>" -> "Foo")
+        if (modelName != null && modelName.startsWith(LIST_START)) {
+            modelName = modelName.substring(LIST_START.length(), modelName.length() - LIST_END.length());
+        }
+
+        Optional<CodegenModel> model = getModelByClassname(modelName);
+        if (model.isEmpty()) {
+            return;
+        }
+
+        CodegenModel codegenModel = model.get();
+        if (codegenModel.getFormat() != null) {
+            return;
+        }
+
+        for (CodegenProperty property : codegenModel.vars) {
+            recursivelyResolveV1(property);
+        }
+
+        String finalModelName = modelName;
+        if (nestedModels.stream().noneMatch(m -> m.classname.equals(finalModelName))) {
+            nestedModels.add(codegenModel);
+        }
+    }
+
+    private boolean hasDeleteBody(CodegenResponse response) {
+        String statusCode = response.code.trim();
+        if ("204".equals(statusCode) || "205".equals(statusCode) || "304".equals(statusCode)) {
+            return false;
+        }
+        return response.getContent() != null && !response.getContent().isEmpty();
     }
 
     private void setDataFormatForNestedProperties(CodegenProperty codegenProperty) {

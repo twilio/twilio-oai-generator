@@ -115,6 +115,7 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
         CodegenModel derivedCodegenModel = apiResourceBuilder.getModel(property.dataType);
         if(derivedCodegenModel != null && !CodegenUtils.isPropertySchemaEnum(property)) {
             this.resolve(derivedCodegenModel, apiResourceBuilder);
+            apiResourceBuilder.addNestedModel(derivedCodegenModel);
             CodegenUtils.mergeVendorExtensionProperty(property.vendorExtensions,(LinkedHashMap) derivedCodegenModel.getVendorExtensions().get(X_IMPORT), X_IMPORT);
             updateDataType(property, apiResourceBuilder);
             setJsonName(property);

@@ -1,6 +1,8 @@
 {{>licenseInfo}}
 {{#resources}}
-from datetime import date, datetime
+{{#isApiV1}}from __future__ import annotations
+
+{{/isApiV1}}from datetime import date, datetime
 from typing import Any, Dict, List, Optional, Union, Iterator, AsyncIterator, Protocol
 from twilio.base import deserialize, serialize, values
 from twilio.base.api_response import ApiResponse
@@ -12,6 +14,57 @@ from twilio.base.version import Version
 {{#dependents}}from twilio.rest.{{domainPackage}}.{{apiVersion}}.{{namespaceSubPart}}.{{filename}} import {{resourceName}}List
 {{/dependents}}
 
+{{! For v1 APIs, define Instance/Context/Pagination FIRST, then List class with nested models }}
+{{#isApiV1}}
+{{! Output Instance, Context, and Pagination first so List class methods can reference them }}
+{{#responseModel}}{{>instance}}{{/responseModel}}
+{{#instancePath}}{{>context}}{{/instancePath}}
+{{#hasPaginationOperation}}{{>pagination}}{{/hasPaginationOperation}}
+
+{{! Now output List class with nested models }}
+class {{apiName}}List(ListResource):
+    {{#if nestedModels}}{{>modelClasses}}{{/if}}
+    def __init__(self, version: Version{{#listPathParams}}, {{paramName}}: {{{dataType}}}{{/listPathParams}}):
+        """
+        Initialize the {{apiName}}List
+
+        :param version: Version that contains the resource
+        {{#listPathParams}}:param {{paramName}}: {{{description}}}
+        {{/listPathParams}}
+        """
+        super().__init__(version)
+
+        {{#if listPathParams}}
+        # Path Solution
+        self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }{{/if}}
+        {{#listPath}}self._uri = '{{listPath}}'{{#if listPathParams}}.format(**self._solution){{/if}}{{/listPath}}
+        {{#dependents}}{{^instanceDependent}}
+        self._{{mountName}}: Optional[{{resourceName}}List] = None{{/instanceDependent}}{{/dependents}}
+        {{#listPath}}{{>listOperations}}{{/listPath}}
+{{#dependents}}
+{{^instanceDependent}}
+    @property
+    def {{mountName}}(self) -> {{resourceName}}List:
+        """
+        Access the {{mountName}}
+        """
+        if self._{{mountName}} is None:
+            self._{{mountName}} = {{resourceName}}List(self._version{{#listPathParams}}, {{paramName}}=self._solution['{{paramName}}']{{/listPathParams}})
+        return self._{{mountName}}
+{{/instanceDependent}}
+{{/dependents}}
+{{#instancePath}}{{>contextMethods}}{{/instancePath}}
+    def __repr__(self) -> str:
+        """
+        Provide a friendly representation
+
+        :returns: Machine friendly representation
+        """
+        return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
+{{/isApiV1}}
+
+{{! For non-v1 APIs, keep original order for backward compatibility }}
+{{^isApiV1}}
 {{#hasMultipleResponseModels}}
 class ResponseResource(Protocol):
   pass
@@ -61,4 +114,5 @@ class {{apiName}}List(ListResource):
         :returns: Machine friendly representation
         """
         return '<Twilio.{{domainName}}.{{apiVersionClass}}.{{apiName}}List>'
+{{/isApiV1}}
 {{/resources}}
