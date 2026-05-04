@@ -396,10 +396,6 @@ public class DirectoryStructureService {
     }
 
     private boolean isInstanceDependent(final Operation operation, final List<Parameter> pathParams) {
-        final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-        if(!isV1ApiSpec){
-            return false;
-        }
         if (operation == null || operation.getOperationId() == null || pathParams == null) {
             return false;
         }
@@ -443,7 +439,9 @@ public class DirectoryStructureService {
                     .collect(Collectors.toList());
         }
         List<Parameter> params = fetchNonParentPathParams(pathItem, operation);
-        return new DependentResource.DependentResourceBuilder()
+        final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+
+        DependentResource.DependentResourceBuilder builder = new DependentResource.DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
                 .className(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -453,9 +451,12 @@ public class DirectoryStructureService {
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .pathParams(params)
                 .listPathParams(listParams)
-                .resourceName(resourceAliases.getClassName())
-                .instanceDependent(isInstanceDependent(operation, params))
-                .build();
+                .resourceName(resourceAliases.getClassName());
+
+        if (isV1ApiSpec) {
+            builder.instanceDependent(isInstanceDependent(operation, params));
+        }
+        return builder.build();
     }
 
     public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation) {
