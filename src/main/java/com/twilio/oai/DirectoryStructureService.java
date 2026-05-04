@@ -255,10 +255,7 @@ public class DirectoryStructureService {
             // OR existing is empty,
             // OR (v1 spec AND equal params AND list-with-params ordering issue)
             if (existingDependent.getPathParams().isEmpty()
-                    || (isV1ApiSpec
-                        && dependent.getPathParams().size() >= existingDependent.getPathParams().size()
-                        && dependent.isListWithPathParams()
-                        && !existingDependent.isListWithPathParams())) {
+                    || (isV1ApiSpec && dependent.isListWithPathParams() && !existingDependent.isListWithPathParams())) {
                 versionResources.put(dependent.getFilename(), dependent);
             }
             // Otherwise keep existing (has equal or more params and is already populated)
