@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+
 import { inspect, InspectOptions } from "util";
 import V2010 from "../../V2010";
 const deserialize = require("../../../../base/deserialize");
@@ -21,13 +22,8 @@ import { ApiResponse } from "../../../../base/ApiResponse";
 import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
 import { PhoneNumberCapabilities } from "../../../../interfaces";
 
-export type CallStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+
+export type CallStatus = 'in-progress'|'paused'|'stopped'|'processing'|'completed'|'absent';
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -39,21 +35,26 @@ export class TestResponseObjectTestArrayOfObjects {
   }
 }
 
+
+
+
+
 /**
  * Options to pass to create a CallInstance
  */
 export interface CallListInstanceCreateOptions {
   /**  */
-  requiredStringProperty: string;
+  "requiredStringProperty": string;
   /** The HTTP method that we should use to request the `TestArrayOfUri`. */
-  testMethod: string;
+  "testMethod": string;
   /**  */
-  testArrayOfStrings?: Array<string>;
+  "testArrayOfStrings"?: Array<string>;
   /**  */
-  testArrayOfUri?: Array<string>;
+  "testArrayOfUri"?: Array<string>;
 }
 
 export interface CallContext {
+
   /**
    * Remove a CallInstance
    *
@@ -61,9 +62,7 @@ export interface CallContext {
    *
    * @returns Resolves to processed boolean
    */
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean>;
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean>
 
   /**
    * Remove a CallInstance and return HTTP info
@@ -72,9 +71,7 @@ export interface CallContext {
    *
    * @returns Resolves to processed boolean with HTTP metadata
    */
-  removeWithHttpInfo(
-    callback?: (error: Error | null, item?: ApiResponse<boolean>) => any,
-  ): Promise<ApiResponse<boolean>>;
+  removeWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<boolean>) => any): Promise<ApiResponse<boolean>>
 
   /**
    * Fetch a CallInstance
@@ -83,9 +80,7 @@ export interface CallContext {
    *
    * @returns Resolves to processed CallInstance
    */
-  fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any,
-  ): Promise<CallInstance>;
+  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
 
   /**
    * Fetch a CallInstance and return HTTP info
@@ -94,9 +89,7 @@ export interface CallContext {
    *
    * @returns Resolves to processed CallInstance with HTTP metadata
    */
-  fetchWithHttpInfo(
-    callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any,
-  ): Promise<ApiResponse<CallInstance>>;
+  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any): Promise<ApiResponse<CallInstance>>
 
   /**
    * Provide a user-friendly representation
@@ -106,138 +99,92 @@ export interface CallContext {
 }
 
 export interface CallContextSolution {
-  accountSid: string;
-  testInteger: number;
+  "accountSid": string;
+  "testInteger": number;
 }
 
 export class CallContextImpl implements CallContext {
   protected _solution: CallContextSolution;
   protected _uri: string;
 
-  constructor(
-    protected _version: V2010,
-    accountSid: string,
-    testInteger: number,
-  ) {
+
+  constructor(protected _version: V2010, accountSid: string, testInteger: number) {
     if (!isValidPathParam(accountSid)) {
-      throw new Error("Parameter 'accountSid' is not valid.");
+      throw new Error('Parameter \'accountSid\' is not valid.');
     }
 
     if (!isValidPathParam(testInteger)) {
-      throw new Error("Parameter 'testInteger' is not valid.");
+      throw new Error('Parameter \'testInteger\' is not valid.');
     }
 
-    this._solution = { accountSid, testInteger };
+    this._solution = { accountSid, testInteger,  };
     this._uri = `/Accounts/${accountSid}/Calls/${testInteger}.json`;
   }
 
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean> {
-    const headers: any = {};
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean> {
+      const headers: any = {};
 
     const instance = this;
     let operationVersion = instance._version,
-      operationPromise = operationVersion.remove({
-        uri: instance._uri,
-        method: "delete",
-        headers,
-      });
+        operationPromise = operationVersion.remove({ uri: instance._uri, method: "delete", headers});
+    
 
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
-  removeWithHttpInfo(
-    callback?: (error: Error | null, item?: ApiResponse<boolean>) => any,
-  ): Promise<ApiResponse<boolean>> {
-    const headers: any = {};
+  removeWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<boolean>) => any): Promise<ApiResponse<boolean>> {
+      const headers: any = {};
 
     const instance = this;
     let operationVersion = instance._version;
     // DELETE operation - returns boolean based on status code
-    let operationPromise = operationVersion
-      .removeWithResponseInfo({ uri: instance._uri, method: "delete", headers })
-      .then(
-        (response): ApiResponse<boolean> => ({
-          ...response,
-          body: response.statusCode === 204,
-        }),
-      );
+    let operationPromise = operationVersion.removeWithResponseInfo({ uri: instance._uri, method: "delete", headers}).then((response) : ApiResponse<boolean> => ({
+      ...response,
+      body: response.statusCode === 204
+    }));
 
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
-  fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any,
-  ): Promise<CallInstance> {
-    const headers: any = {};
-    headers["Accept"] = "application/json";
+  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance> {
+      const headers: any = {};
+    headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version,
-      operationPromise = operationVersion.fetch({
-        uri: instance._uri,
-        method: "get",
-        headers,
-      });
+        operationPromise = operationVersion.fetch({ uri: instance._uri, method: "get", headers});
+    
+    operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, instance._solution.accountSid, instance._solution.testInteger));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new CallInstance(
-          operationVersion,
-          payload,
-          instance._solution.accountSid,
-          instance._solution.testInteger,
-        ),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
-  fetchWithHttpInfo(
-    callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any,
-  ): Promise<ApiResponse<CallInstance>> {
-    const headers: any = {};
-    headers["Accept"] = "application/json";
+  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any): Promise<ApiResponse<CallInstance>> {
+      const headers: any = {};
+    headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version;
     // CREATE, FETCH, UPDATE operations
-    let operationPromise = operationVersion
-      .fetchWithResponseInfo<CallResource>({
-        uri: instance._uri,
-        method: "get",
-        headers,
-      })
-      .then(
-        (response): ApiResponse<CallInstance> => ({
-          ...response,
-          body: new CallInstance(
-            operationVersion,
-            response.body,
-            instance._solution.accountSid,
-            instance._solution.testInteger,
-          ),
-        }),
-      );
+    let operationPromise = operationVersion.fetchWithResponseInfo<CallResource>({ uri: instance._uri, method: "get", headers}).then((response) : ApiResponse<CallInstance> => ({
+      ...response,
+      body: new CallInstance(operationVersion, response.body, instance._solution.accountSid, instance._solution.testInteger)
+    }));
 
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
   /**
@@ -254,7 +201,8 @@ export class CallContextImpl implements CallContext {
   }
 }
 
-interface CallPayload extends CallResource {}
+
+  interface CallPayload extends CallResource {}
 
 interface CallResource {
   account_sid: string;
@@ -282,42 +230,31 @@ export class CallInstance {
   protected _solution: CallContextSolution;
   protected _context?: CallContext;
 
-  constructor(
-    protected _version: V2010,
-    payload: CallResource,
-    accountSid: string,
-    testInteger?: number,
-  ) {
-    this.accountSid = payload.account_sid;
-    this.sid = payload.sid;
-    this.testString = payload.test_string;
+  constructor(protected _version: V2010, payload: CallResource, accountSid: string, testInteger?: number) {
+    
+    this.accountSid = (payload.account_sid);
+    this.sid = (payload.sid);
+    this.testString = (payload.test_string);
     this.testInteger = deserialize.integer(payload.test_integer);
-    this.testObject = payload.test_object;
+    this.testObject = (payload.test_object);
     this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
-    this.testNumber = payload.test_number;
-    this.from = payload.from;
-    this.priceUnit = payload.price_unit;
-    this.testNumberFloat = payload.test_number_float;
+    this.testNumber = (payload.test_number);
+    this.from = (payload.from);
+    this.priceUnit = (payload.price_unit);
+    this.testNumberFloat = (payload.test_number_float);
     this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
     this.testEnum = payload.test_enum;
-    this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
-    this.testArrayOfIntegers = payload.test_array_of_integers;
-    this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
-    this.testArrayOfObjects =
-      payload.test_array_of_objects !== null &&
-      payload.test_array_of_objects !== undefined
-        ? payload.test_array_of_objects.map(
-            (payload: any) => new TestResponseObjectTestArrayOfObjects(payload),
-          )
-        : null;
-    this.testArrayOfEnum = payload.test_array_of_enum;
-    this.status = payload.status;
-    this.message = payload.message;
+    this.a2pProfileBundleSid = (payload.a2p_profile_bundle_sid);
+    this.testArrayOfIntegers = (payload.test_array_of_integers);
+    this.testArrayOfArrayOfIntegers = (payload.test_array_of_array_of_integers);
+    this.testArrayOfObjects =  payload.test_array_of_objects !== null && payload.test_array_of_objects !== undefined ? payload.test_array_of_objects.map(
+      (payload: any) => new TestResponseObjectTestArrayOfObjects(payload)
+    ) : null;
+    this.testArrayOfEnum = (payload.test_array_of_enum);
+    this.status = (payload.status);
+    this.message = (payload.message);
 
-    this._solution = {
-      accountSid,
-      testInteger: testInteger || this.testInteger,
-    };
+    this._solution = { accountSid, testInteger: testInteger || this.testInteger,  };
   }
 
   accountSid: string;
@@ -353,13 +290,7 @@ export class CallInstance {
   message: string;
 
   private get _proxy(): CallContext {
-    this._context =
-      this._context ||
-      new CallContextImpl(
-        this._version,
-        this._solution.accountSid,
-        this._solution.testInteger,
-      );
+    this._context = this._context || new CallContextImpl(this._version, this._solution.accountSid, this._solution.testInteger);
     return this._context;
   }
 
@@ -370,9 +301,9 @@ export class CallInstance {
    *
    * @returns Resolves to processed boolean
    */
-  remove(
-    callback?: (error: Error | null, item?: boolean) => any,
-  ): Promise<boolean> {
+  remove(callback?: (error: Error | null, item?: boolean) => any): Promise<boolean>
+
+    {
     return this._proxy.remove(callback);
   }
 
@@ -383,9 +314,9 @@ export class CallInstance {
    *
    * @returns Resolves to processed boolean with HTTP metadata
    */
-  removeWithHttpInfo(
-    callback?: (error: Error | null, item?: ApiResponse<boolean>) => any,
-  ): Promise<ApiResponse<boolean>> {
+  removeWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<boolean>) => any): Promise<ApiResponse<boolean>>
+
+    {
     return this._proxy.removeWithHttpInfo(callback);
   }
 
@@ -396,9 +327,9 @@ export class CallInstance {
    *
    * @returns Resolves to processed CallInstance
    */
-  fetch(
-    callback?: (error: Error | null, item?: CallInstance) => any,
-  ): Promise<CallInstance> {
+  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+
+    {
     return this._proxy.fetch(callback);
   }
 
@@ -409,9 +340,9 @@ export class CallInstance {
    *
    * @returns Resolves to processed CallInstance with HTTP metadata
    */
-  fetchWithHttpInfo(
-    callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any,
-  ): Promise<ApiResponse<CallInstance>> {
+  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any): Promise<ApiResponse<CallInstance>>
+
+    {
     return this._proxy.fetchWithHttpInfo(callback);
   }
 
@@ -449,6 +380,7 @@ export class CallInstance {
   }
 }
 
+
 export interface CallSolution {
   accountSid: string;
 }
@@ -458,11 +390,15 @@ export interface CallListInstance {
   _solution: CallSolution;
   _uri: string;
 
-  (testInteger: number): CallContext;
-  get(testInteger: number): CallContext;
+  (testInteger: number, ): CallContext;
+  get(testInteger: number, ): CallContext;
 
   _feedbackCallSummary?: FeedbackCallSummaryListInstance;
   feedbackCallSummary: FeedbackCallSummaryListInstance;
+
+
+
+
 
   /**
    * Create a CallInstance
@@ -472,10 +408,7 @@ export interface CallListInstance {
    *
    * @returns Resolves to processed CallInstance
    */
-  create(
-    params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: CallInstance) => any,
-  ): Promise<CallInstance>;
+  create(params: CallListInstanceCreateOptions, callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>;
 
   /**
    * Create a CallInstance and return HTTP info
@@ -485,10 +418,9 @@ export interface CallListInstance {
    *
    * @returns Resolves to processed CallInstance with HTTP metadata
    */
-  createWithHttpInfo(
-    params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any,
-  ): Promise<ApiResponse<CallInstance>>;
+  createWithHttpInfo(params: CallListInstanceCreateOptions, callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any): Promise<ApiResponse<CallInstance>>;
+
+
 
   /**
    * Provide a user-friendly representation
@@ -497,180 +429,128 @@ export interface CallListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export function CallListInstance(
-  version: V2010,
-  accountSid: string,
-): CallListInstance {
+export function CallListInstance(version: V2010, accountSid: string): CallListInstance {
   if (!isValidPathParam(accountSid)) {
-    throw new Error("Parameter 'accountSid' is not valid.");
+    throw new Error('Parameter \'accountSid\' is not valid.');
   }
 
-  const instance = ((testInteger) =>
-    instance.get(testInteger)) as CallListInstance;
+  const instance = ((testInteger, ) => instance.get(testInteger, )) as CallListInstance;
 
-  instance.get = function get(testInteger): CallContext {
+  instance.get = function get(testInteger, ): CallContext {
     return new CallContextImpl(version, accountSid, testInteger);
-  };
+  }
 
   instance._version = version;
-  instance._solution = { accountSid };
+  instance._solution = { accountSid,  };
   instance._uri = `/Accounts/${accountSid}/Calls.json`;
 
   Object.defineProperty(instance, "feedbackCallSummary", {
     get: function feedbackCallSummary() {
       if (!instance._feedbackCallSummary) {
-        instance._feedbackCallSummary = FeedbackCallSummaryListInstance(
-          instance._version,
-          instance._solution.accountSid,
-        );
+        instance._feedbackCallSummary = FeedbackCallSummaryListInstance(instance._version, instance._solution.);
       }
       return instance._feedbackCallSummary;
-    },
+    }
   });
 
-  instance.create = function create(
-    params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, items: CallInstance) => any,
-  ): Promise<CallInstance> {
+  instance.create = function create(params: CallListInstanceCreateOptions, callback?: (error: Error | null, items: CallInstance) => any): Promise<CallInstance> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
 
-    if (
-      params["requiredStringProperty"] === null ||
-      params["requiredStringProperty"] === undefined
-    ) {
-      throw new Error(
-        "Required parameter \"params['requiredStringProperty']\" missing.",
-      );
+    if (params["requiredStringProperty"] === null || params["requiredStringProperty"] === undefined) {
+      throw new Error('Required parameter "params[\'requiredStringProperty\']" missing.');
     }
 
     if (params["testMethod"] === null || params["testMethod"] === undefined) {
-      throw new Error("Required parameter \"params['testMethod']\" missing.");
+      throw new Error('Required parameter "params[\'testMethod\']" missing.');
     }
 
     let data: any = {};
 
+    
+        
     data["RequiredStringProperty"] = params["requiredStringProperty"];
     if (params["testArrayOfStrings"] !== undefined)
-      data["TestArrayOfStrings"] = serialize.map(
-        params["testArrayOfStrings"],
-        (e: string) => e,
-      );
+    data["TestArrayOfStrings"] = serialize.map(params["testArrayOfStrings"], (e: string) => (e));
     if (params["testArrayOfUri"] !== undefined)
-      data["TestArrayOfUri"] = serialize.map(
-        params["testArrayOfUri"],
-        (e: string) => e,
-      );
-
+    data["TestArrayOfUri"] = serialize.map(params["testArrayOfUri"], (e: string) => (e));
+    
     data["TestMethod"] = params["testMethod"];
 
+    
+    
+    
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-    headers["Accept"] = "application/json";
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept"] = "application/json"
 
     let operationVersion = version,
-      operationPromise = operationVersion.create({
-        uri: instance._uri,
-        method: "post",
-        data,
-        headers,
-      });
+        operationPromise = operationVersion.create({ uri: instance._uri, method: "post", data, headers});
+    
+    operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, instance._solution.accountSid));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new CallInstance(
-          operationVersion,
-          payload,
-          instance._solution.accountSid,
-        ),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
-  };
 
-  instance.createWithHttpInfo = function createWithHttpInfo(
-    params: CallListInstanceCreateOptions,
-    callback?: (error: Error | null, items: ApiResponse<CallInstance>) => any,
-  ): Promise<ApiResponse<CallInstance>> {
+
+    }
+
+  instance.createWithHttpInfo = function createWithHttpInfo(params: CallListInstanceCreateOptions, callback?: (error: Error | null, items: ApiResponse<CallInstance>) => any): Promise<ApiResponse<CallInstance>> {
     if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
 
-    if (
-      params["requiredStringProperty"] === null ||
-      params["requiredStringProperty"] === undefined
-    ) {
-      throw new Error(
-        "Required parameter \"params['requiredStringProperty']\" missing.",
-      );
+    if (params["requiredStringProperty"] === null || params["requiredStringProperty"] === undefined) {
+      throw new Error('Required parameter "params[\'requiredStringProperty\']" missing.');
     }
 
     if (params["testMethod"] === null || params["testMethod"] === undefined) {
-      throw new Error("Required parameter \"params['testMethod']\" missing.");
+      throw new Error('Required parameter "params[\'testMethod\']" missing.');
     }
 
     let data: any = {};
 
+    
+        
     data["RequiredStringProperty"] = params["requiredStringProperty"];
     if (params["testArrayOfStrings"] !== undefined)
-      data["TestArrayOfStrings"] = serialize.map(
-        params["testArrayOfStrings"],
-        (e: string) => e,
-      );
+    data["TestArrayOfStrings"] = serialize.map(params["testArrayOfStrings"], (e: string) => (e));
     if (params["testArrayOfUri"] !== undefined)
-      data["TestArrayOfUri"] = serialize.map(
-        params["testArrayOfUri"],
-        (e: string) => e,
-      );
-
+    data["TestArrayOfUri"] = serialize.map(params["testArrayOfUri"], (e: string) => (e));
+    
     data["TestMethod"] = params["testMethod"];
 
+    
+    
+    
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-    headers["Accept"] = "application/json";
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept"] = "application/json"
 
     let operationVersion = version;
     // CREATE, FETCH, UPDATE operations
-    let operationPromise = operationVersion
-      .createWithResponseInfo<CallResource>({
-        uri: instance._uri,
-        method: "post",
-        data,
-        headers,
-      })
-      .then(
-        (response): ApiResponse<CallInstance> => ({
-          ...response,
-          body: new CallInstance(
-            operationVersion,
-            response.body,
-            instance._solution.accountSid,
-          ),
-        }),
-      );
+    let operationPromise = operationVersion.createWithResponseInfo<CallResource>({ uri: instance._uri, method: "post", data, headers}).then((response) : ApiResponse<CallInstance> => ({
+      ...response,
+      body: new CallInstance(operationVersion, response.body, instance._solution.accountSid)
+    }));
 
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
-  };
+
+
+    }
 
   instance.toJSON = function toJSON() {
     return instance._solution;
-  };
+  }
 
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions,
-  ) {
+  instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
     return inspect(instance.toJSON(), options);
-  };
+  }
 
   return instance;
 }
+
+
