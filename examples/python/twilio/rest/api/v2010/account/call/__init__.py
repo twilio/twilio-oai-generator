@@ -599,9 +599,7 @@ class CallList(ListResource):
         Access the feedback_call_summary
         """
         if self._feedback_call_summary is None:
-            self._feedback_call_summary = FeedbackCallSummaryList(
-                self._version, account_sid=self._solution["account_sid"]
-            )
+            self._feedback_call_summary = FeedbackCallSummaryList(self._version)
         return self._feedback_call_summary
 
     def get(self, test_integer: int) -> CallContext:

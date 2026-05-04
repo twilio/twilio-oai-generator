@@ -521,7 +521,6 @@ export function CallListInstance(
       if (!instance._feedbackCallSummary) {
         instance._feedbackCallSummary = FeedbackCallSummaryListInstance(
           instance._version,
-          instance._solution.accountSid,
         );
       }
       return instance._feedbackCallSummary;
