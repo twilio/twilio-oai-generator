@@ -58,7 +58,6 @@ public class DirectoryStructureService {
         private String param;
         private boolean instanceDependent;
         private List<Parameter> pathParams;
-        private List<Parameter> listPathParams;
         private String resourceName;
         private String listName;
         private boolean listWithPathParams;
@@ -429,17 +428,13 @@ public class DirectoryStructureService {
 
     public DependentResource generateDependent(final String path, final PathItem pathItem, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
-        // Get parent path params for list operations
-        List<Parameter> listParams = new ArrayList<>();
-        final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
-        if (isV1ApiSpec && operation != null && operation.getParameters() != null) {
-            listParams = operation.getParameters().stream()
-                    .filter(param -> Objects.nonNull(param.getIn()))
-                    .filter(PathUtils::isPathParam)
-                    .filter(param -> Objects.nonNull(param.getExtensions()))
-                    .filter(PathUtils::isParentParam)
-                    .collect(Collectors.toList());
-        }
+        // Move this filtering to ruby api resource builder or use ListWithPathParams
+//        listParams = operation.getParameters().stream()
+//            .filter(param -> Objects.nonNull(param.getIn()))
+//            .filter(PathUtils::isPathParam)
+//            .filter(param -> Objects.nonNull(param.getExtensions()))
+//            .filter(PathUtils::isParentParam)
+//            .collect(Collectors.toList());
         List<Parameter> params = fetchNonParentPathParams(pathItem, operation);
         DependentResource.DependentResourceBuilder builder = new DependentResource.DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
@@ -452,10 +447,6 @@ public class DirectoryStructureService {
                 .pathParams(params)
                 .resourceName(resourceAliases.getClassName());
 
-        if (isV1ApiSpec) {
-            builder.listPathParams(listParams);
-            builder.instanceDependent(isInstanceDependent(operation, params));
-        }
 
         return builder.build();
     }

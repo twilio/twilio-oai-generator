@@ -40,6 +40,34 @@ module Twilio
             {{/isApiDomain}}
             {{#versionResources}}
                 {{#instanceDependent}}
+                {{#hasInstanceOperation}}
+                ##
+                {{#pathParams}}
+                # @param [String] {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} {{{description}}}
+                {{/pathParams}}
+                # @param [String] {{instanceParam}}
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{instanceType}}] if {{instanceParam}} was passed.
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{resourceName}}List]
+                def {{mountName}}({{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}=:unset, {{/pathParams}}{{instanceParam}}=:unset)
+                    {{#pathParams}}
+                    if {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}.nil?
+                        raise ArgumentError, '{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} cannot be nil'
+                    end
+                    {{/pathParams}}
+                    if {{instanceParam}}.nil?
+                        raise ArgumentError, '{{instanceParam}} cannot be nil'
+                    end
+
+                    if {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} == :unset && {{/pathParams}}{{instanceParam}} == :unset
+                        @{{mountName}} ||= {{resourceName}}List.new self
+                    elsif {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} != :unset && {{/pathParams}}{{instanceParam}} == :unset
+                        {{resourceName}}List.new(self, {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}: {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}{{^-last}}, {{/-last}}{{/pathParams}})
+                    else
+                        {{resourceName}}Context.new(self, {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}, {{/pathParams}}{{instanceParam}})
+                    end
+                end
+                {{/hasInstanceOperation}}
+                {{^hasInstanceOperation}}
                 {{#pathParams}}
                 ##
                 {{#pathParams}}
@@ -70,6 +98,7 @@ module Twilio
                     @{{mountName}} ||= {{resourceName}}Context.new self
                 end
                 {{/pathParams}}
+                {{/hasInstanceOperation}}
                 {{/instanceDependent}}
                 {{^instanceDependent}}
                 {{#pathParams}}
