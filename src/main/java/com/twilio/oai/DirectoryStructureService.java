@@ -189,7 +189,7 @@ public class DirectoryStructureService {
                 }
 
                 updateAccountSidParam(operation);
-                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1() 
+                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1()
                         || "twilio-csharp".equals(ResourceCacheContext.get().getAdditionalProperties().get(GENERATOR_NAME))) {
                     updatePaginationParams(operation);
                 }
@@ -254,10 +254,9 @@ public class DirectoryStructureService {
             // Replace if: new has MORE params,
             // OR existing is empty,
             // OR (v1 spec AND equal params AND list-with-params ordering issue)
-            if (dependent.getPathParams().size() > existingDependent.getPathParams().size()
-                    || existingDependent.getPathParams().isEmpty()
+            if (existingDependent.getPathParams().isEmpty()
                     || (isV1ApiSpec
-                        && dependent.getPathParams().size() == existingDependent.getPathParams().size()
+                        && dependent.getPathParams().size() >= existingDependent.getPathParams().size()
                         && dependent.isListWithPathParams()
                         && !existingDependent.isListWithPathParams())) {
                 versionResources.put(dependent.getFilename(), dependent);
@@ -397,6 +396,10 @@ public class DirectoryStructureService {
     }
 
     private boolean isInstanceDependent(final Operation operation, final List<Parameter> pathParams) {
+        final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        if(!isV1ApiSpec){
+            return false;
+        }
         if (operation == null || operation.getOperationId() == null || pathParams == null) {
             return false;
         }
@@ -431,7 +434,8 @@ public class DirectoryStructureService {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
         // Get parent path params for list operations
         List<Parameter> listParams = new ArrayList<>();
-        if (operation != null && operation.getParameters() != null) {
+        final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        if (isV1ApiSpec && operation != null && operation.getParameters() != null) {
             listParams = operation.getParameters().stream()
                     .filter(param -> Objects.nonNull(param.getIn()))
                     .filter(PathUtils::isPathParam)
@@ -440,7 +444,7 @@ public class DirectoryStructureService {
                     .collect(Collectors.toList());
         }
         List<Parameter> params = fetchNonParentPathParams(pathItem, operation);
-        return new DependentResource.DependentResourceBuilder()
+        DependentResource.DependentResourceBuilder builder = new DependentResource.DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
                 .className(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -449,10 +453,14 @@ public class DirectoryStructureService {
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .pathParams(params)
-                .listPathParams(listParams)
-                .resourceName(resourceAliases.getClassName())
-                .instanceDependent(isInstanceDependent(operation, params))
-                .build();
+                .resourceName(resourceAliases.getClassName());
+
+        if (isV1ApiSpec) {
+            builder.listPathParams(listParams);
+            builder.instanceDependent(isInstanceDependent(operation, params));
+        }
+
+        return builder.build();
     }
 
     public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation) {
