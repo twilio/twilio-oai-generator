@@ -5,6 +5,13 @@
 namespace Twilio\Rest\{{domainName}}\{{version}}{{namespaceSubPart}};
 
 {{>imports}}
+{{#apiOperations}}
+{{#vendorExtensions.x-is-read-operation}}
+{{#vendorExtensions.x-is-list-operator-versions}}
+use Twilio\Rest\Intelligence\V3\Operator\Version\VersionContext;
+{{/vendorExtensions.x-is-list-operator-versions}}
+{{/vendorExtensions.x-is-read-operation}}
+{{/apiOperations}}
 
 {{#metaProperties.listImportProperties.0}}
 /**
@@ -101,6 +108,32 @@ class {{apiName}}List extends ListResource
         );
     }
 
+{{/metaProperties.hasInstanceOperation}}
+{{^metaProperties.hasInstanceOperation}}
+{{#apiOperations}}
+{{#vendorExtensions.x-is-read-operation}}
+{{#vendorExtensions.x-is-list-operator-versions}}
+    /**
+     * Constructs a {{apiName}}Context
+     *
+     * @param string $id The unique identifier (TTID) of the Language Operator.
+     * @param int $pathVersion The numeric version number of the Language Operator.
+     */
+    public function getContext(
+        string $id,
+        int $pathVersion
+    ): Version\VersionContext
+    {
+        return new Version\VersionContext(
+            $this->version,
+            $id,
+            $pathVersion
+        );
+    }
+
+{{/vendorExtensions.x-is-list-operator-versions}}
+{{/vendorExtensions.x-is-read-operation}}
+{{/apiOperations}}
 {{/metaProperties.hasInstanceOperation}}
     {{#metaProperties.listImportProperties}}
     /**

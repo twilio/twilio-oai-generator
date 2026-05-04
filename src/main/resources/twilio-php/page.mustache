@@ -33,6 +33,20 @@ class {{apiName}}Page extends {{#isApiV1}}TokenPaginationPage{{/isApiV1}}{{^isAp
     {
         return new {{^isApiV1}}{{apiName}}{{/isApiV1}}{{#isApiV1}}{{#pageInstanceClassName}}{{pageInstanceClassName}}{{/pageInstanceClassName}}{{^pageInstanceClassName}}{{apiName}}{{/pageInstanceClassName}}{{/isApiV1}}Instance($this->version, $payload{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}, $this->solution['{{paramName}}']{{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}});
     }
+{{#isApiV1}}{{#apiOperations}}{{#vendorExtensions.x-is-read-operation}}{{#vendorExtensions.x-list-items-are-primitive}}
+
+    /**
+     * Override current() to return primitive values directly instead of wrapping in Instance objects
+     * This is used when the list contains primitives (strings, integers, etc.) rather than complex objects
+     *
+     * @return mixed The current primitive value from the list
+     */
+    #[\ReturnTypeWillChange]
+    public function current()
+    {
+        return $this->records->current();
+    }
+{{/vendorExtensions.x-list-items-are-primitive}}{{/vendorExtensions.x-is-read-operation}}{{/apiOperations}}{{/isApiV1}}
 
     /**
      * Provide a friendly representation

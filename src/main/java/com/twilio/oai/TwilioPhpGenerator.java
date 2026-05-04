@@ -43,6 +43,8 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     private final Map<String, String> modelFormatMap = new HashMap<>();
     private final IConventionMapper conventionMapper = new LanguageConventionResolver(PHP_CONVENTIONAL_MAP_PATH);
     private final PhpApiActionTemplate phpApiActionTemplate = new PhpApiActionTemplate(this);
+    // Track path parameter renames for collision avoidance (e.g., "version" -> "pathVersion")
+    private final Map<String, String> pathParamRenames = new HashMap<>();
 
     @Override
     protected ImmutableMap.Builder<String, Mustache.Lambda> addMustacheLambdas() {
@@ -93,7 +95,7 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
     }
 
     /**
-     * Preprocesses codegen parameter to remove unnecessary data
+     * Preprocesses codegen parameter to remove unnecessary data and handles parameter name collisions
      * @param parameter the codegen parameter having unprocessed data
      */
     @Override
@@ -102,6 +104,25 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         parameter.dataType = extractDataType(parameter.dataType);
         if(parameter.datatypeWithEnum != null)
             parameter.datatypeWithEnum = extractDataType(parameter.datatypeWithEnum);
+
+        // Handle path parameter name collision with SDK's Version class parameter
+        // All Context and Instance constructors have "Version $version" as first parameter,
+        // so path parameters named "version" must be renamed to avoid PHP redefinition error
+        if (parameter.isPathParam && "version".equalsIgnoreCase(parameter.paramName)) {
+            String originalName = parameter.paramName;
+            parameter.paramName = "pathVersion";
+            parameter.baseName = "pathVersion";
+            // Store the rename mapping so we can update path strings later
+            pathParamRenames.put(originalName, "pathVersion");
+        }
+    }
+
+    /**
+     * Get the map of path parameter renames for collision avoidance
+     * @return map of original parameter name to renamed parameter name
+     */
+    public Map<String, String> getPathParamRenames() {
+        return pathParamRenames;
     }
 
     /**
@@ -194,9 +215,9 @@ public class TwilioPhpGenerator extends PhpClientCodegen {
         // Build the apiResource
         PhpApiResources apiResources = builder.build();
 
-        // Register dynamic templates with the full apiResource if there are multiple response models
-        // This must be done after build() so the apiResource has all properties set
-        if (builder.hasMultipleResponseModels()) {
+        // Register dynamic templates for V1 APIs so each response model gets its own file
+        // named {model.classname}Instance.php, matching the class name inside
+        if (builder.hasDynamicResponseModels()) {
             phpApiActionTemplate.addDynamicTemplates(PhpApiActionTemplate.TEMPLATE_TYPE_INSTANCE_CLASS, apiResources);
         }
 

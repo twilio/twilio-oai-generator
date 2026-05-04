@@ -68,9 +68,9 @@ public abstract class AbstractApiActionTemplate implements IApiActionTemplate {
     public void addDynamicTemplates(String templateType, Object apiResource) {
         List<String> templateStrings = templates.get(templateType);
         if (templateStrings != null && apiResource != null) {
-            // Check if apiResource has responseInstanceModels with more than 1 model
+            // Check if apiResource has responseInstanceModels
             Set<CodegenModel> models = getResponseInstanceModels(apiResource);
-            if (models != null && models.size() > 1) {
+            if (models != null && !models.isEmpty()) {
                 dynamicTemplates.put(templateType, new DynamicTemplateData(
                     templateStrings.get(0),  // template file
                     templateStrings.get(1),  // file suffix

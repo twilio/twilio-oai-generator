@@ -43,6 +43,7 @@ class HistoryPage extends Page
         return new HistoryInstance($this->version, $payload, $this->solution['sid']);
     }
 
+
     /**
      * Provide a friendly representation
      *
