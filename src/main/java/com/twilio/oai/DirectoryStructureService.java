@@ -188,7 +188,7 @@ public class DirectoryStructureService {
                 }
 
                 updateAccountSidParam(operation);
-                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1() 
+                if (ResourceCacheContext.get() == null || !ResourceCacheContext.get().isV1()
                         || "twilio-csharp".equals(ResourceCacheContext.get().getAdditionalProperties().get(GENERATOR_NAME))) {
                     updatePaginationParams(operation);
                 }
@@ -250,12 +250,14 @@ public class DirectoryStructureService {
         final boolean isV1ApiSpec = Boolean.TRUE.equals(additionalProperties.get("isV1ApiSpec"));
         if (versionResources.containsKey(dependent.getFilename())) {
             DependentResource existingDependent = versionResources.get(dependent.getFilename());
-            // For v1Api specs: also replace when new entry has listWithPathParams=true and existing
-            // does not — handles instance path processed before list path (spec ordering issue)
+            // Replace if: new has MORE params,
+            // OR existing is empty,
+            // OR (v1 spec AND equal params AND list-with-params ordering issue)
             if (existingDependent.getPathParams().isEmpty()
                     || (isV1ApiSpec && dependent.isListWithPathParams() && !existingDependent.isListWithPathParams())) {
                 versionResources.put(dependent.getFilename(), dependent);
             }
+            // Otherwise keep existing (has equal or more params and is already populated)
         } else {
             versionResources.put(dependent.getFilename(), dependent);
         }
@@ -389,6 +391,30 @@ public class DirectoryStructureService {
         return Optional.ofNullable(operation.getParameters()).stream().flatMap(Collection::stream);
     }
 
+    private boolean isInstanceDependent(final Operation operation, final List<Parameter> pathParams) {
+        final boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
+        if(!isV1ApiSpec){
+            return false;
+        }
+        if (operation == null || operation.getOperationId() == null || pathParams == null) {
+            return false;
+        }
+
+        // Must have path parameters to identify the instance
+        if (pathParams.isEmpty()) {
+            return false;
+        }
+
+        String operationId = operation.getOperationId().toLowerCase();
+
+        // Must be an instance operation
+        boolean isInstanceOperation = operationId.startsWith("fetch") ||
+                                      operationId.startsWith("update") ||
+                                      operationId.startsWith("patch") ||
+                                      operationId.startsWith("delete");
+
+        return isInstanceOperation;
+    }
     private String openApiTypeToNodeType(final Parameter param) {
         if (param.getSchema() == null) return "string";
         String type = param.getSchema().getType();
@@ -402,8 +428,15 @@ public class DirectoryStructureService {
 
     public DependentResource generateDependent(final String path, final PathItem pathItem, final Operation operation) {
         final Resource.Aliases resourceAliases = getResourceAliases(path, operation);
+        // Move this filtering to ruby api resource builder or use ListWithPathParams
+//        listParams = operation.getParameters().stream()
+//            .filter(param -> Objects.nonNull(param.getIn()))
+//            .filter(PathUtils::isPathParam)
+//            .filter(param -> Objects.nonNull(param.getExtensions()))
+//            .filter(PathUtils::isParentParam)
+//            .collect(Collectors.toList());
         List<Parameter> params = fetchNonParentPathParams(pathItem, operation);
-        return new DependentResource.DependentResourceBuilder()
+        DependentResource.DependentResourceBuilder builder = new DependentResource.DependentResourceBuilder()
                 .version(PathUtils.getFirstPathPart(path))
                 .type(resourceAliases.getClassName() + LIST_INSTANCE)
                 .className(resourceAliases.getClassName() + LIST_INSTANCE)
@@ -412,8 +445,10 @@ public class DirectoryStructureService {
                 .mountName(caseResolver.pathOperation(resourceAliases.getMountName()))
                 .filename(caseResolver.filenameOperation(resourceAliases.getClassName()))
                 .pathParams(params)
-                .resourceName(resourceAliases.getClassName())
-                .build();
+                .resourceName(resourceAliases.getClassName());
+
+
+        return builder.build();
     }
 
     public void addContextdependents(final List<Object> resourceList, final String path, final Operation operation) {

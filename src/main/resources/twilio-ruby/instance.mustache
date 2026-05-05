@@ -49,7 +49,8 @@
                         context.{{#lambda.camelcase}}{{vendorExtensions.x-name}}{{/lambda.camelcase}}{{#hasParams}}({{#queryParams}}
                             {{paramName}}: {{paramName}}, {{/queryParams}}{{#formParams}}
                             {{paramName}}: {{paramName}}, {{/formParams}}{{#headerParams}}
-                            {{paramName}}: {{paramName}}, {{/headerParams}}
+                            {{paramName}}: {{paramName}}, {{/headerParams}}{{#bodyParams}}
+                            {{paramName}}: {{paramName}}, {{/bodyParams}}
                         ){{/hasParams}}
                     end
 

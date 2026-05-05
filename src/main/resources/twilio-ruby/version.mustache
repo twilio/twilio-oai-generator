@@ -40,6 +40,34 @@ module Twilio
             {{/isApiDomain}}
             {{#versionResources}}
                 {{#instanceDependent}}
+                {{#hasInstanceOperation}}
+                ##
+                {{#pathParams}}
+                # @param [String] {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} {{{description}}}
+                {{/pathParams}}
+                # @param [String] {{instanceParam}}
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{instanceType}}] if {{instanceParam}} was passed.
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{resourceName}}List]
+                def {{mountName}}({{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}=:unset, {{/pathParams}}{{instanceParam}}=:unset)
+                    {{#pathParams}}
+                    if {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}.nil?
+                        raise ArgumentError, '{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} cannot be nil'
+                    end
+                    {{/pathParams}}
+                    if {{instanceParam}}.nil?
+                        raise ArgumentError, '{{instanceParam}} cannot be nil'
+                    end
+
+                    if {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} == :unset && {{/pathParams}}{{instanceParam}} == :unset
+                        @{{mountName}} ||= {{resourceName}}List.new self
+                    elsif {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} != :unset && {{/pathParams}}{{instanceParam}} == :unset
+                        {{resourceName}}List.new(self, {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}: {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}{{^-last}}, {{/-last}}{{/pathParams}})
+                    else
+                        {{resourceName}}Context.new(self, {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}, {{/pathParams}}{{instanceParam}})
+                    end
+                end
+                {{/hasInstanceOperation}}
+                {{^hasInstanceOperation}}
                 {{#pathParams}}
                 ##
                 {{#pathParams}}
@@ -53,9 +81,12 @@ module Twilio
                         raise ArgumentError, '{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} cannot be nil'
                     end
                     {{/pathParams}}
+
                     if {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} == :unset{{^-last}} && {{/-last}}{{/pathParams}}
                         @{{mountName}} ||= {{resourceName}}List.new self
-                    else
+                    {{#pathParams}}{{#-first}}{{^-last}}elsif {{#pathParams}}{{^-last}}{{^-first}} && {{/-first}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} != :unset{{/-last}}{{/pathParams}}{{#pathParams}}{{#-last}} && {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} == :unset{{/-last}}{{/pathParams}}
+                        {{resourceName}}List.new(self, {{#pathParams}}{{^-last}}{{^-first}}, {{/-first}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}: {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}{{/-last}}{{/pathParams}})
+                    {{/-last}}{{/-first}}{{/pathParams}}else
                         {{resourceName}}Context.new(self, {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}{{^-last}}, {{/-last}}{{/pathParams}})
                     end
                 end
@@ -67,13 +98,38 @@ module Twilio
                     @{{mountName}} ||= {{resourceName}}Context.new self
                 end
                 {{/pathParams}}
+                {{/hasInstanceOperation}}
                 {{/instanceDependent}}
                 {{^instanceDependent}}
+                {{#pathParams}}
+                ##
+                {{#pathParams}}
+                # @param [String] {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} {{{description}}}
+                {{/pathParams}}
+                # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{resourceName}}List]
+                def {{mountName}}({{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}=:unset{{^-last}}, {{/-last}}{{/pathParams}})
+                    {{#pathParams}}
+                    if {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}.nil?
+                        raise ArgumentError, '{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} cannot be nil'
+                    end
+                    {{/pathParams}}
+
+                    if {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} == :unset{{^-last}} && {{/-last}}{{/pathParams}}
+                        @{{mountName}} ||= {{resourceName}}List.new self
+                    {{#pathParams}}{{#-first}}{{^-last}}elsif {{#pathParams}}{{^-last}}{{^-first}} && {{/-first}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} != :unset{{/-last}}{{/pathParams}}{{#pathParams}}{{#-last}} && {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}} == :unset{{/-last}}{{/pathParams}}
+                        {{resourceName}}List.new(self, {{#pathParams}}{{^-last}}{{^-first}}, {{/-first}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}: {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}{{/-last}}{{/pathParams}})
+                    {{/-last}}{{/-first}}{{/pathParams}}else
+                        {{resourceName}}List.new(self, {{#pathParams}}{{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}: {{#lambda.snakecase}}{{name}}{{/lambda.snakecase}}{{^-last}}, {{/-last}}{{/pathParams}})
+                    end
+                end
+                {{/pathParams}}
+                {{^pathParams}}
                 ##
                 # @return [Twilio::REST::{{domainName}}::{{apiVersionClass}}::{{resourceName}}List]
                 def {{mountName}}
                     @{{mountName}} ||= {{resourceName}}List.new self
                 end
+                {{/pathParams}}
                 {{/instanceDependent}}
             {{/versionResources}}
                 ##
