@@ -84,6 +84,9 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
             'ARRAY_ITEM_SUFFIX': ''
         },
     }
+
+    if language == 'java':
+        config['inlineSchemaOptions']['SKIP_SCHEMA_REUSE'] = 'true'
     # print(config)
     with open(full_config_path, 'w') as f:
         f.write(json.dumps(config))
