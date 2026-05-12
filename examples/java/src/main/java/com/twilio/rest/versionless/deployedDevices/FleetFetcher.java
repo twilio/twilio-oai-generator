@@ -69,7 +69,7 @@ import com.twilio.type.*;
         }
         return response;
     }
-    
+
     @Override
     public Fleet fetch(final TwilioRestClient client) {
         Response response = makeRequest(client);
@@ -82,4 +82,5 @@ import com.twilio.type.*;
         Fleet content =  Fleet.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
+
     }
