@@ -6,6 +6,7 @@ import com.twilio.oai.StringHelper;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.resolver.Resolver;
 import com.twilio.oai.resolver.ruby.RubyCodegenModelResolver;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.resource.Resource;
 import com.twilio.oai.template.IApiActionTemplate;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -273,11 +274,15 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
     }
 
     private RubyApiResourceBuilder updateVars() {
+        boolean isV1ApiSpec = ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1();
         if (responseModel != null && responseModel.vars != null)
             for (CodegenProperty property : responseModel.vars) {
                 String instanceProperty = (String) property.vendorExtensions.getOrDefault(DESERIALIZE_VEND_EXT, "{value}");
+                String snakeKey = (property.baseName != null && !property.baseName.isEmpty()) ? property.baseName : property.name;
+                // Classic v1 APIs return snake_case JSON; next-gen APIs return camelCase JSON.
+                String payloadKey = isV1ApiSpec ? snakeKey : StringHelper.camelize(snakeKey, true);
                 property.vendorExtensions
-                        .put("instance-property", instanceProperty.replace("{value}", "payload['" + property.name + "']"));
+                        .put("instance-property", instanceProperty.replace("{value}", "payload['" + payloadKey + "']"));
             }
         return this;
     }
