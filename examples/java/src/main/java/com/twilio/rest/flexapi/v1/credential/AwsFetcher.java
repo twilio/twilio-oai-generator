@@ -69,7 +69,7 @@ import com.twilio.type.*;
         }
         return response;
     }
-    
+
     @Override
     public Aws fetch(final TwilioRestClient client) {
         Response response = makeRequest(client);
@@ -82,4 +82,5 @@ import com.twilio.type.*;
         Aws content =  Aws.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
+
     }

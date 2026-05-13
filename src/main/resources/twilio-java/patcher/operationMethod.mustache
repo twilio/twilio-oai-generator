@@ -41,15 +41,6 @@ vendorExtensions.x-content-type: content type of the request, example: applicati
             throw new ApiConnectionException("{{resourceName}} patch failed: Unable to connect to server");
         } else if (!TwilioRestClient.SUCCESS.test(response.getStatusCode())) {
             InputStream inputStream = response.getStream();
-        {{#isApiV1}}
-            RestStandardException standardException = RestStandardException.fromJson(
-                inputStream,
-                client.getObjectMapper()
-            );
-            if (standardException != null && standardException.getType() != null) {
-                throw new ApiException(standardException);
-            }
-        {{/isApiV1}}
             RestException restException = RestException.fromJson(
                 inputStream,
                 client.getObjectMapper()

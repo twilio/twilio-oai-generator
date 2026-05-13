@@ -119,7 +119,7 @@ public FeedbackCallSummaryUpdater setStartDate(final LocalDate startDate){
         FeedbackCallSummary content = FeedbackCallSummary.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
-    
+
         private void addPostParams(final Request request) {
 
     if (accountSid != null) {

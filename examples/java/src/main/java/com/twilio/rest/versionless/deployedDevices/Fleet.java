@@ -139,18 +139,18 @@ public class Fleet extends Resource {
         if (this == o) {
             return true;
         }
-    
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-    
+
         VersionlessFleetTestNestedObjectNestedObject other = (VersionlessFleetTestNestedObjectNestedObject) o;
         return (
             Objects.equals(param1, other.param1) && 
             Objects.equals(param2, other.param2)
         );
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(
@@ -207,17 +207,17 @@ public class Fleet extends Resource {
         if (this == o) {
             return true;
         }
-    
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-    
+
         VersionlessFleetTestNestedObject other = (VersionlessFleetTestNestedObject) o;
         return (
             Objects.equals(nestedObject, other.nestedObject)
         );
     }
-    
+
     @Override
     public int hashCode() {
         return Objects.hash(

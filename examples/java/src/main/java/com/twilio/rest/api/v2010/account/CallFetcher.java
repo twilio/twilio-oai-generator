@@ -76,7 +76,7 @@ import com.twilio.type.*;
         }
         return response;
     }
-    
+
     @Override
     public Call fetch(final TwilioRestClient client) {
         Response response = makeRequest(client);
@@ -89,4 +89,5 @@ import com.twilio.type.*;
         Call content =  Call.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
+
     }

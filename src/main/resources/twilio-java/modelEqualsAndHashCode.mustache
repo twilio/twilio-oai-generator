@@ -4,24 +4,34 @@
         if (this == o) {
             return true;
         }
-    
+
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-    
+
+        {{^allProperties}}
+        return true;
+        {{/allProperties}}
+        {{#allProperties.0}}
         {{className}} other = ({{className}}) o;
         return (
         {{#allProperties}}
             Objects.equals({{name}}, other.{{name}}){{^-last}} && {{/-last}}
         {{/allProperties}}
         );
+        {{/allProperties.0}}
     }
-    
+
     @Override
     public int hashCode() {
+        {{^allProperties}}
+        return 0;
+        {{/allProperties}}
+        {{#allProperties.0}}
         return Objects.hash(
         {{#allProperties}}
         {{name}}{{^-last}}, {{/-last}}
         {{/allProperties}}
         );
+        {{/allProperties.0}}
     }

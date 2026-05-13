@@ -111,9 +111,41 @@ components:
         ownerName:
           type: string
         pet:
-          oneOf:
-            - $ref: '#/components/schemas/Cat'
-            - $ref: '#/components/schemas/Dog'
+          $ref: '#/components/schemas/PetTypes'
+    PetTypes:
+      type: object
+      oneOf:
+        - $ref: '#/components/schemas/Dog'
+        - $ref: '#/components/schemas/Bird'
+        - $ref: '#/components/schemas/Fish'
+      discriminator:
+        propertyName: type
+        mapping:
+          Dog: '#/components/schemas/Dog'
+          Bird: '#/components/schemas/Bird'
+          Fish: '#/components/schemas/Fish'
+    Bird:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - Bird
+        name:
+          type: string
+        wingSpan:
+          type: number
+    Fish:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+            - Fish
+        name:
+          type: string
+        waterType:
+          type: string
     MyPet_Response:
       type: object
       properties:
@@ -144,7 +176,8 @@ components:
       properties:
         type:
           type: string
-          enum: [dog]
+          enum:
+            - Dog
         name:
           type: string
         packSize:

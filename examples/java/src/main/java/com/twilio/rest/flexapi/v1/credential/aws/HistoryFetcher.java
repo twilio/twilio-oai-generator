@@ -80,7 +80,7 @@ public HistoryFetcher setAddOnsData(final Map<String, Object> addOnsData){
         }
         return response;
     }
-    
+
     @Override
     public History fetch(final TwilioRestClient client) {
         Response response = makeRequest(client);
@@ -93,6 +93,7 @@ public HistoryFetcher setAddOnsData(final Map<String, Object> addOnsData){
         History content =  History.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
+
         private void addQueryParams(final Request request) {
 
 
