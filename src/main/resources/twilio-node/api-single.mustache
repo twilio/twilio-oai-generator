@@ -128,7 +128,7 @@ export class {{apiName}}ContextImpl implements {{apiName}}Context {
  */
 export interface {{name}} {
   {{#vars}}
-  {{baseName}}{{^required}}?{{/required}}: {{{dataType}}};
+  {{baseName}}{{^required}}?{{/required}}: {{{dataType}}}{{#isNullable}} | null{{/isNullable}};
   {{/vars}}
 }
 
