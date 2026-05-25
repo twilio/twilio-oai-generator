@@ -50,7 +50,7 @@ class {{apiName}}Instance extends InstanceResource
         ];
 
     {{/responseModels.0}}
-        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} ?: $this->properties['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'], {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}];
+        $this->solution = [{{#requiredPathParams}}{{#vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}, {{/vendorExtensions.x-is-parent-param}}{{^vendorExtensions.x-is-parent-param}}'{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}' => ${{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}} ?: ($this->properties['{{#lambda.camelcase}}{{baseName}}{{/lambda.camelcase}}'] ?? null), {{/vendorExtensions.x-is-parent-param}}{{/requiredPathParams}}];
     }
 
 {{#metaProperties.x-is-context-operation}}
@@ -123,6 +123,10 @@ class {{apiName}}Instance extends InstanceResource
         {{#metaProperties.x-is-context-operation}}
         $context = [];
         foreach ($this->solution as $key => $value) {
+            if ($value instanceof \DateTimeInterface) {
+                $value = $value->format('Y-m-d');
+            }
+
             $context[] = "$key=$value";
         }
         {{/metaProperties.x-is-context-operation}}
