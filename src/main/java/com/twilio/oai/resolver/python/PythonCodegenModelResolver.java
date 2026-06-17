@@ -128,5 +128,8 @@ public class PythonCodegenModelResolver extends CodegenModelResolver {
         property.dataType = apiResourceBuilder.getApiName() + ApplicationConstants.LIST + ApplicationConstants.DOT + property.dataType;
         property.baseType = property.dataType;
         property.datatypeWithEnum = property.dataType;
+        if (property.complexType != null) {
+            property.complexType = apiResourceBuilder.getApiName() + ApplicationConstants.LIST + ApplicationConstants.DOT + property.complexType;
+        }
     }
 }
