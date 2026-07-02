@@ -132,7 +132,7 @@ public class CsharpApiResourceBuilder extends ApiResourceBuilder {
         boolean isTokenAuthPresent = false;
         if(opList != null){
             List<CodegenSecurity> authMethods = opList.get(0).authMethods;
-            if(authMethods != null){
+            if(authMethods != null && !authMethods.isEmpty()){
                 for(CodegenSecurity c : authMethods){
                     if(c.isOAuth == true){
                         isTokenAuthPresent = true;
