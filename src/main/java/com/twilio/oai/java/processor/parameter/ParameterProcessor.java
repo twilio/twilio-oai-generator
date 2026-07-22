@@ -25,17 +25,17 @@ public class ParameterProcessor {
     }
 
     public void process(final CodegenOperation codegenOperation) {
-        if (codegenOperation.operationId.toLowerCase().startsWith("list")) {
-            codegenOperation.queryParams = codegenOperation.queryParams.stream()
-                .filter(param -> !param.baseName.equalsIgnoreCase("PageSize"))
-                .collect(Collectors.toList());
-            codegenOperation.optionalParams = codegenOperation.optionalParams.stream()
-                .filter(param -> !param.baseName.equalsIgnoreCase("PageSize"))
-                .collect(Collectors.toList());
-            codegenOperation.allParams = codegenOperation.allParams.stream()
-                .filter(param -> !(param.isQueryParam && param.baseName.equalsIgnoreCase("PageSize")))
-                .collect(Collectors.toList());
-        }
+//        if (codegenOperation.operationId.toLowerCase().startsWith("list")) {
+//            codegenOperation.queryParams = codegenOperation.queryParams.stream()
+//                .filter(param -> !param.baseName.equalsIgnoreCase("PageSize"))
+//                .collect(Collectors.toList());
+//            codegenOperation.optionalParams = codegenOperation.optionalParams.stream()
+//                .filter(param -> !param.baseName.equalsIgnoreCase("PageSize"))
+//                .collect(Collectors.toList());
+//            codegenOperation.allParams = codegenOperation.allParams.stream()
+//                .filter(param -> !(param.isQueryParam && param.baseName.equalsIgnoreCase("PageSize")))
+//                .collect(Collectors.toList());
+//        }
 
         codegenOperation.pathParams.forEach(param -> {
             String capitalized = StringUtils.capitalize(param.paramName);

@@ -11,7 +11,6 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.TreeSet;
 
 public class CodegenModelOneOf {
@@ -53,11 +52,7 @@ public class CodegenModelOneOf {
                 property.required = false;
                 CodegenProperty existing = flattenProps.get(property.getName());
                 if (existing != null) {
-                    if (!isSameType(existing, property)) {
-                        widenToObject(existing);
-                    } else {
-                        mergeEnumValues(existing, property);
-                    }
+                    mergeEnumValues(existing, property);
                 } else {
                     flattenProps.put(property.getName(), property);
                 }
@@ -67,36 +62,13 @@ public class CodegenModelOneOf {
         for (CodegenProperty property: model.vars) {
             CodegenProperty existing = flattenProps.get(property.getName());
             if (existing != null) {
-                if (!isSameType(existing, property)) {
-                    widenToObject(existing);
-                } else {
-                    mergeEnumValues(existing, property);
-                }
+                mergeEnumValues(existing, property);
             } else {
                 flattenProps.put(property.getName(), property);
             }
         }
         List<CodegenProperty> finalProps = new ArrayList<>(flattenProps.values());
         model.vars = finalProps;
-    }
-
-    private boolean isSameType(CodegenProperty prop1, CodegenProperty prop2) {
-        String type1 = prop1.complexType != null ? prop1.complexType : prop1.dataType;
-        String type2 = prop2.complexType != null ? prop2.complexType : prop2.dataType;
-        if (type1 == null && type2 == null) return true;
-        if (type1 == null || type2 == null) return false;
-        return type1.equals(type2);
-    }
-
-    private void widenToObject(CodegenProperty property) {
-        property.dataType = "Map<String, Object>";
-        property.complexType = null;
-        property.baseType = "Map";
-        property.isEnum = false;
-        property.allowableValues = null;
-        property._enum = null;
-        property.isMap = true;
-        property.isContainer = true;
     }
 
     @SuppressWarnings("unchecked")
