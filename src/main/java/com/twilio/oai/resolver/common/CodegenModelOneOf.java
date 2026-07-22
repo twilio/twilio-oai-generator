@@ -1,13 +1,17 @@
 package com.twilio.oai.resolver.common;
 
+import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TreeSet;
 
 public class CodegenModelOneOf {
@@ -29,13 +33,31 @@ public class CodegenModelOneOf {
 
     public void resolve(CodegenModel model) {
         Map<String, CodegenProperty> flattenProps = new LinkedHashMap<>();
+
+        List<CodegenModel> variantModels;
+        if (model.interfaceModels != null && !model.interfaceModels.isEmpty()) {
+            variantModels = model.interfaceModels;
+        } else if (model.oneOf != null && !model.oneOf.isEmpty()) {
+            variantModels = new ArrayList<>();
+            List<CodegenModel> allModels = ResourceCacheContext.get().getAllModelsByDefaultGenerator();
+            for (String oneOfName : model.oneOf) {
+                Utility.getModelByClassname(allModels, oneOfName).ifPresent(variantModels::add);
+            }
+        } else {
+            variantModels = Collections.emptyList();
+        }
+
         // Flatten oneOf, note: nested oneOfs are not handled here
-        for (CodegenModel subModel: model.interfaceModels) {
+        for (CodegenModel subModel: variantModels) {
             for (CodegenProperty property: subModel.vars) {
                 property.required = false;
                 CodegenProperty existing = flattenProps.get(property.getName());
                 if (existing != null) {
-                    mergeEnumValues(existing, property);
+                    if (!isSameType(existing, property)) {
+                        widenToObject(existing);
+                    } else {
+                        mergeEnumValues(existing, property);
+                    }
                 } else {
                     flattenProps.put(property.getName(), property);
                 }
@@ -45,13 +67,36 @@ public class CodegenModelOneOf {
         for (CodegenProperty property: model.vars) {
             CodegenProperty existing = flattenProps.get(property.getName());
             if (existing != null) {
-                mergeEnumValues(existing, property);
+                if (!isSameType(existing, property)) {
+                    widenToObject(existing);
+                } else {
+                    mergeEnumValues(existing, property);
+                }
             } else {
                 flattenProps.put(property.getName(), property);
             }
         }
         List<CodegenProperty> finalProps = new ArrayList<>(flattenProps.values());
         model.vars = finalProps;
+    }
+
+    private boolean isSameType(CodegenProperty prop1, CodegenProperty prop2) {
+        String type1 = prop1.complexType != null ? prop1.complexType : prop1.dataType;
+        String type2 = prop2.complexType != null ? prop2.complexType : prop2.dataType;
+        if (type1 == null && type2 == null) return true;
+        if (type1 == null || type2 == null) return false;
+        return type1.equals(type2);
+    }
+
+    private void widenToObject(CodegenProperty property) {
+        property.dataType = "Map<String, Object>";
+        property.complexType = null;
+        property.baseType = "Map";
+        property.isEnum = false;
+        property.allowableValues = null;
+        property._enum = null;
+        property.isMap = true;
+        property.isContainer = true;
     }
 
     @SuppressWarnings("unchecked")
