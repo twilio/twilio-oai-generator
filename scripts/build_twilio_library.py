@@ -81,7 +81,8 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
         'inputSpec': full_path,
         'outputDir': output_path,
         'inlineSchemaOptions': {
-            'ARRAY_ITEM_SUFFIX': ''
+            'ARRAY_ITEM_SUFFIX': '',
+            'SKIP_SCHEMA_REUSE': 'true'
         },
     }
     # print(config)
