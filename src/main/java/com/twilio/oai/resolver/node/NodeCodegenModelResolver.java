@@ -9,14 +9,17 @@ import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class NodeCodegenModelResolver extends CodegenModelResolver {
     private final NodeCodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private final NodeCodegenModelContainerDataTypeResolver codegenModelContainerDataTypeResolver;
     private static final String X_IMPORT = "x-import";
+    private final Set<String> resolving = new HashSet<>();
 
     public NodeCodegenModelResolver(IConventionMapper mapper, Map<String, String> modelFormatMap,
                                 List<? extends LanguageDataType> languageDataTypes) {
@@ -37,10 +40,15 @@ public class NodeCodegenModelResolver extends CodegenModelResolver {
         if (model == null) {
             return null;
         }
+        if (resolving.contains(model.classname)) {
+            return model;
+        }
+        resolving.add(model.classname);
 
         for (CodegenProperty property : model.vars) {
             CodegenModel nestedModel = resolveNestedModel(property, apiResourceBuilder);
             if(nestedModel != null) {
+                resolving.remove(model.classname);
                 return nestedModel;
             }
             if (property.isContainer) {
@@ -58,6 +66,7 @@ public class NodeCodegenModelResolver extends CodegenModelResolver {
                 return value;
             });
         }
+        resolving.remove(model.classname);
         return model;
     }
 
