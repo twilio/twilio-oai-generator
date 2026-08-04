@@ -360,9 +360,9 @@ export class AwsContextImpl implements AwsContext {
   ): Promise<AwsInstance> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};
@@ -405,9 +405,9 @@ export class AwsContextImpl implements AwsContext {
   ): Promise<ApiResponse<AwsInstance>> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};
@@ -455,9 +455,9 @@ export class AwsContextImpl implements AwsContext {
   ): Promise<AwsInstance> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};
@@ -500,9 +500,9 @@ export class AwsContextImpl implements AwsContext {
   ): Promise<ApiResponse<AwsInstance>> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};

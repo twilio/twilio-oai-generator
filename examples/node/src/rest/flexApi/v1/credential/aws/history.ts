@@ -115,9 +115,9 @@ export class HistoryContextImpl implements HistoryContext {
   ): Promise<HistoryInstance> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};
@@ -163,9 +163,9 @@ export class HistoryContextImpl implements HistoryContext {
   ): Promise<ApiResponse<HistoryInstance>> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};

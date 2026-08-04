@@ -928,9 +928,9 @@ export function AccountListInstance(version: V2010): AccountListInstance {
   ): Promise<AccountInstance> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};
@@ -981,9 +981,9 @@ export function AccountListInstance(version: V2010): AccountListInstance {
   ): Promise<ApiResponse<AccountInstance>> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};

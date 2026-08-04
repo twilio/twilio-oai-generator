@@ -356,9 +356,9 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
   ): Promise<FleetInstance> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};
@@ -396,9 +396,9 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
   ): Promise<ApiResponse<FleetInstance>> {
     if (params instanceof Function) {
       callback = params;
-      params = {};
+      params = {} as any;
     } else {
-      params = params || {};
+      params = params || ({} as any);
     }
 
     let data: any = {};

@@ -16,9 +16,9 @@
   {{^hasRequiredParams}}
     if (params instanceof Function) {
       callback = params;
-      params = {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
+      params = {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{^isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
     } else {
-      params = params || {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
+      params = params || {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{^isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
     }
 
   {{/hasRequiredParams}}
