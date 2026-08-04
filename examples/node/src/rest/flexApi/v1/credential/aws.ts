@@ -581,7 +581,7 @@ export class AwsInstance {
     this.testString = payload.test_string;
     this.testInteger = deserialize.integer(payload.test_integer);
 
-    this._solution = { sid: sid || this.sid };
+    this._solution = { sid: sid };
   }
 
   accountSid: string;

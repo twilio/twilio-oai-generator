@@ -305,10 +305,7 @@ export class CallInstance {
     this.status = payload.status;
     this.message = payload.message;
 
-    this._solution = {
-      accountSid,
-      testInteger: testInteger || this.testInteger,
-    };
+    this._solution = { accountSid, testInteger: testInteger };
   }
 
   accountSid: string;

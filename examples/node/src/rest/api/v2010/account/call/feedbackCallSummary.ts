@@ -296,7 +296,7 @@ export class FeedbackCallSummaryInstance {
     this.status = payload.status;
     this.message = payload.message;
 
-    this._solution = { accountSid, sid: sid || this.sid };
+    this._solution = { accountSid, sid: sid };
   }
 
   accountSid: string;

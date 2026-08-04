@@ -201,7 +201,7 @@ export class FleetInstance {
     this.sid = payload.sid;
     this.friendlyName = payload.friendly_name;
 
-    this._solution = { sid: sid || this.sid };
+    this._solution = { sid: sid };
   }
 
   name: string;
