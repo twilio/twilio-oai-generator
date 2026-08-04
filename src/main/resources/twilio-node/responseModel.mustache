@@ -71,7 +71,7 @@ export class {{instanceName}} {
     {{/allResponseVars}}
 
     {{#instancePath}}
-    this._solution = { {{#instancePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}{{#isApiV1}}: {{paramName}}{{/isApiV1}}{{^isApiV1}}: {{paramName}} || this.{{paramName}}{{#vendorExtensions.x-stringify}}.toString(){{/vendorExtensions.x-stringify}}{{/isApiV1}}{{/vendorExtensions.x-is-parent-param}}, {{/instancePathParams}} };
+    this._solution = { {{#instancePathParams}}{{paramName}}{{^vendorExtensions.x-is-parent-param}}{{#isApiV1}}: {{paramName}}{{/isApiV1}}{{^isApiV1}}: {{paramName}}{{#vendorExtensions.x-stringify}}.toString(){{/vendorExtensions.x-stringify}}{{/isApiV1}}{{/vendorExtensions.x-is-parent-param}}, {{/instancePathParams}} };
     {{/instancePath}}
   }
 
