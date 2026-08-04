@@ -110,16 +110,14 @@ export class CallContextImpl implements CallContext {
         method: "post",
         headers,
       })
-      .then(
-        (response): ApiResponse<CallInstance> => ({
-          ...response,
-          body: new CallInstance(
-            operationVersion,
-            response.body,
-            instance._solution.sid,
-          ),
-        }),
-      );
+      .then((response): ApiResponse<CallInstance> => ({
+        ...response,
+        body: new CallInstance(
+          operationVersion,
+          response.body,
+          instance._solution.sid,
+        ),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,

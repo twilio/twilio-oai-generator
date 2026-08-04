@@ -21,12 +21,7 @@ import { ApiResponse } from "../../../../../base/ApiResponse";
 import { PhoneNumberCapabilities } from "../../../../../interfaces";
 
 export type FeedbackCallSummaryStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+  "in-progress" | "paused" | "stopped" | "processing" | "completed" | "absent";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -210,17 +205,15 @@ export class FeedbackCallSummaryContextImpl implements FeedbackCallSummaryContex
         data,
         headers,
       })
-      .then(
-        (response): ApiResponse<FeedbackCallSummaryInstance> => ({
-          ...response,
-          body: new FeedbackCallSummaryInstance(
-            operationVersion,
-            response.body,
-            instance._solution.accountSid,
-            instance._solution.sid,
-          ),
-        }),
-      );
+      .then((response): ApiResponse<FeedbackCallSummaryInstance> => ({
+        ...response,
+        body: new FeedbackCallSummaryInstance(
+          operationVersion,
+          response.body,
+          instance._solution.accountSid,
+          instance._solution.sid,
+        ),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,

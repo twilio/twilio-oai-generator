@@ -202,12 +202,10 @@ export function TokenListInstance(version: V2): TokenListInstance {
         data,
         headers,
       })
-      .then(
-        (response): ApiResponse<TokenInstance> => ({
-          ...response,
-          body: new TokenInstance(operationVersion, response.body),
-        }),
-      );
+      .then((response): ApiResponse<TokenInstance> => ({
+        ...response,
+        body: new TokenInstance(operationVersion, response.body),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,

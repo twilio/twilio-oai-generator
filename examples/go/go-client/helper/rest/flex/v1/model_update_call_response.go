@@ -13,14 +13,9 @@
  */
 
 package openapi
-import (
-	"encoding/json"
-	"github.com/twilio/twilio-go/client"
-)
+
 // UpdateCallResponse struct for UpdateCallResponse
 type UpdateCallResponse struct {
-		// Non-string path parameter in the response.
+	// Non-string path parameter in the response.
 	Sid *int `json:"sid,omitempty"`
 }
-
-

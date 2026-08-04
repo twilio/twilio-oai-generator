@@ -13,19 +13,12 @@
  */
 
 package openapi
-import (
-	"encoding/json"
-	"github.com/twilio/twilio-go/client"
-	"bytes"
-	"fmt"
-)
+
 // Auth0SignupRequest struct for Auth0SignupRequest
 type Auth0SignupRequest struct {
-	Email string `json:"email"`
-	Deeplink string `json:"deeplink,omitempty"`
+	Email           string `json:"email"`
+	Deeplink        string `json:"deeplink,omitempty"`
 	OrganizationSid string `json:"organizationSid,omitempty"`
 	NotificationSid string `json:"notificationSid,omitempty"`
-	OneConsole bool `json:"oneConsole,omitempty"`
+	OneConsole      bool   `json:"oneConsole,omitempty"`
 }
-
-

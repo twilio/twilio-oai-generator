@@ -28,12 +28,7 @@ import TwiML from "../../../twiml/TwiML";
 export type AccountXTwilioWebhookEnabled = "true" | "false";
 
 export type AccountStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+  "in-progress" | "paused" | "stopped" | "processing" | "completed" | "absent";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -273,12 +268,10 @@ export class AccountContextImpl implements AccountContext {
     // DELETE operation - returns boolean based on status code
     let operationPromise = operationVersion
       .removeWithResponseInfo({ uri: instance._uri, method: "delete", headers })
-      .then(
-        (response): ApiResponse<boolean> => ({
-          ...response,
-          body: response.statusCode === 204,
-        }),
-      );
+      .then((response): ApiResponse<boolean> => ({
+        ...response,
+        body: response.statusCode === 204,
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -331,16 +324,14 @@ export class AccountContextImpl implements AccountContext {
         method: "get",
         headers,
       })
-      .then(
-        (response): ApiResponse<AccountInstance> => ({
-          ...response,
-          body: new AccountInstance(
-            operationVersion,
-            response.body,
-            instance._solution.sid,
-          ),
-        }),
-      );
+      .then((response): ApiResponse<AccountInstance> => ({
+        ...response,
+        body: new AccountInstance(
+          operationVersion,
+          response.body,
+          instance._solution.sid,
+        ),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -429,16 +420,14 @@ export class AccountContextImpl implements AccountContext {
         data,
         headers,
       })
-      .then(
-        (response): ApiResponse<AccountInstance> => ({
-          ...response,
-          body: new AccountInstance(
-            operationVersion,
-            response.body,
-            instance._solution.sid,
-          ),
-        }),
-      );
+      .then((response): ApiResponse<AccountInstance> => ({
+        ...response,
+        body: new AccountInstance(
+          operationVersion,
+          response.body,
+          instance._solution.sid,
+        ),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -1024,12 +1013,10 @@ export function AccountListInstance(version: V2010): AccountListInstance {
         data,
         headers,
       })
-      .then(
-        (response): ApiResponse<AccountInstance> => ({
-          ...response,
-          body: new AccountInstance(operationVersion, response.body),
-        }),
-      );
+      .then((response): ApiResponse<AccountInstance> => ({
+        ...response,
+        body: new AccountInstance(operationVersion, response.body),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -1153,13 +1140,11 @@ export function AccountListInstance(version: V2010): AccountListInstance {
     // IMPORTANT: Pass full response to Page constructor, not response.body
     let operationPromise = operationVersion
       .page({ uri: instance._uri, method: "get", params: data, headers })
-      .then(
-        (response): ApiResponse<AccountPage> => ({
-          statusCode: response.statusCode,
-          headers: response.headers,
-          body: new AccountPage(operationVersion, response, instance._solution),
-        }),
-      );
+      .then((response): ApiResponse<AccountPage> => ({
+        statusCode: response.statusCode,
+        headers: response.headers,
+        body: new AccountPage(operationVersion, response, instance._solution),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,

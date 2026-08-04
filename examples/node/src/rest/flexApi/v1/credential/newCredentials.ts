@@ -20,12 +20,7 @@ import { isValidPathParam } from "../../../../base/utility";
 import { ApiResponse } from "../../../../base/ApiResponse";
 
 export type NewCredentialsStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+  "in-progress" | "paused" | "stopped" | "processing" | "completed" | "absent";
 
 /**
  * Options to pass to create a NewCredentialsInstance
@@ -268,12 +263,10 @@ export function NewCredentialsListInstance(
         data,
         headers,
       })
-      .then(
-        (response): ApiResponse<NewCredentialsInstance> => ({
-          ...response,
-          body: new NewCredentialsInstance(operationVersion, response.body),
-        }),
-      );
+      .then((response): ApiResponse<NewCredentialsInstance> => ({
+        ...response,
+        body: new NewCredentialsInstance(operationVersion, response.body),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,

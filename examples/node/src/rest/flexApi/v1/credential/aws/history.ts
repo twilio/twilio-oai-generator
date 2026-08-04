@@ -189,16 +189,14 @@ export class HistoryContextImpl implements HistoryContext {
         params: data,
         headers,
       })
-      .then(
-        (response): ApiResponse<HistoryInstance> => ({
-          ...response,
-          body: new HistoryInstance(
-            operationVersion,
-            response.body,
-            instance._solution.sid,
-          ),
-        }),
-      );
+      .then((response): ApiResponse<HistoryInstance> => ({
+        ...response,
+        body: new HistoryInstance(
+          operationVersion,
+          response.body,
+          instance._solution.sid,
+        ),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,

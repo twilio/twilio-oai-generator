@@ -136,16 +136,14 @@ export class FleetContextImpl implements FleetContext {
         method: "get",
         headers,
       })
-      .then(
-        (response): ApiResponse<FleetInstance> => ({
-          ...response,
-          body: new FleetInstance(
-            operationVersion,
-            response.body,
-            instance._solution.sid,
-          ),
-        }),
-      );
+      .then((response): ApiResponse<FleetInstance> => ({
+        ...response,
+        body: new FleetInstance(
+          operationVersion,
+          response.body,
+          instance._solution.sid,
+        ),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -420,12 +418,10 @@ export function FleetListInstance(version: DeployedDevices): FleetListInstance {
         data,
         headers,
       })
-      .then(
-        (response): ApiResponse<FleetInstance> => ({
-          ...response,
-          body: new FleetInstance(operationVersion, response.body),
-        }),
-      );
+      .then((response): ApiResponse<FleetInstance> => ({
+        ...response,
+        body: new FleetInstance(operationVersion, response.body),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,

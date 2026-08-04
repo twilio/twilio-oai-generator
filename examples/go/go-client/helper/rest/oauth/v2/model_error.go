@@ -13,20 +13,15 @@
  */
 
 package openapi
-import (
-	"encoding/json"
-	"github.com/twilio/twilio-go/client"
-)
+
 // Error Generic error
 type Error struct {
-		// Twilio-specific error code
+	// Twilio-specific error code
 	Code int `json:"code,omitempty"`
-		// Error message
+	// Error message
 	Message string `json:"message,omitempty"`
-		// Link to Error Code References
+	// Link to Error Code References
 	MoreInfo string `json:"more_info,omitempty"`
-		// HTTP response status code
+	// HTTP response status code
 	Status int `json:"status,omitempty"`
 }
-
-

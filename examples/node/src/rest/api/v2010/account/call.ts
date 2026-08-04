@@ -22,12 +22,7 @@ import { FeedbackCallSummaryListInstance } from "./call/feedbackCallSummary";
 import { PhoneNumberCapabilities } from "../../../../interfaces";
 
 export type CallStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+  "in-progress" | "paused" | "stopped" | "processing" | "completed" | "absent";
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -161,12 +156,10 @@ export class CallContextImpl implements CallContext {
     // DELETE operation - returns boolean based on status code
     let operationPromise = operationVersion
       .removeWithResponseInfo({ uri: instance._uri, method: "delete", headers })
-      .then(
-        (response): ApiResponse<boolean> => ({
-          ...response,
-          body: response.statusCode === 204,
-        }),
-      );
+      .then((response): ApiResponse<boolean> => ({
+        ...response,
+        body: response.statusCode === 204,
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -221,17 +214,15 @@ export class CallContextImpl implements CallContext {
         method: "get",
         headers,
       })
-      .then(
-        (response): ApiResponse<CallInstance> => ({
-          ...response,
-          body: new CallInstance(
-            operationVersion,
-            response.body,
-            instance._solution.accountSid,
-            instance._solution.testInteger,
-          ),
-        }),
-      );
+      .then((response): ApiResponse<CallInstance> => ({
+        ...response,
+        body: new CallInstance(
+          operationVersion,
+          response.body,
+          instance._solution.accountSid,
+          instance._solution.testInteger,
+        ),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
@@ -643,16 +634,14 @@ export function CallListInstance(
         data,
         headers,
       })
-      .then(
-        (response): ApiResponse<CallInstance> => ({
-          ...response,
-          body: new CallInstance(
-            operationVersion,
-            response.body,
-            instance._solution.accountSid,
-          ),
-        }),
-      );
+      .then((response): ApiResponse<CallInstance> => ({
+        ...response,
+        body: new CallInstance(
+          operationVersion,
+          response.body,
+          instance._solution.accountSid,
+        ),
+      }));
 
     operationPromise = instance._version.setPromiseCallback(
       operationPromise,
