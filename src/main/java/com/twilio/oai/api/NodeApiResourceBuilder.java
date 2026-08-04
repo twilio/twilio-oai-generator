@@ -71,7 +71,11 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                     co.produces = null;
                 }
             } else if (co.nickname.startsWith("list")) {
-                co.vendorExtensions.put("x-is-read-operation", true);
+                if (!"true".equals(co.vendorExtensions.get("x-is-context-operation"))) {
+                    co.vendorExtensions.put("x-is-read-operation", true);
+                } else {
+                    co.vendorExtensions.remove("x-is-read-operation");
+                }
                 // Check if this list operation supports pagination (has meta in response)
                 boolean supportsPagination = (Boolean) co.vendorExtensions.getOrDefault("x-supports-pagination", true);
                 if (isApiV1 && !supportsPagination) {

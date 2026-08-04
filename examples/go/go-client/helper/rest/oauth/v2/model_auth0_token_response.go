@@ -13,11 +13,18 @@
  */
 
 package openapi
-
+import (
+	"encoding/json"
+	"github.com/twilio/twilio-go/client"
+	"bytes"
+	"fmt"
+)
 // Auth0TokenResponse struct for Auth0TokenResponse
 type Auth0TokenResponse struct {
 	AccessToken string `json:"accessToken"`
-	IdToken     string `json:"idToken"`
+	IdToken string `json:"idToken"`
 	AuthContext string `json:"authContext"`
-	IsPurgatory bool   `json:"isPurgatory"`
+	IsPurgatory bool `json:"isPurgatory"`
 }
+
+

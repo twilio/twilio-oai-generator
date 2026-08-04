@@ -20,527 +20,537 @@ import (
 	"net/url"
 	"strings"
 
-	"time"
-
-	"github.com/twilio/twilio-go/client"
-	"github.com/twilio/twilio-go/client/metadata"
+    "time"
+    "github.com/twilio/twilio-go/client"
+    "github.com/twilio/twilio-go/client/metadata"
 )
+
 
 // Optional parameters for the method 'CreateCredentialAws'
 type CreateCredentialAwsParams struct {
-	//
-	TestString *string `json:"TestString,omitempty"`
-	//
-	TestBoolean *bool `json:"TestBoolean,omitempty"`
-	//
-	TestInteger *int `json:"TestInteger,omitempty"`
-	//
-	TestNumber *float32 `json:"TestNumber,omitempty"`
-	//
-	TestNumberFloat *float32 `json:"TestNumberFloat,omitempty"`
-	//
-	TestNumberDouble *float64 `json:"TestNumberDouble,omitempty"`
-	//
-	TestNumberInt32 *float32 `json:"TestNumberInt32,omitempty"`
-	//
-	TestNumberInt64 *int64 `json:"TestNumberInt64,omitempty"`
-	//
-	TestObject *map[string]interface{} `json:"TestObject,omitempty"`
-	//
-	TestDateTime *time.Time `json:"TestDateTime,omitempty"`
-	//
-	TestDate *string `json:"TestDate,omitempty"`
-	//
-	TestEnum *string `json:"TestEnum,omitempty"`
-	//
-	TestObjectArray *[]map[string]interface{} `json:"TestObjectArray,omitempty"`
-	//
-	TestAnyType *interface{} `json:"TestAnyType,omitempty"`
-	//
-	TestAnyArray *[]interface{} `json:"TestAnyArray,omitempty"`
-	// A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
-	Permissions *[]string `json:"Permissions,omitempty"`
-	//
-	SomeA2PThing *string `json:"SomeA2PThing,omitempty"`
+    // 
+    TestString *string `json:"TestString,omitempty"`
+    // 
+    TestBoolean *bool `json:"TestBoolean,omitempty"`
+    // 
+    TestInteger *int `json:"TestInteger,omitempty"`
+    // 
+    TestNumber *float32 `json:"TestNumber,omitempty"`
+    // 
+    TestNumberFloat *float32 `json:"TestNumberFloat,omitempty"`
+    // 
+    TestNumberDouble *float64 `json:"TestNumberDouble,omitempty"`
+    // 
+    TestNumberInt32 *float32 `json:"TestNumberInt32,omitempty"`
+    // 
+    TestNumberInt64 *int64 `json:"TestNumberInt64,omitempty"`
+    // 
+    TestObject *map[string]interface{} `json:"TestObject,omitempty"`
+    // 
+    TestDateTime *time.Time `json:"TestDateTime,omitempty"`
+    // 
+    TestDate *string `json:"TestDate,omitempty"`
+    // 
+    TestEnum *string `json:"TestEnum,omitempty"`
+    // 
+    TestObjectArray *[]map[string]interface{} `json:"TestObjectArray,omitempty"`
+    // 
+    TestAnyType *interface{} `json:"TestAnyType,omitempty"`
+    // 
+    TestAnyArray *[]interface{} `json:"TestAnyArray,omitempty"`
+    // A comma-separated list of the permissions you will request from the users of this ConnectApp.  Can include: `get-all` and `post-all`.
+    Permissions *[]string `json:"Permissions,omitempty"`
+    // 
+    SomeA2PThing *string `json:"SomeA2PThing,omitempty"`
 }
 
-func (params *CreateCredentialAwsParams) SetTestString(TestString string) *CreateCredentialAwsParams {
-	params.TestString = &TestString
-	return params
+func (params *CreateCredentialAwsParams) SetTestString(TestString string) (*CreateCredentialAwsParams){
+    params.TestString = &TestString
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestBoolean(TestBoolean bool) *CreateCredentialAwsParams {
-	params.TestBoolean = &TestBoolean
-	return params
+func (params *CreateCredentialAwsParams) SetTestBoolean(TestBoolean bool) (*CreateCredentialAwsParams){
+    params.TestBoolean = &TestBoolean
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestInteger(TestInteger int) *CreateCredentialAwsParams {
-	params.TestInteger = &TestInteger
-	return params
+func (params *CreateCredentialAwsParams) SetTestInteger(TestInteger int) (*CreateCredentialAwsParams){
+    params.TestInteger = &TestInteger
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestNumber(TestNumber float32) *CreateCredentialAwsParams {
-	params.TestNumber = &TestNumber
-	return params
+func (params *CreateCredentialAwsParams) SetTestNumber(TestNumber float32) (*CreateCredentialAwsParams){
+    params.TestNumber = &TestNumber
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestNumberFloat(TestNumberFloat float32) *CreateCredentialAwsParams {
-	params.TestNumberFloat = &TestNumberFloat
-	return params
+func (params *CreateCredentialAwsParams) SetTestNumberFloat(TestNumberFloat float32) (*CreateCredentialAwsParams){
+    params.TestNumberFloat = &TestNumberFloat
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestNumberDouble(TestNumberDouble float64) *CreateCredentialAwsParams {
-	params.TestNumberDouble = &TestNumberDouble
-	return params
+func (params *CreateCredentialAwsParams) SetTestNumberDouble(TestNumberDouble float64) (*CreateCredentialAwsParams){
+    params.TestNumberDouble = &TestNumberDouble
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestNumberInt32(TestNumberInt32 float32) *CreateCredentialAwsParams {
-	params.TestNumberInt32 = &TestNumberInt32
-	return params
+func (params *CreateCredentialAwsParams) SetTestNumberInt32(TestNumberInt32 float32) (*CreateCredentialAwsParams){
+    params.TestNumberInt32 = &TestNumberInt32
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestNumberInt64(TestNumberInt64 int64) *CreateCredentialAwsParams {
-	params.TestNumberInt64 = &TestNumberInt64
-	return params
+func (params *CreateCredentialAwsParams) SetTestNumberInt64(TestNumberInt64 int64) (*CreateCredentialAwsParams){
+    params.TestNumberInt64 = &TestNumberInt64
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestObject(TestObject map[string]interface{}) *CreateCredentialAwsParams {
-	params.TestObject = &TestObject
-	return params
+func (params *CreateCredentialAwsParams) SetTestObject(TestObject map[string]interface{}) (*CreateCredentialAwsParams){
+    params.TestObject = &TestObject
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestDateTime(TestDateTime time.Time) *CreateCredentialAwsParams {
-	params.TestDateTime = &TestDateTime
-	return params
+func (params *CreateCredentialAwsParams) SetTestDateTime(TestDateTime time.Time) (*CreateCredentialAwsParams){
+    params.TestDateTime = &TestDateTime
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestDate(TestDate string) *CreateCredentialAwsParams {
-	params.TestDate = &TestDate
-	return params
+func (params *CreateCredentialAwsParams) SetTestDate(TestDate string) (*CreateCredentialAwsParams){
+    params.TestDate = &TestDate
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestEnum(TestEnum string) *CreateCredentialAwsParams {
-	params.TestEnum = &TestEnum
-	return params
+func (params *CreateCredentialAwsParams) SetTestEnum(TestEnum string) (*CreateCredentialAwsParams){
+    params.TestEnum = &TestEnum
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestObjectArray(TestObjectArray []map[string]interface{}) *CreateCredentialAwsParams {
-	params.TestObjectArray = &TestObjectArray
-	return params
+func (params *CreateCredentialAwsParams) SetTestObjectArray(TestObjectArray []map[string]interface{}) (*CreateCredentialAwsParams){
+    params.TestObjectArray = &TestObjectArray
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestAnyType(TestAnyType interface{}) *CreateCredentialAwsParams {
-	params.TestAnyType = &TestAnyType
-	return params
+func (params *CreateCredentialAwsParams) SetTestAnyType(TestAnyType interface{}) (*CreateCredentialAwsParams){
+    params.TestAnyType = &TestAnyType
+    return params
 }
-func (params *CreateCredentialAwsParams) SetTestAnyArray(TestAnyArray []interface{}) *CreateCredentialAwsParams {
-	params.TestAnyArray = &TestAnyArray
-	return params
+func (params *CreateCredentialAwsParams) SetTestAnyArray(TestAnyArray []interface{}) (*CreateCredentialAwsParams){
+    params.TestAnyArray = &TestAnyArray
+    return params
 }
-func (params *CreateCredentialAwsParams) SetPermissions(Permissions []string) *CreateCredentialAwsParams {
-	params.Permissions = &Permissions
-	return params
+func (params *CreateCredentialAwsParams) SetPermissions(Permissions []string) (*CreateCredentialAwsParams){
+    params.Permissions = &Permissions
+    return params
 }
-func (params *CreateCredentialAwsParams) SetSomeA2PThing(SomeA2PThing string) *CreateCredentialAwsParams {
-	params.SomeA2PThing = &SomeA2PThing
-	return params
+func (params *CreateCredentialAwsParams) SetSomeA2PThing(SomeA2PThing string) (*CreateCredentialAwsParams){
+    params.SomeA2PThing = &SomeA2PThing
+    return params
 }
 
 func (c *ApiService) CreateCredentialAws(params *CreateCredentialAwsParams) (*TestResponseObject, error) {
-	path := "/v1/Credentials/AWS"
+    path := "/v1/Credentials/AWS"
+    
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    if params != nil && params.TestString != nil {
+        data.Set("TestString", *params.TestString)
+    }
+    if params != nil && params.TestBoolean != nil {
+        data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+    }
+    if params != nil && params.TestInteger != nil {
+        data.Set("TestInteger", fmt.Sprint(*params.TestInteger))
+    }
+    if params != nil && params.TestNumber != nil {
+        data.Set("TestNumber", fmt.Sprint(*params.TestNumber))
+    }
+    if params != nil && params.TestNumberFloat != nil {
+        data.Set("TestNumberFloat", fmt.Sprint(*params.TestNumberFloat))
+    }
+    if params != nil && params.TestNumberDouble != nil {
+        data.Set("TestNumberDouble", fmt.Sprint(*params.TestNumberDouble))
+    }
+    if params != nil && params.TestNumberInt32 != nil {
+        data.Set("TestNumberInt32", fmt.Sprint(*params.TestNumberInt32))
+    }
+    if params != nil && params.TestNumberInt64 != nil {
+        data.Set("TestNumberInt64", fmt.Sprint(*params.TestNumberInt64))
+    }
+    if params != nil && params.TestObject != nil {
+        v, err := json.Marshal(params.TestObject)
 
-	if params != nil && params.TestString != nil {
-		data.Set("TestString", *params.TestString)
-	}
-	if params != nil && params.TestBoolean != nil {
-		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
-	}
-	if params != nil && params.TestInteger != nil {
-		data.Set("TestInteger", fmt.Sprint(*params.TestInteger))
-	}
-	if params != nil && params.TestNumber != nil {
-		data.Set("TestNumber", fmt.Sprint(*params.TestNumber))
-	}
-	if params != nil && params.TestNumberFloat != nil {
-		data.Set("TestNumberFloat", fmt.Sprint(*params.TestNumberFloat))
-	}
-	if params != nil && params.TestNumberDouble != nil {
-		data.Set("TestNumberDouble", fmt.Sprint(*params.TestNumberDouble))
-	}
-	if params != nil && params.TestNumberInt32 != nil {
-		data.Set("TestNumberInt32", fmt.Sprint(*params.TestNumberInt32))
-	}
-	if params != nil && params.TestNumberInt64 != nil {
-		data.Set("TestNumberInt64", fmt.Sprint(*params.TestNumberInt64))
-	}
-	if params != nil && params.TestObject != nil {
-		v, err := json.Marshal(params.TestObject)
+        if err != nil {
+            return nil, err
+        }
 
-		if err != nil {
-			return nil, err
-		}
+        data.Set("TestObject", string(v))
+    }
+    if params != nil && params.TestDateTime != nil {
+        data.Set("TestDateTime", fmt.Sprint((*params.TestDateTime).Format(time.RFC3339)))
+    }
+    if params != nil && params.TestDate != nil {
+        data.Set("TestDate", fmt.Sprint(*params.TestDate))
+    }
+    if params != nil && params.TestEnum != nil {
+        data.Set("TestEnum", *params.TestEnum)
+    }
+    if params != nil && params.TestObjectArray != nil {
+        for _, item  := range *params.TestObjectArray {
+            v, err := json.Marshal(item)
 
-		data.Set("TestObject", string(v))
-	}
-	if params != nil && params.TestDateTime != nil {
-		data.Set("TestDateTime", fmt.Sprint((*params.TestDateTime).Format(time.RFC3339)))
-	}
-	if params != nil && params.TestDate != nil {
-		data.Set("TestDate", fmt.Sprint(*params.TestDate))
-	}
-	if params != nil && params.TestEnum != nil {
-		data.Set("TestEnum", *params.TestEnum)
-	}
-	if params != nil && params.TestObjectArray != nil {
-		for _, item := range *params.TestObjectArray {
-			v, err := json.Marshal(item)
+            if err != nil {
+                return nil, err
+            }
 
-			if err != nil {
-				return nil, err
-			}
+            data.Add("TestObjectArray", string(v))
+    }
+    }
+    if params != nil && params.TestAnyType != nil {
+        v, err := json.Marshal(params.TestAnyType)
 
-			data.Add("TestObjectArray", string(v))
-		}
-	}
-	if params != nil && params.TestAnyType != nil {
-		v, err := json.Marshal(params.TestAnyType)
+        if err != nil {
+            return nil, err
+        }
 
-		if err != nil {
-			return nil, err
-		}
+        data.Set("TestAnyType", string(v))
+    }
+    if params != nil && params.TestAnyArray != nil {
+        for _, item  := range *params.TestAnyArray {
+            v, err := json.Marshal(item)
 
-		data.Set("TestAnyType", string(v))
-	}
-	if params != nil && params.TestAnyArray != nil {
-		for _, item := range *params.TestAnyArray {
-			v, err := json.Marshal(item)
+            if err != nil {
+                return nil, err
+            }
 
-			if err != nil {
-				return nil, err
-			}
+            data.Add("TestAnyArray", string(v))
+    }
+    }
+    if params != nil && params.Permissions != nil {
+        for _, item  := range *params.Permissions {
+            data.Add("Permissions", item)
+    }
+    }
+    if params != nil && params.SomeA2PThing != nil {
+        data.Set("SomeA2PThing", *params.SomeA2PThing)
+    }
 
-			data.Add("TestAnyArray", string(v))
-		}
-	}
-	if params != nil && params.Permissions != nil {
-		for _, item := range *params.Permissions {
-			data.Add("Permissions", item)
-		}
-	}
-	if params != nil && params.SomeA2PThing != nil {
-		data.Set("SomeA2PThing", *params.SomeA2PThing)
-	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	return ps, err
+    return ps, err
 }
-
 // CreateCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) CreateCredentialAwsWithMetadata(params *CreateCredentialAwsParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
-	path := "/v1/Credentials/AWS"
+    path := "/v1/Credentials/AWS"
+    
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    if params != nil && params.TestString != nil {
+        data.Set("TestString", *params.TestString)
+    }
+    if params != nil && params.TestBoolean != nil {
+        data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+    }
+    if params != nil && params.TestInteger != nil {
+        data.Set("TestInteger", fmt.Sprint(*params.TestInteger))
+    }
+    if params != nil && params.TestNumber != nil {
+        data.Set("TestNumber", fmt.Sprint(*params.TestNumber))
+    }
+    if params != nil && params.TestNumberFloat != nil {
+        data.Set("TestNumberFloat", fmt.Sprint(*params.TestNumberFloat))
+    }
+    if params != nil && params.TestNumberDouble != nil {
+        data.Set("TestNumberDouble", fmt.Sprint(*params.TestNumberDouble))
+    }
+    if params != nil && params.TestNumberInt32 != nil {
+        data.Set("TestNumberInt32", fmt.Sprint(*params.TestNumberInt32))
+    }
+    if params != nil && params.TestNumberInt64 != nil {
+        data.Set("TestNumberInt64", fmt.Sprint(*params.TestNumberInt64))
+    }
+    if params != nil && params.TestObject != nil {
+        v, err := json.Marshal(params.TestObject)
 
-	if params != nil && params.TestString != nil {
-		data.Set("TestString", *params.TestString)
-	}
-	if params != nil && params.TestBoolean != nil {
-		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
-	}
-	if params != nil && params.TestInteger != nil {
-		data.Set("TestInteger", fmt.Sprint(*params.TestInteger))
-	}
-	if params != nil && params.TestNumber != nil {
-		data.Set("TestNumber", fmt.Sprint(*params.TestNumber))
-	}
-	if params != nil && params.TestNumberFloat != nil {
-		data.Set("TestNumberFloat", fmt.Sprint(*params.TestNumberFloat))
-	}
-	if params != nil && params.TestNumberDouble != nil {
-		data.Set("TestNumberDouble", fmt.Sprint(*params.TestNumberDouble))
-	}
-	if params != nil && params.TestNumberInt32 != nil {
-		data.Set("TestNumberInt32", fmt.Sprint(*params.TestNumberInt32))
-	}
-	if params != nil && params.TestNumberInt64 != nil {
-		data.Set("TestNumberInt64", fmt.Sprint(*params.TestNumberInt64))
-	}
-	if params != nil && params.TestObject != nil {
-		v, err := json.Marshal(params.TestObject)
+        if err != nil {
+            return nil, err
+        }
 
-		if err != nil {
-			return nil, err
-		}
+        data.Set("TestObject", string(v))
+    }
+    if params != nil && params.TestDateTime != nil {
+        data.Set("TestDateTime", fmt.Sprint((*params.TestDateTime).Format(time.RFC3339)))
+    }
+    if params != nil && params.TestDate != nil {
+        data.Set("TestDate", fmt.Sprint(*params.TestDate))
+    }
+    if params != nil && params.TestEnum != nil {
+        data.Set("TestEnum", *params.TestEnum)
+    }
+    if params != nil && params.TestObjectArray != nil {
+        for _, item  := range *params.TestObjectArray {
+            v, err := json.Marshal(item)
 
-		data.Set("TestObject", string(v))
-	}
-	if params != nil && params.TestDateTime != nil {
-		data.Set("TestDateTime", fmt.Sprint((*params.TestDateTime).Format(time.RFC3339)))
-	}
-	if params != nil && params.TestDate != nil {
-		data.Set("TestDate", fmt.Sprint(*params.TestDate))
-	}
-	if params != nil && params.TestEnum != nil {
-		data.Set("TestEnum", *params.TestEnum)
-	}
-	if params != nil && params.TestObjectArray != nil {
-		for _, item := range *params.TestObjectArray {
-			v, err := json.Marshal(item)
+            if err != nil {
+                return nil, err
+            }
 
-			if err != nil {
-				return nil, err
-			}
+            data.Add("TestObjectArray", string(v))
+    }
+    }
+    if params != nil && params.TestAnyType != nil {
+        v, err := json.Marshal(params.TestAnyType)
 
-			data.Add("TestObjectArray", string(v))
-		}
-	}
-	if params != nil && params.TestAnyType != nil {
-		v, err := json.Marshal(params.TestAnyType)
+        if err != nil {
+            return nil, err
+        }
 
-		if err != nil {
-			return nil, err
-		}
+        data.Set("TestAnyType", string(v))
+    }
+    if params != nil && params.TestAnyArray != nil {
+        for _, item  := range *params.TestAnyArray {
+            v, err := json.Marshal(item)
 
-		data.Set("TestAnyType", string(v))
-	}
-	if params != nil && params.TestAnyArray != nil {
-		for _, item := range *params.TestAnyArray {
-			v, err := json.Marshal(item)
+            if err != nil {
+                return nil, err
+            }
 
-			if err != nil {
-				return nil, err
-			}
+            data.Add("TestAnyArray", string(v))
+    }
+    }
+    if params != nil && params.Permissions != nil {
+        for _, item  := range *params.Permissions {
+            data.Add("Permissions", item)
+    }
+    }
+    if params != nil && params.SomeA2PThing != nil {
+        data.Set("SomeA2PThing", *params.SomeA2PThing)
+    }
 
-			data.Add("TestAnyArray", string(v))
-		}
-	}
-	if params != nil && params.Permissions != nil {
-		for _, item := range *params.Permissions {
-			data.Add("Permissions", item)
-		}
-	}
-	if params != nil && params.SomeA2PThing != nil {
-		data.Set("SomeA2PThing", *params.SomeA2PThing)
-	}
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
-		*ps,             // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+        *ps,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
 
-	return metadataWrapper, nil
+    return metadataWrapper, nil
 }
 
-func (c *ApiService) DeleteCredentialAws(Sid string) error {
-	path := "/v1/Credentials/AWS/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+func (c *ApiService) DeleteCredentialAws(Sid string) (error) {
+    path := "/v1/Credentials/AWS/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return err
-	}
 
-	defer resp.Body.Close()
 
-	return nil
+    resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return err
+    }
+
+    defer resp.Body.Close()
+
+    return nil
 }
-
 // DeleteCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) DeleteCredentialAwsWithMetadata(Sid string) (*metadata.ResourceMetadata[bool], error) {
-	path := "/v1/Credentials/AWS/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Credentials/AWS/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
 
-	metadataWrapper := metadata.NewResourceMetadata[bool](
-		true,            // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	return metadataWrapper, nil
+    defer resp.Body.Close()
+
+    
+
+    metadataWrapper := metadata.NewResourceMetadata[bool](
+        true,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }
 
 func (c *ApiService) FetchCredentialAws(Sid string) (*TestResponseObject, error) {
-	path := "/v1/Credentials/AWS/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Credentials/AWS/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	return ps, err
+    defer resp.Body.Close()
+
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    return ps, err
 }
-
 // FetchCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) FetchCredentialAwsWithMetadata(Sid string) (*metadata.ResourceMetadata[TestResponseObject], error) {
-	path := "/v1/Credentials/AWS/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Credentials/AWS/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
-		*ps,             // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    defer resp.Body.Close()
 
-	return metadataWrapper, nil
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+        *ps,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }
 
 // Optional parameters for the method 'ListCredentialAws'
 type ListCredentialAwsParams struct {
-	//
-	PageSize *int `json:"PageSize,omitempty"`
-	// Max number of records to return.
-	Limit *int `json:"limit,omitempty"`
+    // 
+    PageSize *int `json:"PageSize,omitempty"`
+    // Max number of records to return.
+    Limit *int `json:"limit,omitempty"`
 }
 
-func (params *ListCredentialAwsParams) SetPageSize(PageSize int) *ListCredentialAwsParams {
-	params.PageSize = &PageSize
-	return params
+func (params *ListCredentialAwsParams) SetPageSize(PageSize int) (*ListCredentialAwsParams){
+    params.PageSize = &PageSize
+    return params
 }
-func (params *ListCredentialAwsParams) SetLimit(Limit int) *ListCredentialAwsParams {
-	params.Limit = &Limit
-	return params
+func (params *ListCredentialAwsParams) SetLimit(Limit int) (*ListCredentialAwsParams){
+    params.Limit = &Limit
+    return params
 }
 
 // Retrieve a single page of CredentialAws records from the API. Request is executed immediately.
 func (c *ApiService) PageCredentialAws(params *ListCredentialAwsParams, pageToken, pageNumber string) (*ListCredentialAwsResponse, error) {
-	path := "/v1/Credentials/AWS"
+    path := "/v1/Credentials/AWS"
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.PageSize != nil {
-		data.Set("PageSize", fmt.Sprint(*params.PageSize))
-	}
+    if params != nil && params.PageSize != nil {
+        data.Set("PageSize", fmt.Sprint(*params.PageSize))
+    }
 
-	if pageToken != "" {
-		data.Set("PageToken", pageToken)
-	}
-	if pageNumber != "" {
-		data.Set("Page", pageNumber)
-	}
+    if pageToken != "" {
+        data.Set("PageToken", pageToken)
+    }
+    if pageNumber != "" {
+        data.Set("Page", pageNumber)
+    }
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &ListCredentialAwsResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    ps := &ListCredentialAwsResponse{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	return ps, err
+    return ps, err
 }
-
 // PageCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) PageCredentialAwsWithMetadata(params *ListCredentialAwsParams, pageToken, pageNumber string) (*metadata.ResourceMetadata[ListCredentialAwsResponse], error) {
-	path := "/v1/Credentials/AWS"
+    path := "/v1/Credentials/AWS"
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.PageSize != nil {
-		data.Set("PageSize", fmt.Sprint(*params.PageSize))
-	}
+    if params != nil && params.PageSize != nil {
+        data.Set("PageSize", fmt.Sprint(*params.PageSize))
+    }
 
-	if pageToken != "" {
-		data.Set("PageToken", pageToken)
-	}
-	if pageNumber != "" {
-		data.Set("Page", pageNumber)
-	}
+    if pageToken != "" {
+        data.Set("PageToken", pageToken)
+    }
+    if pageNumber != "" {
+        data.Set("Page", pageNumber)
+    }
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &ListCredentialAwsResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    ps := &ListCredentialAwsResponse{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[ListCredentialAwsResponse](
-		*ps,             // The page object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    metadataWrapper := metadata.NewResourceMetadata[ListCredentialAwsResponse](
+        *ps,             // The page object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
 
-	return metadataWrapper, nil
+    return metadataWrapper, nil
 }
 
 // Lists CredentialAws records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
@@ -561,25 +571,25 @@ func (c *ApiService) ListCredentialAws(params *ListCredentialAwsParams) ([]TestR
 
 // ListCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) ListCredentialAwsWithMetadata(params *ListCredentialAwsParams) (*metadata.ResourceMetadata[[]TestResponseObject], error) {
-	response, errors := c.StreamCredentialAwsWithMetadata(params)
-	resource := response.GetResource()
+    response, errors := c.StreamCredentialAwsWithMetadata(params)
+    resource := response.GetResource()
 
-	records := make([]TestResponseObject, 0)
-	for record := range resource {
-		records = append(records, record)
-	}
+    records := make([]TestResponseObject, 0)
+    for record := range resource {
+        records = append(records, record)
+    }
 
-	if err := <-errors; err != nil {
-		return nil, err
-	}
+    if err := <-errors; err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[[]TestResponseObject](
-		records,
-		response.GetStatusCode(), // HTTP status code
-		response.GetHeaders(),    // HTTP headers
-	)
+    metadataWrapper := metadata.NewResourceMetadata[[]TestResponseObject](
+        records,
+        response.GetStatusCode(), // HTTP status code
+        response.GetHeaders(),     // HTTP headers
+    )
 
-	return metadataWrapper, nil
+    return metadataWrapper, nil
 }
 
 // Streams CredentialAws records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
@@ -606,31 +616,31 @@ func (c *ApiService) StreamCredentialAws(params *ListCredentialAwsParams) (chan 
 
 // StreamCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) StreamCredentialAwsWithMetadata(params *ListCredentialAwsParams) (*metadata.ResourceMetadata[chan TestResponseObject], chan error) {
-	if params == nil {
-		params = &ListCredentialAwsParams{}
-	}
-	params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
+    if params == nil {
+        params = &ListCredentialAwsParams{}
+    }
+    params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
 
-	recordChannel := make(chan TestResponseObject, 1)
-	errorChannel := make(chan error, 1)
+    recordChannel := make(chan TestResponseObject, 1)
+    errorChannel := make(chan error, 1)
 
-	response, err := c.PageCredentialAwsWithMetadata(params, "", "")
-	if err != nil {
-		errorChannel <- err
-		close(recordChannel)
-		close(errorChannel)
-	} else {
-		resource := response.GetResource()
-		go c.streamCredentialAws(&resource, params, recordChannel, errorChannel)
-	}
+    response, err := c.PageCredentialAwsWithMetadata(params, "", "")
+    if err != nil {
+        errorChannel <- err
+        close(recordChannel)
+        close(errorChannel)
+    } else {
+        resource := response.GetResource()
+        go c.streamCredentialAws(&resource, params, recordChannel, errorChannel)
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[chan TestResponseObject](
-		recordChannel,            // The stream
-		response.GetStatusCode(), // HTTP status code from page response
-		response.GetHeaders(),    // HTTP headers from page response
-	)
+    metadataWrapper := metadata.NewResourceMetadata[chan TestResponseObject](
+        recordChannel,            // The stream
+        response.GetStatusCode(), // HTTP status code from page response
+        response.GetHeaders(),    // HTTP headers from page response
+    )
 
-	return metadataWrapper, errorChannel
+    return metadataWrapper, errorChannel
 }
 
 func (c *ApiService) streamCredentialAws(response *ListCredentialAwsResponse, params *ListCredentialAwsParams, recordChannel chan TestResponseObject, errorChannel chan error) {
@@ -664,191 +674,194 @@ func (c *ApiService) streamCredentialAws(response *ListCredentialAwsResponse, pa
 }
 
 func (c *ApiService) getNextListCredentialAwsResponse(nextPageUrl string) (interface{}, error) {
-	if nextPageUrl == "" {
-		return nil, nil
-	}
-	resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    if nextPageUrl == "" {
+        return nil, nil
+    }
+    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &ListCredentialAwsResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
-	return ps, nil
+    ps := &ListCredentialAwsResponse{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+    return ps, nil
 }
+
 
 // Optional parameters for the method 'PatchCredentialAws'
 type PatchCredentialAwsParams struct {
-	//
-	TestString *string `json:"TestString,omitempty"`
-	//
-	TestBoolean *bool `json:"TestBoolean,omitempty"`
+    // 
+    TestString *string `json:"TestString,omitempty"`
+    // 
+    TestBoolean *bool `json:"TestBoolean,omitempty"`
 }
 
-func (params *PatchCredentialAwsParams) SetTestString(TestString string) *PatchCredentialAwsParams {
-	params.TestString = &TestString
-	return params
+func (params *PatchCredentialAwsParams) SetTestString(TestString string) (*PatchCredentialAwsParams){
+    params.TestString = &TestString
+    return params
 }
-func (params *PatchCredentialAwsParams) SetTestBoolean(TestBoolean bool) *PatchCredentialAwsParams {
-	params.TestBoolean = &TestBoolean
-	return params
+func (params *PatchCredentialAwsParams) SetTestBoolean(TestBoolean bool) (*PatchCredentialAwsParams){
+    params.TestBoolean = &TestBoolean
+    return params
 }
 
 func (c *ApiService) PatchCredentialAws(Sid string, params *PatchCredentialAwsParams) (*TestResponseObject, error) {
-	path := "/v1/Credentials/AWS/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Credentials/AWS/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.TestString != nil {
-		data.Set("TestString", *params.TestString)
-	}
-	if params != nil && params.TestBoolean != nil {
-		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
-	}
+    if params != nil && params.TestString != nil {
+        data.Set("TestString", *params.TestString)
+    }
+    if params != nil && params.TestBoolean != nil {
+        data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+    }
 
-	resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
+    resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    defer resp.Body.Close()
 
-	return ps, err
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    return ps, err
 }
-
 // PatchCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) PatchCredentialAwsWithMetadata(Sid string, params *PatchCredentialAwsParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
-	path := "/v1/Credentials/AWS/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Credentials/AWS/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.TestString != nil {
-		data.Set("TestString", *params.TestString)
-	}
-	if params != nil && params.TestBoolean != nil {
-		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
-	}
+    if params != nil && params.TestString != nil {
+        data.Set("TestString", *params.TestString)
+    }
+    if params != nil && params.TestBoolean != nil {
+        data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+    }
 
-	resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
+    resp, err := c.requestHandler.Patch(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    defer resp.Body.Close()
 
-	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
-		*ps,             // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	return metadataWrapper, nil
+    metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+        *ps,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }
 
 // Optional parameters for the method 'UpdateCredentialAws'
 type UpdateCredentialAwsParams struct {
-	//
-	TestString *string `json:"TestString,omitempty"`
-	//
-	TestBoolean *bool `json:"TestBoolean,omitempty"`
+    // 
+    TestString *string `json:"TestString,omitempty"`
+    // 
+    TestBoolean *bool `json:"TestBoolean,omitempty"`
 }
 
-func (params *UpdateCredentialAwsParams) SetTestString(TestString string) *UpdateCredentialAwsParams {
-	params.TestString = &TestString
-	return params
+func (params *UpdateCredentialAwsParams) SetTestString(TestString string) (*UpdateCredentialAwsParams){
+    params.TestString = &TestString
+    return params
 }
-func (params *UpdateCredentialAwsParams) SetTestBoolean(TestBoolean bool) *UpdateCredentialAwsParams {
-	params.TestBoolean = &TestBoolean
-	return params
+func (params *UpdateCredentialAwsParams) SetTestBoolean(TestBoolean bool) (*UpdateCredentialAwsParams){
+    params.TestBoolean = &TestBoolean
+    return params
 }
 
 func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAwsParams) (*TestResponseObject, error) {
-	path := "/v1/Credentials/AWS/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Credentials/AWS/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.TestString != nil {
-		data.Set("TestString", *params.TestString)
-	}
-	if params != nil && params.TestBoolean != nil {
-		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
-	}
+    if params != nil && params.TestString != nil {
+        data.Set("TestString", *params.TestString)
+    }
+    if params != nil && params.TestBoolean != nil {
+        data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+    }
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    defer resp.Body.Close()
 
-	return ps, err
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    return ps, err
 }
-
 // UpdateCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) UpdateCredentialAwsWithMetadata(Sid string, params *UpdateCredentialAwsParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
-	path := "/v1/Credentials/AWS/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Credentials/AWS/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.TestString != nil {
-		data.Set("TestString", *params.TestString)
-	}
-	if params != nil && params.TestBoolean != nil {
-		data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
-	}
+    if params != nil && params.TestString != nil {
+        data.Set("TestString", *params.TestString)
+    }
+    if params != nil && params.TestBoolean != nil {
+        data.Set("TestBoolean", fmt.Sprint(*params.TestBoolean))
+    }
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    defer resp.Body.Close()
 
-	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
-		*ps,             // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	return metadataWrapper, nil
+    metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+        *ps,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }

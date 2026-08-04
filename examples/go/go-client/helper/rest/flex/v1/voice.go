@@ -16,63 +16,69 @@ package openapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/url"
 	"strings"
 
-	"github.com/twilio/twilio-go/client/metadata"
+    "github.com/twilio/twilio-go/client"
+    "github.com/twilio/twilio-go/client/metadata"
 )
 
+
 func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
-	path := "/v1/Voice/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Voice/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
 
-	ps := &UpdateCallResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	return ps, err
+    defer resp.Body.Close()
+
+    ps := &UpdateCallResponse{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    return ps, err
 }
-
 // UpdateCallWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) UpdateCallWithMetadata(Sid string) (*metadata.ResourceMetadata[UpdateCallResponse], error) {
-	path := "/v1/Voice/{Sid}"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/v1/Voice/{Sid}"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
 
-	ps := &UpdateCallResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[UpdateCallResponse](
-		*ps,             // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    defer resp.Body.Close()
 
-	return metadataWrapper, nil
+    ps := &UpdateCallResponse{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[UpdateCallResponse](
+        *ps,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }

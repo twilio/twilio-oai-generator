@@ -13,9 +13,16 @@
  */
 
 package openapi
-
+import (
+	"encoding/json"
+	"github.com/twilio/twilio-go/client"
+	"bytes"
+	"fmt"
+)
 // Auth0TestLoginRequest struct for Auth0TestLoginRequest
 type Auth0TestLoginRequest struct {
-	Email    string `json:"email"`
+	Email string `json:"email"`
 	Password string `json:"password"`
 }
+
+

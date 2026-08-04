@@ -20,363 +20,373 @@ import (
 	"net/url"
 	"strings"
 
-	"time"
-
-	"github.com/twilio/twilio-go/client"
-	"github.com/twilio/twilio-go/client/metadata"
+    "time"
+    "github.com/twilio/twilio-go/client"
+    "github.com/twilio/twilio-go/client/metadata"
 )
+
 
 // Optional parameters for the method 'CreateAccount'
 type CreateAccountParams struct {
-	//
-	XTwilioWebhookEnabled *string `json:"X-Twilio-Webhook-Enabled,omitempty"`
-	//
-	RecordingStatusCallback *string `json:"RecordingStatusCallback,omitempty"`
-	//
-	RecordingStatusCallbackEvent *[]string `json:"RecordingStatusCallbackEvent,omitempty"`
-	//
-	Twiml *string `json:"Twiml,omitempty"`
+    // 
+    XTwilioWebhookEnabled *string `json:"X-Twilio-Webhook-Enabled,omitempty"`
+    // 
+    RecordingStatusCallback *string `json:"RecordingStatusCallback,omitempty"`
+    // 
+    RecordingStatusCallbackEvent *[]string `json:"RecordingStatusCallbackEvent,omitempty"`
+    // 
+    Twiml *string `json:"Twiml,omitempty"`
 }
 
-func (params *CreateAccountParams) SetXTwilioWebhookEnabled(XTwilioWebhookEnabled string) *CreateAccountParams {
-	params.XTwilioWebhookEnabled = &XTwilioWebhookEnabled
-	return params
+func (params *CreateAccountParams) SetXTwilioWebhookEnabled(XTwilioWebhookEnabled string) (*CreateAccountParams){
+    params.XTwilioWebhookEnabled = &XTwilioWebhookEnabled
+    return params
 }
-func (params *CreateAccountParams) SetRecordingStatusCallback(RecordingStatusCallback string) *CreateAccountParams {
-	params.RecordingStatusCallback = &RecordingStatusCallback
-	return params
+func (params *CreateAccountParams) SetRecordingStatusCallback(RecordingStatusCallback string) (*CreateAccountParams){
+    params.RecordingStatusCallback = &RecordingStatusCallback
+    return params
 }
-func (params *CreateAccountParams) SetRecordingStatusCallbackEvent(RecordingStatusCallbackEvent []string) *CreateAccountParams {
-	params.RecordingStatusCallbackEvent = &RecordingStatusCallbackEvent
-	return params
+func (params *CreateAccountParams) SetRecordingStatusCallbackEvent(RecordingStatusCallbackEvent []string) (*CreateAccountParams){
+    params.RecordingStatusCallbackEvent = &RecordingStatusCallbackEvent
+    return params
 }
-func (params *CreateAccountParams) SetTwiml(Twiml string) *CreateAccountParams {
-	params.Twiml = &Twiml
-	return params
+func (params *CreateAccountParams) SetTwiml(Twiml string) (*CreateAccountParams){
+    params.Twiml = &Twiml
+    return params
 }
 
 func (c *ApiService) CreateAccount(params *CreateAccountParams) (*TestResponseObject, error) {
-	path := "/2010-04-01/Accounts.json"
+    path := "/2010-04-01/Accounts.json"
+    
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    if params != nil && params.RecordingStatusCallback != nil {
+        data.Set("RecordingStatusCallback", *params.RecordingStatusCallback)
+    }
+    if params != nil && params.RecordingStatusCallbackEvent != nil {
+        for _, item  := range *params.RecordingStatusCallbackEvent {
+            data.Add("RecordingStatusCallbackEvent", item)
+    }
+    }
+    if params != nil && params.Twiml != nil {
+        data.Set("Twiml", *params.Twiml)
+    }
 
-	if params != nil && params.RecordingStatusCallback != nil {
-		data.Set("RecordingStatusCallback", *params.RecordingStatusCallback)
-	}
-	if params != nil && params.RecordingStatusCallbackEvent != nil {
-		for _, item := range *params.RecordingStatusCallbackEvent {
-			data.Add("RecordingStatusCallbackEvent", item)
-		}
-	}
-	if params != nil && params.Twiml != nil {
-		data.Set("Twiml", *params.Twiml)
-	}
 
 	if params != nil && params.XTwilioWebhookEnabled != nil {
 		headers["X-Twilio-Webhook-Enabled"] = *params.XTwilioWebhookEnabled
 	}
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	return ps, err
+    return ps, err
 }
-
 // CreateAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) CreateAccountWithMetadata(params *CreateAccountParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
-	path := "/2010-04-01/Accounts.json"
+    path := "/2010-04-01/Accounts.json"
+    
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    if params != nil && params.RecordingStatusCallback != nil {
+        data.Set("RecordingStatusCallback", *params.RecordingStatusCallback)
+    }
+    if params != nil && params.RecordingStatusCallbackEvent != nil {
+        for _, item  := range *params.RecordingStatusCallbackEvent {
+            data.Add("RecordingStatusCallbackEvent", item)
+    }
+    }
+    if params != nil && params.Twiml != nil {
+        data.Set("Twiml", *params.Twiml)
+    }
 
-	if params != nil && params.RecordingStatusCallback != nil {
-		data.Set("RecordingStatusCallback", *params.RecordingStatusCallback)
-	}
-	if params != nil && params.RecordingStatusCallbackEvent != nil {
-		for _, item := range *params.RecordingStatusCallbackEvent {
-			data.Add("RecordingStatusCallbackEvent", item)
-		}
-	}
-	if params != nil && params.Twiml != nil {
-		data.Set("Twiml", *params.Twiml)
-	}
 
-	if params != nil && params.XTwilioWebhookEnabled != nil {
-		headers["X-Twilio-Webhook-Enabled"] = *params.XTwilioWebhookEnabled
-	}
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    if params != nil && params.XTwilioWebhookEnabled != nil {
+        headers["X-Twilio-Webhook-Enabled"] = *params.XTwilioWebhookEnabled
+    }
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
-		*ps,             // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+        *ps,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
 
-	return metadataWrapper, nil
+    return metadataWrapper, nil
 }
 
-func (c *ApiService) DeleteAccount(Sid string) error {
-	path := "/2010-04-01/Accounts/{Sid}.json"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+func (c *ApiService) DeleteAccount(Sid string) (error) {
+    path := "/2010-04-01/Accounts/{Sid}.json"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return err
-	}
 
-	defer resp.Body.Close()
 
-	return nil
+    resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return err
+    }
+
+    defer resp.Body.Close()
+
+    return nil
 }
-
 // DeleteAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) DeleteAccountWithMetadata(Sid string) (*metadata.ResourceMetadata[bool], error) {
-	path := "/2010-04-01/Accounts/{Sid}.json"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/2010-04-01/Accounts/{Sid}.json"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
 
-	metadataWrapper := metadata.NewResourceMetadata[bool](
-		true,            // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    resp, err := c.requestHandler.Delete(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	return metadataWrapper, nil
+    defer resp.Body.Close()
+
+    
+
+    metadataWrapper := metadata.NewResourceMetadata[bool](
+        true,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }
 
 func (c *ApiService) FetchAccount(Sid string) (*TestFetchResponseObject, error) {
-	path := "/2010-04-01/Accounts/{Sid}.json"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/2010-04-01/Accounts/{Sid}.json"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
 
-	ps := &TestFetchResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	return ps, err
+    defer resp.Body.Close()
+
+    ps := &TestFetchResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    return ps, err
 }
-
 // FetchAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) FetchAccountWithMetadata(Sid string) (*metadata.ResourceMetadata[TestFetchResponseObject], error) {
-	path := "/2010-04-01/Accounts/{Sid}.json"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/2010-04-01/Accounts/{Sid}.json"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
 
-	ps := &TestFetchResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[TestFetchResponseObject](
-		*ps,             // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    defer resp.Body.Close()
 
-	return metadataWrapper, nil
+    ps := &TestFetchResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    metadataWrapper := metadata.NewResourceMetadata[TestFetchResponseObject](
+        *ps,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }
 
 // Optional parameters for the method 'ListAccount'
 type ListAccountParams struct {
-	//
-	DateCreated *time.Time `json:"DateCreated,omitempty"`
-	//
-	DateTest *string `json:"Date.Test,omitempty"`
-	//
-	DateCreatedBefore *time.Time `json:"DateCreated&lt;,omitempty"`
-	//
-	DateCreatedAfter *time.Time `json:"DateCreated&gt;,omitempty"`
-	//
-	PageSize *int `json:"PageSize,omitempty"`
-	// Max number of records to return.
-	Limit *int `json:"limit,omitempty"`
+    // 
+    DateCreated *time.Time `json:"DateCreated,omitempty"`
+    // 
+    DateTest *string `json:"Date.Test,omitempty"`
+    // 
+    DateCreatedBefore *time.Time `json:"DateCreated&lt;,omitempty"`
+    // 
+    DateCreatedAfter *time.Time `json:"DateCreated&gt;,omitempty"`
+    // 
+    PageSize *int `json:"PageSize,omitempty"`
+    // Max number of records to return.
+    Limit *int `json:"limit,omitempty"`
 }
 
-func (params *ListAccountParams) SetDateCreated(DateCreated time.Time) *ListAccountParams {
-	params.DateCreated = &DateCreated
-	return params
+func (params *ListAccountParams) SetDateCreated(DateCreated time.Time) (*ListAccountParams){
+    params.DateCreated = &DateCreated
+    return params
 }
-func (params *ListAccountParams) SetDateTest(DateTest string) *ListAccountParams {
-	params.DateTest = &DateTest
-	return params
+func (params *ListAccountParams) SetDateTest(DateTest string) (*ListAccountParams){
+    params.DateTest = &DateTest
+    return params
 }
-func (params *ListAccountParams) SetDateCreatedBefore(DateCreatedBefore time.Time) *ListAccountParams {
-	params.DateCreatedBefore = &DateCreatedBefore
-	return params
+func (params *ListAccountParams) SetDateCreatedBefore(DateCreatedBefore time.Time) (*ListAccountParams){
+    params.DateCreatedBefore = &DateCreatedBefore
+    return params
 }
-func (params *ListAccountParams) SetDateCreatedAfter(DateCreatedAfter time.Time) *ListAccountParams {
-	params.DateCreatedAfter = &DateCreatedAfter
-	return params
+func (params *ListAccountParams) SetDateCreatedAfter(DateCreatedAfter time.Time) (*ListAccountParams){
+    params.DateCreatedAfter = &DateCreatedAfter
+    return params
 }
-func (params *ListAccountParams) SetPageSize(PageSize int) *ListAccountParams {
-	params.PageSize = &PageSize
-	return params
+func (params *ListAccountParams) SetPageSize(PageSize int) (*ListAccountParams){
+    params.PageSize = &PageSize
+    return params
 }
-func (params *ListAccountParams) SetLimit(Limit int) *ListAccountParams {
-	params.Limit = &Limit
-	return params
+func (params *ListAccountParams) SetLimit(Limit int) (*ListAccountParams){
+    params.Limit = &Limit
+    return params
 }
 
 // Retrieve a single page of Account records from the API. Request is executed immediately.
 func (c *ApiService) PageAccount(params *ListAccountParams, pageToken, pageNumber string) (*ListAccountResponse, error) {
-	path := "/2010-04-01/Accounts.json"
+    path := "/2010-04-01/Accounts.json"
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.DateCreated != nil {
-		data.Set("DateCreated", fmt.Sprint((*params.DateCreated).Format(time.RFC3339)))
-	}
-	if params != nil && params.DateTest != nil {
-		data.Set("Date.Test", fmt.Sprint(*params.DateTest))
-	}
-	if params != nil && params.DateCreatedBefore != nil {
-		data.Set("DateCreated<", fmt.Sprint((*params.DateCreatedBefore).Format(time.RFC3339)))
-	}
-	if params != nil && params.DateCreatedAfter != nil {
-		data.Set("DateCreated>", fmt.Sprint((*params.DateCreatedAfter).Format(time.RFC3339)))
-	}
-	if params != nil && params.PageSize != nil {
-		data.Set("PageSize", fmt.Sprint(*params.PageSize))
-	}
+    if params != nil && params.DateCreated != nil {
+        data.Set("DateCreated", fmt.Sprint((*params.DateCreated).Format(time.RFC3339)))
+    }
+    if params != nil && params.DateTest != nil {
+        data.Set("Date.Test", fmt.Sprint(*params.DateTest))
+    }
+    if params != nil && params.DateCreatedBefore != nil {
+        data.Set("DateCreated<", fmt.Sprint((*params.DateCreatedBefore).Format(time.RFC3339)))
+    }
+    if params != nil && params.DateCreatedAfter != nil {
+        data.Set("DateCreated>", fmt.Sprint((*params.DateCreatedAfter).Format(time.RFC3339)))
+    }
+    if params != nil && params.PageSize != nil {
+        data.Set("PageSize", fmt.Sprint(*params.PageSize))
+    }
 
-	if pageToken != "" {
-		data.Set("PageToken", pageToken)
-	}
-	if pageNumber != "" {
-		data.Set("Page", pageNumber)
-	}
+    if pageToken != "" {
+        data.Set("PageToken", pageToken)
+    }
+    if pageNumber != "" {
+        data.Set("Page", pageNumber)
+    }
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &ListAccountResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    ps := &ListAccountResponse{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	return ps, err
+    return ps, err
 }
-
 // PageAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) PageAccountWithMetadata(params *ListAccountParams, pageToken, pageNumber string) (*metadata.ResourceMetadata[ListAccountResponse], error) {
-	path := "/2010-04-01/Accounts.json"
+    path := "/2010-04-01/Accounts.json"
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.DateCreated != nil {
-		data.Set("DateCreated", fmt.Sprint((*params.DateCreated).Format(time.RFC3339)))
-	}
-	if params != nil && params.DateTest != nil {
-		data.Set("Date.Test", fmt.Sprint(*params.DateTest))
-	}
-	if params != nil && params.DateCreatedBefore != nil {
-		data.Set("DateCreated<", fmt.Sprint((*params.DateCreatedBefore).Format(time.RFC3339)))
-	}
-	if params != nil && params.DateCreatedAfter != nil {
-		data.Set("DateCreated>", fmt.Sprint((*params.DateCreatedAfter).Format(time.RFC3339)))
-	}
-	if params != nil && params.PageSize != nil {
-		data.Set("PageSize", fmt.Sprint(*params.PageSize))
-	}
+    if params != nil && params.DateCreated != nil {
+        data.Set("DateCreated", fmt.Sprint((*params.DateCreated).Format(time.RFC3339)))
+    }
+    if params != nil && params.DateTest != nil {
+        data.Set("Date.Test", fmt.Sprint(*params.DateTest))
+    }
+    if params != nil && params.DateCreatedBefore != nil {
+        data.Set("DateCreated<", fmt.Sprint((*params.DateCreatedBefore).Format(time.RFC3339)))
+    }
+    if params != nil && params.DateCreatedAfter != nil {
+        data.Set("DateCreated>", fmt.Sprint((*params.DateCreatedAfter).Format(time.RFC3339)))
+    }
+    if params != nil && params.PageSize != nil {
+        data.Set("PageSize", fmt.Sprint(*params.PageSize))
+    }
 
-	if pageToken != "" {
-		data.Set("PageToken", pageToken)
-	}
-	if pageNumber != "" {
-		data.Set("Page", pageNumber)
-	}
+    if pageToken != "" {
+        data.Set("PageToken", pageToken)
+    }
+    if pageNumber != "" {
+        data.Set("Page", pageNumber)
+    }
 
-	resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    resp, err := c.requestHandler.Get(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &ListAccountResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    ps := &ListAccountResponse{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[ListAccountResponse](
-		*ps,             // The page object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    metadataWrapper := metadata.NewResourceMetadata[ListAccountResponse](
+        *ps,             // The page object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
 
-	return metadataWrapper, nil
+    return metadataWrapper, nil
 }
 
 // Lists Account records from the API as a list. Unlike stream, this operation is eager and loads 'limit' records into memory before returning.
@@ -397,25 +407,25 @@ func (c *ApiService) ListAccount(params *ListAccountParams) ([]TestResponseObjec
 
 // ListAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) ListAccountWithMetadata(params *ListAccountParams) (*metadata.ResourceMetadata[[]TestResponseObject], error) {
-	response, errors := c.StreamAccountWithMetadata(params)
-	resource := response.GetResource()
+    response, errors := c.StreamAccountWithMetadata(params)
+    resource := response.GetResource()
 
-	records := make([]TestResponseObject, 0)
-	for record := range resource {
-		records = append(records, record)
-	}
+    records := make([]TestResponseObject, 0)
+    for record := range resource {
+        records = append(records, record)
+    }
 
-	if err := <-errors; err != nil {
-		return nil, err
-	}
+    if err := <-errors; err != nil {
+        return nil, err
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[[]TestResponseObject](
-		records,
-		response.GetStatusCode(), // HTTP status code
-		response.GetHeaders(),    // HTTP headers
-	)
+    metadataWrapper := metadata.NewResourceMetadata[[]TestResponseObject](
+        records,
+        response.GetStatusCode(), // HTTP status code
+        response.GetHeaders(),     // HTTP headers
+    )
 
-	return metadataWrapper, nil
+    return metadataWrapper, nil
 }
 
 // Streams Account records from the API as a channel stream. This operation lazily loads records as efficiently as possible until the limit is reached.
@@ -442,31 +452,31 @@ func (c *ApiService) StreamAccount(params *ListAccountParams) (chan TestResponse
 
 // StreamAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) StreamAccountWithMetadata(params *ListAccountParams) (*metadata.ResourceMetadata[chan TestResponseObject], chan error) {
-	if params == nil {
-		params = &ListAccountParams{}
-	}
-	params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
+    if params == nil {
+        params = &ListAccountParams{}
+    }
+    params.SetPageSize(client.ReadLimits(params.PageSize, params.Limit))
 
-	recordChannel := make(chan TestResponseObject, 1)
-	errorChannel := make(chan error, 1)
+    recordChannel := make(chan TestResponseObject, 1)
+    errorChannel := make(chan error, 1)
 
-	response, err := c.PageAccountWithMetadata(params, "", "")
-	if err != nil {
-		errorChannel <- err
-		close(recordChannel)
-		close(errorChannel)
-	} else {
-		resource := response.GetResource()
-		go c.streamAccount(&resource, params, recordChannel, errorChannel)
-	}
+    response, err := c.PageAccountWithMetadata(params, "", "")
+    if err != nil {
+        errorChannel <- err
+        close(recordChannel)
+        close(errorChannel)
+    } else {
+        resource := response.GetResource()
+        go c.streamAccount(&resource, params, recordChannel, errorChannel)
+    }
 
-	metadataWrapper := metadata.NewResourceMetadata[chan TestResponseObject](
-		recordChannel,            // The stream
-		response.GetStatusCode(), // HTTP status code from page response
-		response.GetHeaders(),    // HTTP headers from page response
-	)
+    metadataWrapper := metadata.NewResourceMetadata[chan TestResponseObject](
+        recordChannel,            // The stream
+        response.GetStatusCode(), // HTTP status code from page response
+        response.GetHeaders(),    // HTTP headers from page response
+    )
 
-	return metadataWrapper, errorChannel
+    return metadataWrapper, errorChannel
 }
 
 func (c *ApiService) streamAccount(response *ListAccountResponse, params *ListAccountParams, recordChannel chan TestResponseObject, errorChannel chan error) {
@@ -500,105 +510,107 @@ func (c *ApiService) streamAccount(response *ListAccountResponse, params *ListAc
 }
 
 func (c *ApiService) getNextListAccountResponse(nextPageUrl string) (interface{}, error) {
-	if nextPageUrl == "" {
-		return nil, nil
-	}
-	resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
+    if nextPageUrl == "" {
+        return nil, nil
+    }
+    resp, err := c.requestHandler.Get(nextPageUrl, nil, nil, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	defer resp.Body.Close()
+    defer resp.Body.Close()
 
-	ps := &ListAccountResponse{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
-	return ps, nil
+    ps := &ListAccountResponse{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+    return ps, nil
 }
+
 
 // Optional parameters for the method 'UpdateAccount'
 type UpdateAccountParams struct {
-	//
-	PauseBehavior *string `json:"PauseBehavior,omitempty"`
-	//
-	Status *string `json:"Status,omitempty"`
+    // 
+    PauseBehavior *string `json:"PauseBehavior,omitempty"`
+    // 
+    Status *string `json:"Status,omitempty"`
 }
 
-func (params *UpdateAccountParams) SetPauseBehavior(PauseBehavior string) *UpdateAccountParams {
-	params.PauseBehavior = &PauseBehavior
-	return params
+func (params *UpdateAccountParams) SetPauseBehavior(PauseBehavior string) (*UpdateAccountParams){
+    params.PauseBehavior = &PauseBehavior
+    return params
 }
-func (params *UpdateAccountParams) SetStatus(Status string) *UpdateAccountParams {
-	params.Status = &Status
-	return params
+func (params *UpdateAccountParams) SetStatus(Status string) (*UpdateAccountParams){
+    params.Status = &Status
+    return params
 }
 
 func (c *ApiService) UpdateAccount(Sid string, params *UpdateAccountParams) (*TestResponseObject, error) {
-	path := "/2010-04-01/Accounts/{Sid}.json"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/2010-04-01/Accounts/{Sid}.json"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.PauseBehavior != nil {
-		data.Set("PauseBehavior", *params.PauseBehavior)
-	}
-	if params != nil && params.Status != nil {
-		data.Set("Status", *params.Status)
-	}
+    if params != nil && params.PauseBehavior != nil {
+        data.Set("PauseBehavior", *params.PauseBehavior)
+    }
+    if params != nil && params.Status != nil {
+        data.Set("Status", *params.Status)
+    }
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    defer resp.Body.Close()
 
-	return ps, err
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
+
+    return ps, err
 }
-
 // UpdateAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) UpdateAccountWithMetadata(Sid string, params *UpdateAccountParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
-	path := "/2010-04-01/Accounts/{Sid}.json"
-	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
+    path := "/2010-04-01/Accounts/{Sid}.json"
+        path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
-	data := url.Values{}
-	headers := map[string]interface{}{
-		"Content-Type": "application/x-www-form-urlencoded",
-	}
+    data := url.Values{}
+    headers := map[string]interface{}{
+        "Content-Type": "application/x-www-form-urlencoded",
+    }
 
-	if params != nil && params.PauseBehavior != nil {
-		data.Set("PauseBehavior", *params.PauseBehavior)
-	}
-	if params != nil && params.Status != nil {
-		data.Set("Status", *params.Status)
-	}
+    if params != nil && params.PauseBehavior != nil {
+        data.Set("PauseBehavior", *params.PauseBehavior)
+    }
+    if params != nil && params.Status != nil {
+        data.Set("Status", *params.Status)
+    }
 
-	resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
-	if err != nil {
-		return nil, err
-	}
 
-	defer resp.Body.Close()
+    resp, err := c.requestHandler.Post(c.baseURL+path, data, headers, c.apiVersion)
+    if err != nil {
+        return nil, err
+    }
 
-	ps := &TestResponseObject{}
-	if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
-		return nil, err
-	}
+    defer resp.Body.Close()
 
-	metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
-		*ps,             // The resource object
-		resp.StatusCode, // HTTP status code
-		resp.Header,     // HTTP headers
-	)
+    ps := &TestResponseObject{}
+    if err := json.NewDecoder(resp.Body).Decode(ps); err != nil {
+        return nil, err
+    }
 
-	return metadataWrapper, nil
+    metadataWrapper := metadata.NewResourceMetadata[TestResponseObject](
+        *ps,             // The resource object
+        resp.StatusCode, // HTTP status code
+        resp.Header,     // HTTP headers
+    )
+
+    return metadataWrapper, nil
 }
