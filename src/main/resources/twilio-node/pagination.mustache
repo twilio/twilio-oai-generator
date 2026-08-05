@@ -1,5 +1,3 @@
-{{#operations}}
-{{#vendorExtensions.x-is-read-operation}}
 export class {{apiName}}Page extends Page<{{apiVersionClass}}, {{apiName}}Payload, {{apiName}}Resource, {{instanceName}}> {
 /**
 * Initialize the {{apiName}}Page
@@ -36,5 +34,3 @@ constructor(version: {{apiVersionClass}}, response: Response<string>, solution: 
     return inspect(this.toJSON(), options);
     }
     }
-{{/vendorExtensions.x-is-read-operation}}
-{{/operations}}
