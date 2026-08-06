@@ -92,7 +92,7 @@
     // No response body — fire-and-forget operation
     let operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}WithResponseInfo({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers}).then((response) : ApiResponse<{{returnType}}> => ({
       ...response,
-      body: response.statusCode
+      body: undefined
     }));
     {{/vendorExtensions.x-no-response-body}}
     {{/vendorExtensions.x-is-page-operation}}
