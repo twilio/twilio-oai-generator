@@ -78,18 +78,18 @@ export interface CallContext {
    *
    * @param callback - Callback to handle processed record
    *
-   * @returns Resolves to processed CallInstance
+   * @returns Resolves to processed void
    */
-  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+  fetch(callback?: (error: Error | null, item?: void) => any): Promise<void>
 
   /**
    * Fetch a CallInstance and return HTTP info
    *
    * @param callback - Callback to handle processed record
    *
-   * @returns Resolves to processed CallInstance with HTTP metadata
+   * @returns Resolves to processed void with HTTP metadata
    */
-  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any): Promise<ApiResponse<CallInstance>>
+  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<void>) => any): Promise<ApiResponse<void>>
 
   /**
    * Provide a user-friendly representation
@@ -152,7 +152,7 @@ export class CallContextImpl implements CallContext {
 
   }
 
-  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance> {
+  fetch(callback?: (error: Error | null, item?: void) => any): Promise<void> {
       const headers: any = {};
     headers["Accept"] = "application/json"
 
@@ -160,7 +160,6 @@ export class CallContextImpl implements CallContext {
     let operationVersion = instance._version,
         operationPromise = operationVersion.fetch({ uri: instance._uri, method: "get", headers});
     
-    operationPromise = operationPromise.then(payload => new CallInstance(operationVersion, payload, instance._solution.accountSid, instance._solution.testInteger));
     
 
     operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
@@ -169,16 +168,16 @@ export class CallContextImpl implements CallContext {
 
   }
 
-  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any): Promise<ApiResponse<CallInstance>> {
+  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<void>) => any): Promise<ApiResponse<void>> {
       const headers: any = {};
     headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version;
-    // CREATE, FETCH, UPDATE operations
-    let operationPromise = operationVersion.fetchWithResponseInfo<CallResource>({ uri: instance._uri, method: "get", headers}).then((response) : ApiResponse<CallInstance> => ({
+    // No response body — fire-and-forget operation
+    let operationPromise = operationVersion.fetchWithResponseInfo({ uri: instance._uri, method: "get", headers}).then((response) : ApiResponse<void> => ({
       ...response,
-      body: new CallInstance(operationVersion, response.body, instance._solution.accountSid, instance._solution.testInteger)
+      body: response.statusCode
     }));
 
     operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
@@ -325,9 +324,9 @@ export class CallInstance {
    *
    * @param callback - Callback to handle processed record
    *
-   * @returns Resolves to processed CallInstance
+   * @returns Resolves to processed void
    */
-  fetch(callback?: (error: Error | null, item?: CallInstance) => any): Promise<CallInstance>
+  fetch(callback?: (error: Error | null, item?: void) => any): Promise<void>
 
     {
     return this._proxy.fetch(callback);
@@ -338,9 +337,9 @@ export class CallInstance {
    *
    * @param callback - Callback to handle processed record
    *
-   * @returns Resolves to processed CallInstance with HTTP metadata
+   * @returns Resolves to processed void with HTTP metadata
    */
-  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<CallInstance>) => any): Promise<ApiResponse<CallInstance>>
+  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<void>) => any): Promise<ApiResponse<void>>
 
     {
     return this._proxy.fetchWithHttpInfo(callback);

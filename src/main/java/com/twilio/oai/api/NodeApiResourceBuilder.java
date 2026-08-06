@@ -75,6 +75,13 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                     co.vendorExtensions.put("x-is-read-operation", true);
                 } else {
                     co.vendorExtensions.remove("x-is-read-operation");
+                    // For non-V1 APIs: list operation on an instance path (e.g. /v2/Configurations/{Type})
+                    // is classified as a context-operation, losing x-is-read-operation. The WithHttpInfo
+                    // template would generate pageWithResponseInfo() which doesn't exist on the version
+                    // class. This flag tells the template to use page() + response wrapping instead.
+                    if (!isApiV1) {
+                        co.vendorExtensions.put("x-is-page-operation", true);
+                    }
                 }
                 // Check if this list operation supports pagination (has meta in response)
                 boolean supportsPagination = (Boolean) co.vendorExtensions.getOrDefault("x-supports-pagination", true);
@@ -87,7 +94,18 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                     co.returnType = apiName + "Page";
                 }
             } else {
-                co.returnType = resourceName;
+                // Check if operation has a 2xx response with a body schema.
+                // APIs like intelligence/v3 CreateRuleExecution return 202 with no body —
+                // generating a reference to a non-existent Instance class would cause TS errors.
+                boolean hasResponseBody = co.responses != null && co.responses.stream()
+                    .anyMatch(response -> response.dataType != null && response.code != null
+                        && response.code.startsWith("2"));
+                if (hasResponseBody) {
+                    co.returnType = resourceName;
+                } else {
+                    co.returnType = "void";
+                    co.vendorExtensions.put("x-no-response-body", true);
+                }
             }
 
             dependents.values().forEach(dependent -> {
