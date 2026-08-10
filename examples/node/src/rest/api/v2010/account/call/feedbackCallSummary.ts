@@ -12,6 +12,7 @@
  * Do not edit the class manually.
  */
 
+
 import { inspect, InspectOptions } from "util";
 import V2010 from "../../../V2010";
 const deserialize = require("../../../../../base/deserialize");
@@ -20,13 +21,8 @@ import { isValidPathParam } from "../../../../../base/utility";
 import { ApiResponse } from "../../../../../base/ApiResponse";
 import { PhoneNumberCapabilities } from "../../../../../interfaces";
 
-export type FeedbackCallSummaryStatus =
-  | "in-progress"
-  | "paused"
-  | "stopped"
-  | "processing"
-  | "completed"
-  | "absent";
+
+export type FeedbackCallSummaryStatus = 'in-progress'|'paused'|'stopped'|'processing'|'completed'|'absent';
 
 export class TestResponseObjectTestArrayOfObjects {
   "count"?: number;
@@ -38,19 +34,22 @@ export class TestResponseObjectTestArrayOfObjects {
   }
 }
 
+
+
 /**
  * Options to pass to update a FeedbackCallSummaryInstance
  */
 export interface FeedbackCallSummaryContextUpdateOptions {
   /**  */
-  endDate: Date;
+  "endDate": Date;
   /**  */
-  startDate: Date;
+  "startDate": Date;
   /**  */
-  accountSid?: string;
+  "accountSid"?: string;
 }
 
 export interface FeedbackCallSummaryContext {
+
   /**
    * Update a FeedbackCallSummaryInstance
    *
@@ -59,10 +58,7 @@ export interface FeedbackCallSummaryContext {
    *
    * @returns Resolves to processed FeedbackCallSummaryInstance
    */
-  update(
-    params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
-  ): Promise<FeedbackCallSummaryInstance>;
+  update(params: FeedbackCallSummaryContextUpdateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
 
   /**
    * Update a FeedbackCallSummaryInstance and return HTTP info
@@ -72,13 +68,7 @@ export interface FeedbackCallSummaryContext {
    *
    * @returns Resolves to processed FeedbackCallSummaryInstance with HTTP metadata
    */
-  updateWithHttpInfo(
-    params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (
-      error: Error | null,
-      item?: ApiResponse<FeedbackCallSummaryInstance>,
-    ) => any,
-  ): Promise<ApiResponse<FeedbackCallSummaryInstance>>;
+  updateWithHttpInfo(params: FeedbackCallSummaryContextUpdateOptions, callback?: (error: Error | null, item?: ApiResponse<FeedbackCallSummaryInstance>) => any): Promise<ApiResponse<FeedbackCallSummaryInstance>>;
 
   /**
    * Provide a user-friendly representation
@@ -88,145 +78,113 @@ export interface FeedbackCallSummaryContext {
 }
 
 export interface FeedbackCallSummaryContextSolution {
-  accountSid: string;
-  sid: string;
+  "accountSid": string;
+  "sid": string;
 }
 
 export class FeedbackCallSummaryContextImpl implements FeedbackCallSummaryContext {
   protected _solution: FeedbackCallSummaryContextSolution;
   protected _uri: string;
 
-  constructor(
-    protected _version: V2010,
-    accountSid: string,
-    sid: string,
-  ) {
+
+  constructor(protected _version: V2010, accountSid: string, sid: string) {
     if (!isValidPathParam(accountSid)) {
-      throw new Error("Parameter 'accountSid' is not valid.");
+      throw new Error('Parameter \'accountSid\' is not valid.');
     }
 
     if (!isValidPathParam(sid)) {
-      throw new Error("Parameter 'sid' is not valid.");
+      throw new Error('Parameter \'sid\' is not valid.');
     }
 
-    this._solution = { accountSid, sid };
+    this._solution = { accountSid, sid,  };
     this._uri = `/Accounts/${accountSid}/Calls/Feedback/Summary/${sid}.json`;
   }
 
-  update(
-    params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
-  ): Promise<FeedbackCallSummaryInstance> {
-    if (params === null || params === undefined) {
+  update(params: FeedbackCallSummaryContextUpdateOptions,callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance> {
+      if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
 
     if (params["endDate"] === null || params["endDate"] === undefined) {
-      throw new Error("Required parameter \"params['endDate']\" missing.");
+      throw new Error('Required parameter "params[\'endDate\']" missing.');
     }
 
     if (params["startDate"] === null || params["startDate"] === undefined) {
-      throw new Error("Required parameter \"params['startDate']\" missing.");
+      throw new Error('Required parameter "params[\'startDate\']" missing.');
     }
 
     let data: any = {};
 
-    if (params["accountSid"] !== undefined)
-      data["AccountSid"] = params["accountSid"];
-
+    
+        if (params["accountSid"] !== undefined)
+    data["AccountSid"] = params["accountSid"];
+    
     data["EndDate"] = serialize.iso8601Date(params["endDate"]);
-
+    
     data["StartDate"] = serialize.iso8601Date(params["startDate"]);
 
+    
+    
+    
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-    headers["Accept"] = "application/json";
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version,
-      operationPromise = operationVersion.update({
-        uri: instance._uri,
-        method: "post",
-        data,
-        headers,
-      });
+        operationPromise = operationVersion.update({ uri: instance._uri, method: "post", data, headers});
+    
+    operationPromise = operationPromise.then(payload => new FeedbackCallSummaryInstance(operationVersion, payload, instance._solution.accountSid, instance._solution.sid));
+    
 
-    operationPromise = operationPromise.then(
-      (payload) =>
-        new FeedbackCallSummaryInstance(
-          operationVersion,
-          payload,
-          instance._solution.accountSid,
-          instance._solution.sid,
-        ),
-    );
-
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
-  updateWithHttpInfo(
-    params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (
-      error: Error | null,
-      item?: ApiResponse<FeedbackCallSummaryInstance>,
-    ) => any,
-  ): Promise<ApiResponse<FeedbackCallSummaryInstance>> {
-    if (params === null || params === undefined) {
+  updateWithHttpInfo(params: FeedbackCallSummaryContextUpdateOptions,callback?: (error: Error | null, item?: ApiResponse<FeedbackCallSummaryInstance>) => any): Promise<ApiResponse<FeedbackCallSummaryInstance>> {
+      if (params === null || params === undefined) {
       throw new Error('Required parameter "params" missing.');
     }
 
     if (params["endDate"] === null || params["endDate"] === undefined) {
-      throw new Error("Required parameter \"params['endDate']\" missing.");
+      throw new Error('Required parameter "params[\'endDate\']" missing.');
     }
 
     if (params["startDate"] === null || params["startDate"] === undefined) {
-      throw new Error("Required parameter \"params['startDate']\" missing.");
+      throw new Error('Required parameter "params[\'startDate\']" missing.');
     }
 
     let data: any = {};
 
-    if (params["accountSid"] !== undefined)
-      data["AccountSid"] = params["accountSid"];
-
+    
+        if (params["accountSid"] !== undefined)
+    data["AccountSid"] = params["accountSid"];
+    
     data["EndDate"] = serialize.iso8601Date(params["endDate"]);
-
+    
     data["StartDate"] = serialize.iso8601Date(params["startDate"]);
 
+    
+    
+    
     const headers: any = {};
-    headers["Content-Type"] = "application/x-www-form-urlencoded";
-    headers["Accept"] = "application/json";
+    headers["Content-Type"] = "application/x-www-form-urlencoded"
+    headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version;
     // CREATE, FETCH, UPDATE operations
-    let operationPromise = operationVersion
-      .updateWithResponseInfo<FeedbackCallSummaryResource>({
-        uri: instance._uri,
-        method: "post",
-        data,
-        headers,
-      })
-      .then(
-        (response): ApiResponse<FeedbackCallSummaryInstance> => ({
-          ...response,
-          body: new FeedbackCallSummaryInstance(
-            operationVersion,
-            response.body,
-            instance._solution.accountSid,
-            instance._solution.sid,
-          ),
-        }),
-      );
+    let operationPromise = operationVersion.updateWithResponseInfo<FeedbackCallSummaryResource>({ uri: instance._uri, method: "post", data, headers}).then((response) : ApiResponse<FeedbackCallSummaryInstance> => ({
+      ...response,
+      body: new FeedbackCallSummaryInstance(operationVersion, response.body, instance._solution.accountSid, instance._solution.sid)
+    }));
 
-    operationPromise = instance._version.setPromiseCallback(
-      operationPromise,
-      callback,
-    );
+    operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
     return operationPromise;
+
+
   }
 
   /**
@@ -243,7 +201,8 @@ export class FeedbackCallSummaryContextImpl implements FeedbackCallSummaryContex
   }
 }
 
-interface FeedbackCallSummaryPayload extends FeedbackCallSummaryResource {}
+
+  interface FeedbackCallSummaryPayload extends FeedbackCallSummaryResource {}
 
 interface FeedbackCallSummaryResource {
   account_sid: string;
@@ -271,39 +230,31 @@ export class FeedbackCallSummaryInstance {
   protected _solution: FeedbackCallSummaryContextSolution;
   protected _context?: FeedbackCallSummaryContext;
 
-  constructor(
-    protected _version: V2010,
-    payload: FeedbackCallSummaryResource,
-    accountSid: string,
-    sid?: string,
-  ) {
-    this.accountSid = payload.account_sid;
-    this.sid = payload.sid;
-    this.testString = payload.test_string;
+  constructor(protected _version: V2010, payload: FeedbackCallSummaryResource, accountSid: string, sid?: string) {
+    
+    this.accountSid = (payload.account_sid);
+    this.sid = (payload.sid);
+    this.testString = (payload.test_string);
     this.testInteger = deserialize.integer(payload.test_integer);
-    this.testObject = payload.test_object;
+    this.testObject = (payload.test_object);
     this.testDateTime = deserialize.rfc2822DateTime(payload.test_date_time);
-    this.testNumber = payload.test_number;
-    this.from = payload.from;
-    this.priceUnit = payload.price_unit;
-    this.testNumberFloat = payload.test_number_float;
+    this.testNumber = (payload.test_number);
+    this.from = (payload.from);
+    this.priceUnit = (payload.price_unit);
+    this.testNumberFloat = (payload.test_number_float);
     this.testNumberDecimal = deserialize.decimal(payload.test_number_decimal);
     this.testEnum = payload.test_enum;
-    this.a2pProfileBundleSid = payload.a2p_profile_bundle_sid;
-    this.testArrayOfIntegers = payload.test_array_of_integers;
-    this.testArrayOfArrayOfIntegers = payload.test_array_of_array_of_integers;
-    this.testArrayOfObjects =
-      payload.test_array_of_objects !== null &&
-      payload.test_array_of_objects !== undefined
-        ? payload.test_array_of_objects.map(
-            (payload: any) => new TestResponseObjectTestArrayOfObjects(payload),
-          )
-        : null;
-    this.testArrayOfEnum = payload.test_array_of_enum;
-    this.status = payload.status;
-    this.message = payload.message;
+    this.a2pProfileBundleSid = (payload.a2p_profile_bundle_sid);
+    this.testArrayOfIntegers = (payload.test_array_of_integers);
+    this.testArrayOfArrayOfIntegers = (payload.test_array_of_array_of_integers);
+    this.testArrayOfObjects =  payload.test_array_of_objects !== null && payload.test_array_of_objects !== undefined ? payload.test_array_of_objects.map(
+      (payload: any) => new TestResponseObjectTestArrayOfObjects(payload)
+    ) : null;
+    this.testArrayOfEnum = (payload.test_array_of_enum);
+    this.status = (payload.status);
+    this.message = (payload.message);
 
-    this._solution = { accountSid, sid: sid || this.sid };
+    this._solution = { accountSid, sid: sid,  };
   }
 
   accountSid: string;
@@ -339,13 +290,7 @@ export class FeedbackCallSummaryInstance {
   message: string;
 
   private get _proxy(): FeedbackCallSummaryContext {
-    this._context =
-      this._context ||
-      new FeedbackCallSummaryContextImpl(
-        this._version,
-        this._solution.accountSid,
-        this._solution.sid,
-      );
+    this._context = this._context || new FeedbackCallSummaryContextImpl(this._version, this._solution.accountSid, this._solution.sid);
     return this._context;
   }
 
@@ -357,15 +302,10 @@ export class FeedbackCallSummaryInstance {
    *
    * @returns Resolves to processed FeedbackCallSummaryInstance
    */
-  update(
-    params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
-  ): Promise<FeedbackCallSummaryInstance>;
+  update(params: FeedbackCallSummaryContextUpdateOptions, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>;
 
-  update(
-    params?: any,
-    callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any,
-  ): Promise<FeedbackCallSummaryInstance> {
+    update(params?: any, callback?: (error: Error | null, item?: FeedbackCallSummaryInstance) => any): Promise<FeedbackCallSummaryInstance>
+    {
     return this._proxy.update(params, callback);
   }
 
@@ -377,21 +317,10 @@ export class FeedbackCallSummaryInstance {
    *
    * @returns Resolves to processed FeedbackCallSummaryInstance with HTTP metadata
    */
-  updateWithHttpInfo(
-    params: FeedbackCallSummaryContextUpdateOptions,
-    callback?: (
-      error: Error | null,
-      item?: ApiResponse<FeedbackCallSummaryInstance>,
-    ) => any,
-  ): Promise<ApiResponse<FeedbackCallSummaryInstance>>;
+  updateWithHttpInfo(params: FeedbackCallSummaryContextUpdateOptions, callback?: (error: Error | null, item?: ApiResponse<FeedbackCallSummaryInstance>) => any): Promise<ApiResponse<FeedbackCallSummaryInstance>>;
 
-  updateWithHttpInfo(
-    params?: any,
-    callback?: (
-      error: Error | null,
-      item?: ApiResponse<FeedbackCallSummaryInstance>,
-    ) => any,
-  ): Promise<ApiResponse<FeedbackCallSummaryInstance>> {
+    updateWithHttpInfo(params?: any, callback?: (error: Error | null, item?: ApiResponse<FeedbackCallSummaryInstance>) => any): Promise<ApiResponse<FeedbackCallSummaryInstance>>
+    {
     return this._proxy.updateWithHttpInfo(params, callback);
   }
 
@@ -429,6 +358,7 @@ export class FeedbackCallSummaryInstance {
   }
 }
 
+
 export interface FeedbackCallSummarySolution {
   accountSid: string;
 }
@@ -438,8 +368,11 @@ export interface FeedbackCallSummaryListInstance {
   _solution: FeedbackCallSummarySolution;
   _uri: string;
 
-  (sid: string): FeedbackCallSummaryContext;
-  get(sid: string): FeedbackCallSummaryContext;
+  (sid: string, ): FeedbackCallSummaryContext;
+  get(sid: string, ): FeedbackCallSummaryContext;
+
+
+
 
   /**
    * Provide a user-friendly representation
@@ -448,35 +381,30 @@ export interface FeedbackCallSummaryListInstance {
   [inspect.custom](_depth: any, options: InspectOptions): any;
 }
 
-export function FeedbackCallSummaryListInstance(
-  version: V2010,
-  accountSid: string,
-): FeedbackCallSummaryListInstance {
+export function FeedbackCallSummaryListInstance(version: V2010, accountSid: string): FeedbackCallSummaryListInstance {
   if (!isValidPathParam(accountSid)) {
-    throw new Error("Parameter 'accountSid' is not valid.");
+    throw new Error('Parameter \'accountSid\' is not valid.');
   }
 
-  const instance = ((sid) =>
-    instance.get(sid)) as FeedbackCallSummaryListInstance;
+  const instance = ((sid, ) => instance.get(sid, )) as FeedbackCallSummaryListInstance;
 
-  instance.get = function get(sid): FeedbackCallSummaryContext {
+  instance.get = function get(sid, ): FeedbackCallSummaryContext {
     return new FeedbackCallSummaryContextImpl(version, accountSid, sid);
-  };
+  }
 
   instance._version = version;
-  instance._solution = { accountSid };
+  instance._solution = { accountSid,  };
   instance._uri = ``;
 
   instance.toJSON = function toJSON() {
     return instance._solution;
-  };
+  }
 
-  instance[inspect.custom] = function inspectImpl(
-    _depth: any,
-    options: InspectOptions,
-  ) {
+  instance[inspect.custom] = function inspectImpl(_depth: any, options: InspectOptions) {
     return inspect(instance.toJSON(), options);
-  };
+  }
 
   return instance;
 }
+
+

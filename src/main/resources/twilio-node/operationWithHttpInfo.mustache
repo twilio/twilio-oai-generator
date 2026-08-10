@@ -16,9 +16,9 @@
   {{^hasRequiredParams}}
     if (params instanceof Function) {
       callback = params;
-      params = {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
+      params = {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{^isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
     } else {
-      params = params || {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
+      params = params || {}{{^vendorExtensions.x-is-read-operation}}{{#isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{^isApiV1}}{{#bodyParam}} as Partial<{{dataType}}> as {{dataType}}{{/bodyParam}}{{^bodyParam}} as any{{/bodyParam}}{{/isApiV1}}{{/vendorExtensions.x-is-read-operation}};
     }
 
   {{/hasRequiredParams}}
@@ -73,11 +73,29 @@
     let operationVersion = {{#vendorExtensions.x-is-context-operation}}instance._version{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}version{{/vendorExtensions.x-is-list-operation}};
     {{^vendorExtensions.x-is-read-operation}}
     {{^vendorExtensions.x-is-delete-operation}}
+    {{#vendorExtensions.x-is-page-operation}}
+    let operationPromise = operationVersion.page({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers}).then((response) : ApiResponse<{{returnType}}> => ({
+      statusCode: response.statusCode,
+      headers: response.headers,
+      body: new {{returnType}}(operationVersion, response, instance._solution)
+    }));
+    {{/vendorExtensions.x-is-page-operation}}
+    {{^vendorExtensions.x-is-page-operation}}
+    {{^vendorExtensions.x-no-response-body}}
     // CREATE, FETCH, UPDATE operations
     let operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}WithResponseInfo<{{apiName}}Resource>({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers}).then((response) : ApiResponse<{{returnType}}> => ({
       ...response,
       body: new {{instanceName}}(operationVersion, response.body{{#vendorExtensions.x-is-context-operation}}{{#instancePathParams}}, instance._solution.{{paramName}}{{/instancePathParams}}{{/vendorExtensions.x-is-context-operation}}{{#vendorExtensions.x-is-list-operation}}{{#listPathParams}}, instance._solution.{{paramName}}{{/listPathParams}}{{/vendorExtensions.x-is-list-operation}})
     }));
+    {{/vendorExtensions.x-no-response-body}}
+    {{#vendorExtensions.x-no-response-body}}
+    // No response body — fire-and-forget operation
+    let operationPromise = operationVersion.{{vendorExtensions.x-name-lower}}WithResponseInfo({ uri: instance._uri, method: "{{httpMethod}}"{{#hasParams}}, {{^isBodyAllowed}}params: {{/isBodyAllowed}}data{{/hasParams}}, headers}).then((response) : ApiResponse<{{returnType}}> => ({
+      ...response,
+      body: undefined
+    }));
+    {{/vendorExtensions.x-no-response-body}}
+    {{/vendorExtensions.x-is-page-operation}}
     {{/vendorExtensions.x-is-delete-operation}}
     {{#vendorExtensions.x-is-delete-operation}}
     {{#vendorExtensions.x-delete-returns-model}}
