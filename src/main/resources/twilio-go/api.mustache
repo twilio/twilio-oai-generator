@@ -82,7 +82,7 @@ func (c *ApiService) {{{nickname}}}({{#allParams}}{{#required}}{{paramName}} {{{
 // {{{nickname}}}WithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) {{{nickname}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^-last}}, {{/-last}}{{/required}}{{/allParams}}{{#hasOptionalParams}}params *{{{nickname}}}Params{{/hasOptionalParams}}) (*metadata.ResourceMetadata[{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}bool{{/returnType}}], error) {
     path := "{{{path}}}"
-    {{>partial_serialization}}
+    {{>partial_serialization_metadata}}
 
 {{#hasHeaderParams}}
 {{#headerParams}}
@@ -122,7 +122,7 @@ func (c *ApiService) {{{nickname}}}WithMetadata({{#allParams}}{{#required}}{{par
 func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params{{#vendorExtensions.isApiV1}}, pageToken string{{/vendorExtensions.isApiV1}}{{^vendorExtensions.isApiV1}}, pageToken, pageNumber string{{/vendorExtensions.isApiV1}}) (*{{{returnContainer}}}, error) {
     path := "{{{path}}}"
 
-    {{>partial_serialization}}
+    {{>partial_serialization_metadata}}
     if pageToken != "" {
         data.Set("PageToken", pageToken)
     }
@@ -150,7 +150,7 @@ func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{#r
 func (c *ApiService) Page{{{vendorExtensions.x-domain-name}}}WithMetadata({{#allParams}}{{#required}}{{paramName}} {{{dataType}}}{{^last}}, {{/last}}{{/required}}{{/allParams}}params *{{{nickname}}}Params{{#vendorExtensions.isApiV1}}, pageToken string{{/vendorExtensions.isApiV1}}{{^vendorExtensions.isApiV1}}, pageToken, pageNumber string{{/vendorExtensions.isApiV1}}) (*metadata.ResourceMetadata[{{{returnContainer}}}], error) {
     path := "{{{path}}}"
 
-    {{>partial_serialization}}
+    {{>partial_serialization_metadata}}
     if pageToken != "" {
         data.Set("PageToken", pageToken)
     }
