@@ -15,6 +15,10 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
     private final PythonCodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private final List<? extends LanguageDataType> languageDataTypes;
 
+    // Prefix used by the generated Python type for a map/dictionary (additionalProperties) whose
+    // value is a referenced model, e.g. "Dict[str, OperatorParameter]".
+    private static final String MAP_PREFIX = "Dict[str, ";
+
     public PythonCodegenModelContainerDataTypeResolver(PythonCodegenModelDataTypeResolver codegenModelDataTypeResolver, List<? extends LanguageDataType> languageDataTypes) {
         super(codegenModelDataTypeResolver, languageDataTypes);
         this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;
@@ -24,6 +28,17 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
     public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder, PythonCodegenModelResolver codegenModelResolver) {
         Stack<String> containerTypes = new Stack<>();
         codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
+
+        // A map (additionalProperties) whose value is a referenced model, e.g. "Dict[str, OperatorParameter]",
+        // is not one of the recognized container types above, so its value model would otherwise never be
+        // resolved and generated. Unwrap the "Dict[str, ...]" prefix so the value model is resolved as a
+        // nested model (mirroring how List item models are handled) and re-wrapped afterwards.
+        String mapValueModelType = getMapValueModelType(codegenProperty.dataType, apiResourceBuilder);
+        if (mapValueModelType != null) {
+            containerTypes.push(MAP_PREFIX);
+            codegenProperty.dataType = mapValueModelType;
+        }
+
         CodegenModel nestedModel = codegenModelResolver.resolveNestedModel(codegenProperty, apiResourceBuilder);
         if (nestedModel == null) {
             codegenModelDataTypeResolver.resolve(codegenProperty, apiResourceBuilder);
@@ -31,6 +46,23 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
         rewrapContainerType(codegenProperty,containerTypes);
 
         return codegenProperty;
+    }
+
+    /**
+     * If the given dataType is a map whose value is a referenced model (e.g. "Dict[str, OperatorParameter]"),
+     * returns the unwrapped value model type (e.g. "OperatorParameter"); otherwise returns null. Only maps
+     * whose value resolves to a known model are unwrapped, so plain maps such as "Dict[str, object]" or
+     * "Dict[str, int]" are left untouched.
+     * @param dataType the (already container-unwrapped) property dataType to inspect
+     * @param apiResourceBuilder the resource builder used to look up models
+     * @return the unwrapped map value model type, or null when the dataType is not a map-of-model
+     */
+    private String getMapValueModelType(String dataType, ApiResourceBuilder apiResourceBuilder) {
+        if (dataType == null || !dataType.startsWith(MAP_PREFIX) || !dataType.endsWith(ApplicationConstants.PYTHON_LIST_END)) {
+            return null;
+        }
+        String valueType = dataType.substring(MAP_PREFIX.length(), dataType.length() - ApplicationConstants.PYTHON_LIST_END.length());
+        return apiResourceBuilder.getModel(valueType) != null ? valueType : null;
     }
 
     public CodegenProperty resolveResponseModel(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
