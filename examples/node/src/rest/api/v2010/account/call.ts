@@ -177,7 +177,7 @@ export class CallContextImpl implements CallContext {
     // No response body — fire-and-forget operation
     let operationPromise = operationVersion.fetchWithResponseInfo({ uri: instance._uri, method: "get", headers}).then((response) : ApiResponse<void> => ({
       ...response,
-      body: undefined
+      body: response.statusCode
     }));
 
     operationPromise = instance._version.setPromiseCallback(operationPromise,callback);
