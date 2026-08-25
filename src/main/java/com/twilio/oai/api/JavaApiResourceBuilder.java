@@ -275,6 +275,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
                     .forEach(item -> {
                         // Here use json body resolver
                         codegenModelResolver.resolve(item, this);
+                        normalizeOneOfPropertyTypes(item);
                         item.vars.forEach(property ->
                                 jsonRequestBodyResolver.resolve(property));
                         responseModels.add(processEnumProperty(item, co, resourceName));
@@ -696,6 +697,40 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
         }
         model.vendorExtensions.put(ENUM_VARS, uniqueEnums);
     }
+    private void normalizeOneOfPropertyTypes(final CodegenModel model) {
+        if (model.oneOf == null || model.oneOf.isEmpty()) {
+            return;
+        }
+
+        List<CodegenModel> variantModels = model.oneOf.stream()
+                .map(name -> allModels.stream()
+                        .filter(m -> m.getClassname().equals(name))
+                        .findFirst())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        if (variantModels.size() < 2) {
+            return;
+        }
+
+        for (CodegenProperty property : model.vars) {
+            Set<String> typesAcrossVariants = new HashSet<>();
+            for (CodegenModel variant : variantModels) {
+                variant.vars.stream()
+                        .filter(v -> v.baseName.equals(property.baseName))
+                        .findFirst()
+                        .ifPresent(v -> typesAcrossVariants.add(v.dataType));
+            }
+            if (typesAcrossVariants.size() > 1) {
+                property.dataType = "Object";
+                property.baseType = "Object";
+                property.complexType = null;
+                property.datatypeWithEnum = "Object";
+            }
+        }
+    }
+
     @Override
     public JavaApiResources build() {
         return new JavaApiResources(this);
