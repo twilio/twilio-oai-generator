@@ -230,24 +230,27 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         #endif
         /// <summary> fetch </summary>
         /// <param name="pathSid">  </param>
+        /// <param name="pageToken"> The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library). </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of Fleet </returns>
         public static FleetResource Fetch(
                                          string pathSid, 
+                                         string pageToken = null, 
                                         ITwilioRestClient client = null)
         {
-            var options = new FetchFleetOptions(pathSid){  };
+            var options = new FetchFleetOptions(pathSid){ PageToken = pageToken };
             return Fetch(options, client);
         }
 
         #if !NET35
         /// <summary> fetch </summary>
         /// <param name="pathSid">  </param>
+        /// <param name="pageToken"> The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library). </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of Fleet </returns>
-        public static async System.Threading.Tasks.Task<FleetResource> FetchAsync(string pathSid, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<FleetResource> FetchAsync(string pathSid, string pageToken = null, ITwilioRestClient client = null)
         {
-            var options = new FetchFleetOptions(pathSid){  };
+            var options = new FetchFleetOptions(pathSid){ PageToken = pageToken };
             return await FetchAsync(options, client);
         }
         #endif
@@ -271,16 +274,17 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         
         public static TwilioResponse<FleetResource> FetchWithHeaders(
                     string pathSid, 
+                    string pageToken = null, 
                 ITwilioRestClient client = null)
         {
-            var options = new FetchFleetOptions(pathSid){  };
+            var options = new FetchFleetOptions(pathSid){ PageToken = pageToken };
             return FetchWithHeaders(options, client);
         }
         
         #if !NET35
-        public static async System.Threading.Tasks.Task<TwilioResponse<FleetResource>> FetchWithHeadersAsync(string pathSid, ITwilioRestClient client = null)
+        public static async System.Threading.Tasks.Task<TwilioResponse<FleetResource>> FetchWithHeadersAsync(string pathSid, string pageToken = null, ITwilioRestClient client = null)
         {
-            var options = new FetchFleetOptions(pathSid){  };
+            var options = new FetchFleetOptions(pathSid){ PageToken = pageToken };
             return await FetchWithHeadersAsync(options, client);
         }
         #endif

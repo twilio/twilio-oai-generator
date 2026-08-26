@@ -16,6 +16,8 @@ package com.twilio.rest.versionless.deployedDevices;
 
 import com.twilio.base.Fetcher;
 import com.twilio.base.TwilioResponse;
+import com.twilio.constant.EnumConstants.ParameterType;
+import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
@@ -32,12 +34,19 @@ import com.twilio.type.*;
     public class FleetFetcher extends Fetcher<Fleet> {
 
             private String pathSid;
+    private String pageToken;
 
             public FleetFetcher(final String pathSid) {
         this.pathSid = pathSid;
     }
 
         
+public FleetFetcher setPageToken(final String pageToken){
+    this.pageToken = pageToken;
+    return this;
+}
+
+
         
     private Response makeRequest(final TwilioRestClient client) {
     
@@ -51,6 +60,7 @@ import com.twilio.type.*;
             Domains.VERSIONLESS.toString(),
             path
         );
+        addQueryParams(request);
 
         Response response = client.request(request);
 
@@ -82,5 +92,17 @@ import com.twilio.type.*;
         Fleet content =  Fleet.fromJson(response.getStream(), client.getObjectMapper());
         return new TwilioResponse<>(content, response.getStatusCode(), response.getHeaders());
     }
+
+        private void addQueryParams(final Request request) {
+
+
+    if (pageToken != null) {
+        Serializer.toString(request, "PageToken", pageToken, ParameterType.QUERY);
+    }
+
+
+
+    
+}
 
     }

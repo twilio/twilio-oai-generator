@@ -81,6 +81,7 @@ public class Fleet extends Resource {
 
 
     @JsonDeserialize(builder = VersionlessFleetTestNestedObjectNestedObject.Builder.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
     public static class VersionlessFleetTestNestedObjectNestedObject {
@@ -106,6 +107,7 @@ public class Fleet extends Resource {
         return mapper.readValue(jsonString, VersionlessFleetTestNestedObjectNestedObject.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
         @JsonProperty("param1")
@@ -163,6 +165,7 @@ public class Fleet extends Resource {
     
 
     @JsonDeserialize(builder = VersionlessFleetTestNestedObject.Builder.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
     public static class VersionlessFleetTestNestedObject {
@@ -183,6 +186,7 @@ public class Fleet extends Resource {
         return mapper.readValue(jsonString, VersionlessFleetTestNestedObject.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
         @JsonProperty("nestedObject")
