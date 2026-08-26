@@ -62,20 +62,6 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
     }
 
     /**
-     * When a property nests containers more than {@link #MAX_CONTAINER_NESTING} levels deep, collapse it to a generic
-     * object rather than chaining the value type (e.g. Dict[str, Dict[str, Dict[str, X]]]). This also prevents the leaf
-     * model from being resolved/emitted through the deeply nested path.
-     * <p>
-     * The dataType is set to {@code object}, which the Python convention mapper renders as the generator's
-     * free-form object representation ({@code Dict[str, object]}) - the same form used for {@code additionalProperties: true}
-     * and other free-form object properties. The container stack is intentionally not re-wrapped so no extra container
-     * layers are prepended.
-     *
-     * @param codegenProperty the property being resolved, already unwrapped to its value type
-     * @param containerTypes the stack of container prefixes produced by unwrapping
-     * @return true if the property was collapsed to an object, false otherwise
-     */
-    /**
      * Detects a free-form object property (e.g. {@code additionalProperties: true}) whose dataType the Python
      * convention mapper already renders as {@code Dict[str, object]}. Because that idiom shares the {@code Dict[str, }
      * prefix used for real map containers, unwrapping strips it to a bare {@code object} leaf. Treating it as a
@@ -95,6 +81,20 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
         return false;
     }
 
+    /**
+     * When a property nests containers more than {@link #MAX_CONTAINER_NESTING} levels deep, collapse it to a generic
+     * object rather than chaining the value type (e.g. Dict[str, Dict[str, Dict[str, X]]]). This also prevents the leaf
+     * model from being resolved/emitted through the deeply nested path.
+     * <p>
+     * The dataType is set to {@code object}, which the Python convention mapper renders as the generator's
+     * free-form object representation ({@code Dict[str, object]}) - the same form used for {@code additionalProperties: true}
+     * and other free-form object properties. The container stack is intentionally not re-wrapped so no extra container
+     * layers are prepended.
+     *
+     * @param codegenProperty the property being resolved, already unwrapped to its value type
+     * @param containerTypes the stack of container prefixes produced by unwrapping
+     * @return true if the property was collapsed to an object, false otherwise
+     */
     private boolean collapseIfDeeplyNested(CodegenProperty codegenProperty, Stack<String> containerTypes) {
         if (containerTypes.size() <= MAX_CONTAINER_NESTING) {
             return false;
