@@ -378,13 +378,25 @@ public class DirectoryStructureService {
 
     /**
      * Remove certain pagination parameters which are not supported in all clients.
+     * These are only stripped from list operations, where helper libraries handle
+     * paging internally. On other operations (e.g. a fetch), a parameter such as
+     * PageToken is a legitimate, user-supplied query parameter and must be kept.
      */
-    private void updatePaginationParams(final Operation operation) {
+    void updatePaginationParams(final Operation operation) {
+        if (!isListOperation(operation)) {
+            return;
+        }
         Optional
             .ofNullable(operation.getParameters())
             .ifPresent(params -> params.removeIf(param -> PAGINATION_PARAMS
                 .stream()
                 .anyMatch(name -> param.getName().equalsIgnoreCase(name))));
+    }
+
+    private boolean isListOperation(final Operation operation) {
+        return operation != null
+            && operation.getOperationId() != null
+            && operation.getOperationId().toLowerCase().startsWith("list");
     }
 
     private Stream<Parameter> getParamStream(final Operation operation) {
