@@ -17,8 +17,8 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
 
     // Maximum container nesting we chain the concrete value type for. Beyond this, the
     // property is collapsed to a plain object instead of generating a deeply chained type
-    // (e.g. Dict[str, Dict[str, X]]) and its leaf model.
-    private static final int MAX_CONTAINER_NESTING = 1;
+    // (e.g. Dict[str, Dict[str, Dict[str, X]]]) and its leaf model.
+    private static final int MAX_CONTAINER_NESTING = 2;
     private static final String OBJECT_TYPE = "object";
 
     public PythonCodegenModelContainerDataTypeResolver(PythonCodegenModelDataTypeResolver codegenModelDataTypeResolver, List<? extends LanguageDataType> languageDataTypes) {
@@ -54,9 +54,9 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
     }
 
     /**
-     * When a property nests containers more than {@link #MAX_CONTAINER_NESTING} level deep, collapse it to a generic
-     * object rather than chaining the value type (e.g. Dict[str, Dict[str, X]]). This also prevents the leaf model
-     * from being resolved/emitted through the deeply nested path.
+     * When a property nests containers more than {@link #MAX_CONTAINER_NESTING} levels deep, collapse it to a generic
+     * object rather than chaining the value type (e.g. Dict[str, Dict[str, Dict[str, X]]]). This also prevents the leaf
+     * model from being resolved/emitted through the deeply nested path.
      * <p>
      * The dataType is set to {@code object}, which the Python convention mapper renders as the generator's
      * free-form object representation ({@code Dict[str, object]}) - the same form used for {@code additionalProperties: true}
