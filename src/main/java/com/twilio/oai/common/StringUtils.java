@@ -30,8 +30,9 @@ public class StringUtils {
             return input;
         }
 
-        String normalized = input.replaceAll("[^a-zA-Z0-0]", " ");
+        String normalized = input.replaceAll("[^a-zA-Z0-9]", " ");
         normalized = normalized.replaceAll("(?<=[a-z])(?=[A-Z])", " ");
+        normalized = normalized.replaceAll("(?<=[0-9])(?=[A-Z])", " ");
         normalized = normalized.replaceAll("(?<=[A-Z])(?=[A-Z][a-z])", " ");
         return WordUtils.capitalizeFully(normalized).replaceAll(" ", "");
     }
