@@ -29,7 +29,11 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
 
     public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder, PythonCodegenModelResolver codegenModelResolver) {
         Stack<String> containerTypes = new Stack<>();
+        String originalDataType = codegenProperty.dataType;
         codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
+        if (isFreeFormObjectLeaf(codegenProperty, originalDataType)) {
+            return codegenProperty;
+        }
         if (collapseIfDeeplyNested(codegenProperty, containerTypes)) {
             return codegenProperty;
         }
@@ -44,7 +48,11 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
 
     public CodegenProperty resolveResponseModel(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
         Stack<String> containerTypes = new Stack<>();
+        String originalDataType = codegenProperty.dataType;
         codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
+        if (isFreeFormObjectLeaf(codegenProperty, originalDataType)) {
+            return codegenProperty;
+        }
         if (collapseIfDeeplyNested(codegenProperty, containerTypes)) {
             return codegenProperty;
         }
@@ -67,6 +75,26 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
      * @param containerTypes the stack of container prefixes produced by unwrapping
      * @return true if the property was collapsed to an object, false otherwise
      */
+    /**
+     * Detects a free-form object property (e.g. {@code additionalProperties: true}) whose dataType the Python
+     * convention mapper already renders as {@code Dict[str, object]}. Because that idiom shares the {@code Dict[str, }
+     * prefix used for real map containers, unwrapping strips it to a bare {@code object} leaf. Treating it as a
+     * container would re-resolve the leaf back into {@code Dict[str, object]} and then re-wrap the stripped prefix,
+     * yielding a spurious extra level ({@code Dict[str, Dict[str, object]]}). When that happens we restore the original
+     * dataType and skip container handling entirely, matching the behavior before map containers were recognized.
+     *
+     * @param codegenProperty the property being resolved, already unwrapped to its leaf type
+     * @param originalDataType the property's dataType prior to unwrapping
+     * @return true if the property is a free-form object and its original dataType was restored, false otherwise
+     */
+    private boolean isFreeFormObjectLeaf(CodegenProperty codegenProperty, String originalDataType) {
+        if (OBJECT_TYPE.equals(codegenProperty.dataType) && !OBJECT_TYPE.equals(originalDataType)) {
+            codegenProperty.dataType = originalDataType;
+            return true;
+        }
+        return false;
+    }
+
     private boolean collapseIfDeeplyNested(CodegenProperty codegenProperty, Stack<String> containerTypes) {
         if (containerTypes.size() <= MAX_CONTAINER_NESTING) {
             return false;
