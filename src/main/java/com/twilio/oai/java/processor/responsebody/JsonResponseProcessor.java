@@ -5,6 +5,7 @@ import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.format.Deserializer;
 import com.twilio.oai.java.processor.enums.EnumProcessorFactory;
 import com.twilio.oai.java.processor.requestbody.RecursiveModelProcessor;
+import com.twilio.oai.resolver.common.CodegenModelOneOf;
 import org.openapitools.codegen.CodegenMediaType;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
@@ -32,6 +33,9 @@ public class JsonResponseProcessor implements ResponseProcessor {
             if (responseModel == null) return;
         }
 
+        if (responseModel.oneOf != null && !responseModel.oneOf.isEmpty()) {
+            CodegenModelOneOf.getInstance().resolve(responseModel);
+        }
         responseModel.vars.forEach(codegenProperty -> {
             enumProcessorFactory.applyProcessor(codegenProperty);
             Deserializer.addDeserializer(codegenProperty);

@@ -12,6 +12,13 @@ import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenParameter;
 import org.openapitools.codegen.CodegenProperty;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class RecursiveModelProcessor {
     EnumProcessorFactory enumProcessorFactory = EnumProcessorFactory.getInstance();
     ModelProcessorFactory modelProcessorFactory = ModelProcessorFactory.getInstance();
@@ -90,24 +97,79 @@ public class RecursiveModelProcessor {
         }
 
         if (null != codegenModel.oneOf && !codegenModel.oneOf.isEmpty()) {
+            Map<String, List<VariantProperty>> variantPropsByName = collectVariantPropertiesByName(codegenModel);
             CodegenModelOneOf.getInstance().resolve(codegenModel);
+            widenConflictingPropertiesToObject(codegenModel, variantPropsByName);
         }
-        
+
         // Logic 2: nested model logic
         modelProcessorFactory.applyProcessor(codegenProperty, codegenModel);
 
-        /* 
-        ------------------ End ------------------ 
+        /*
+        ------------------ End ------------------
          */
-        
-        
-        
+
+
+
         // A Model has been identified, look for child models
         if (codegenModel.vars != null && !codegenModel.vars.isEmpty()) {
             for (CodegenProperty modelProperty : codegenModel.vars) {
                 processModelRecursively(modelProperty);
             }
         }
+    }
+
+    private Map<String, List<VariantProperty>> collectVariantPropertiesByName(CodegenModel model) {
+        Map<String, List<VariantProperty>> propsByName = new LinkedHashMap<>();
+        List<CodegenModel> variantModels = getVariantModels(model);
+        for (CodegenModel variant : variantModels) {
+            if (variant.vars == null) continue;
+            for (CodegenProperty prop : variant.vars) {
+                propsByName.computeIfAbsent(prop.getName(), k -> new ArrayList<>())
+                    .add(new VariantProperty(prop, variant.classname));
+            }
+        }
+        return propsByName;
+    }
+
+    private static class VariantProperty {
+        final CodegenProperty property;
+        final String variantClassName;
+        VariantProperty(CodegenProperty property, String variantClassName) {
+            this.property = property;
+            this.variantClassName = variantClassName;
+        }
+    }
+
+    private void widenConflictingPropertiesToObject(CodegenModel model, Map<String, List<VariantProperty>> variantPropsByName) {
+        for (CodegenProperty resolvedProp : model.vars) {
+            List<VariantProperty> variants = variantPropsByName.get(resolvedProp.getName());
+            if (variants == null || variants.size() <= 1) continue;
+
+            Set<String> distinctComplexTypes = new HashSet<>();
+            for (VariantProperty v : variants) {
+                if (v.property.complexType != null) {
+                    distinctComplexTypes.add(v.property.complexType);
+                }
+            }
+            if (distinctComplexTypes.size() <= 1) continue;
+
+            resolvedProp.dataType = "Map<String, Object>";
+            resolvedProp.complexType = null;
+        }
+    }
+
+    private List<CodegenModel> getVariantModels(CodegenModel model) {
+        List<CodegenModel> variantModels = new ArrayList<>();
+        if (model.interfaceModels != null && !model.interfaceModels.isEmpty()) {
+            variantModels = model.interfaceModels;
+        } else if (model.oneOf != null && !model.oneOf.isEmpty()) {
+            List<CodegenModel> allModels = ResourceCacheContext.get().getAllModelsByDefaultGenerator();
+            for (String oneOfName : model.oneOf) {
+                Utility.getModelByClassname(allModels, oneOfName).ifPresent(variantModels::add);
+            }
+        }
+        return variantModels;
     }
 
     private boolean isEnum(CodegenProperty codegenProperty) {

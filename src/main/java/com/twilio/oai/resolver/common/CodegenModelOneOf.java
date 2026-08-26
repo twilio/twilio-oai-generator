@@ -1,9 +1,12 @@
 package com.twilio.oai.resolver.common;
 
+import com.twilio.oai.common.Utility;
+import com.twilio.oai.java.cache.ResourceCacheContext;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenProperty;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,8 +32,22 @@ public class CodegenModelOneOf {
 
     public void resolve(CodegenModel model) {
         Map<String, CodegenProperty> flattenProps = new LinkedHashMap<>();
+
+        List<CodegenModel> variantModels;
+        if (model.interfaceModels != null && !model.interfaceModels.isEmpty()) {
+            variantModels = model.interfaceModels;
+        } else if (model.oneOf != null && !model.oneOf.isEmpty()) {
+            variantModels = new ArrayList<>();
+            List<CodegenModel> allModels = ResourceCacheContext.get().getAllModelsByDefaultGenerator();
+            for (String oneOfName : model.oneOf) {
+                Utility.getModelByClassname(allModels, oneOfName).ifPresent(variantModels::add);
+            }
+        } else {
+            variantModels = Collections.emptyList();
+        }
+
         // Flatten oneOf, note: nested oneOfs are not handled here
-        for (CodegenModel subModel: model.interfaceModels) {
+        for (CodegenModel subModel: variantModels) {
             for (CodegenProperty property: subModel.vars) {
                 property.required = false;
                 CodegenProperty existing = flattenProps.get(property.getName());

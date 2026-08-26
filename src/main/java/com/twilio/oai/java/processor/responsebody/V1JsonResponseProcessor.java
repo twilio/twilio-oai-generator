@@ -3,6 +3,7 @@ package com.twilio.oai.java.processor.responsebody;
 import com.twilio.oai.common.Utility;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.processor.requestbody.RecursiveModelProcessor;
+import com.twilio.oai.resolver.common.CodegenModelOneOf;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.CodegenProperty;
@@ -34,6 +35,9 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
             return;
         }
         CodegenModel codegenModel = responseModel.get();
+        if (codegenModel.oneOf != null && !codegenModel.oneOf.isEmpty()) {
+            CodegenModelOneOf.getInstance().resolve(codegenModel);
+        }
         for (CodegenProperty property : codegenModel.vars) {
             recursiveModelProcessor.process(property);
         }
