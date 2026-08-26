@@ -15,6 +15,12 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
     private final PythonCodegenModelDataTypeResolver codegenModelDataTypeResolver;
     private final List<? extends LanguageDataType> languageDataTypes;
 
+    // Maximum container nesting we chain the concrete value type for. Beyond this, the
+    // property is collapsed to a plain object instead of generating a deeply chained type
+    // (e.g. Dict[str, Dict[str, X]]) and its leaf model.
+    private static final int MAX_CONTAINER_NESTING = 1;
+    private static final String OBJECT_TYPE = "object";
+
     public PythonCodegenModelContainerDataTypeResolver(PythonCodegenModelDataTypeResolver codegenModelDataTypeResolver, List<? extends LanguageDataType> languageDataTypes) {
         super(codegenModelDataTypeResolver, languageDataTypes);
         this.codegenModelDataTypeResolver = codegenModelDataTypeResolver;
@@ -24,6 +30,9 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
     public CodegenProperty resolve(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder, PythonCodegenModelResolver codegenModelResolver) {
         Stack<String> containerTypes = new Stack<>();
         codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
+        if (collapseIfDeeplyNested(codegenProperty, containerTypes)) {
+            return codegenProperty;
+        }
         CodegenModel nestedModel = codegenModelResolver.resolveNestedModel(codegenProperty, apiResourceBuilder);
         if (nestedModel == null) {
             codegenModelDataTypeResolver.resolve(codegenProperty, apiResourceBuilder);
@@ -36,10 +45,41 @@ public class PythonCodegenModelContainerDataTypeResolver extends CodegenModelCon
     public CodegenProperty resolveResponseModel(CodegenProperty codegenProperty, ApiResourceBuilder apiResourceBuilder) {
         Stack<String> containerTypes = new Stack<>();
         codegenProperty.dataType = unwrapContainerType(codegenProperty,containerTypes);
+        if (collapseIfDeeplyNested(codegenProperty, containerTypes)) {
+            return codegenProperty;
+        }
         codegenModelDataTypeResolver.resolveResponseModel(codegenProperty, apiResourceBuilder);
         rewrapContainerType(codegenProperty,containerTypes);
-
         return codegenProperty;
+    }
+
+    /**
+     * When a property nests containers more than {@link #MAX_CONTAINER_NESTING} level deep, collapse it to a generic
+     * object rather than chaining the value type (e.g. Dict[str, Dict[str, X]]). This also prevents the leaf model
+     * from being resolved/emitted through the deeply nested path.
+     * <p>
+     * The dataType is set to {@code object}, which the Python convention mapper renders as the generator's
+     * free-form object representation ({@code Dict[str, object]}) - the same form used for {@code additionalProperties: true}
+     * and other free-form object properties. The container stack is intentionally not re-wrapped so no extra container
+     * layers are prepended.
+     *
+     * @param codegenProperty the property being resolved, already unwrapped to its value type
+     * @param containerTypes the stack of container prefixes produced by unwrapping
+     * @return true if the property was collapsed to an object, false otherwise
+     */
+    private boolean collapseIfDeeplyNested(CodegenProperty codegenProperty, Stack<String> containerTypes) {
+        if (containerTypes.size() <= MAX_CONTAINER_NESTING) {
+            return false;
+        }
+        codegenProperty.dataType = OBJECT_TYPE;
+        codegenProperty.baseType = OBJECT_TYPE;
+        codegenProperty.datatypeWithEnum = OBJECT_TYPE;
+        codegenProperty.complexType = null;
+        codegenProperty.isContainer = false;
+        codegenProperty.isMap = false;
+        codegenProperty.isArray = false;
+        codegenProperty.items = null;
+        return true;
     }
 
     /**
