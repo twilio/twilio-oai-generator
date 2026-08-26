@@ -1,6 +1,7 @@
 {{#mustacheModels}}
 
     @JsonDeserialize(builder = {{className}}.Builder.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
 {{!@Builder}}
@@ -32,6 +33,7 @@
         return mapper.readValue(jsonString, {{className}}.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
     {{#allProperties}}
