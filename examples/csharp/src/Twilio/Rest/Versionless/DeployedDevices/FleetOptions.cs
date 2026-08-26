@@ -57,6 +57,9 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         
         public string PathSid { get; }
 
+        ///<summary> The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library). </summary> 
+        public string PageToken { get; set; }
+
 
 
         /// <summary> Construct a new FetchDeployedDevicesFleetOptions </summary>
@@ -72,6 +75,10 @@ namespace Twilio.Rest.Versionless.DeployedDevices
         {
             var p = new List<KeyValuePair<string, string>>();
 
+            if (PageToken != null)
+            {
+                p.Add(new KeyValuePair<string, string>("PageToken", PageToken));
+            }
             return p;
         }
 
