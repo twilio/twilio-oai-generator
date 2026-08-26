@@ -33,6 +33,7 @@
         return mapper.readValue(jsonString, {{className}}.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
     {{#allProperties}}
