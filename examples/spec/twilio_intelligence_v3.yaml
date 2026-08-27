@@ -1,0 +1,199 @@
+components:
+  schemas:
+    OutputFormat:
+      type: string
+      enum:
+        - TEXT
+        - JSON
+        - CLASSIFICATION
+        - EXTRACTION
+    TextResult_result:
+      type: object
+      properties:
+        text:
+          type: string
+    ClassificationResult_result:
+      type: object
+      properties:
+        label:
+          type: string
+    ExtractionResult_result_entities:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    ExtractionResult_result:
+      type: object
+      properties:
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtractionResult_result_entities'
+    TextResult:
+      type: object
+      properties:
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+        operator_result_id:
+          type: string
+        result:
+          $ref: '#/components/schemas/TextResult_result'
+      required:
+        - output_format
+        - operator_result_id
+        - result
+    JSONResult:
+      type: object
+      properties:
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+        operator_result_id:
+          type: string
+        result:
+          type: object
+          additionalProperties: true
+      required:
+        - output_format
+        - operator_result_id
+        - result
+    ClassificationResult:
+      type: object
+      properties:
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+        operator_result_id:
+          type: string
+        result:
+          $ref: '#/components/schemas/ClassificationResult_result'
+      required:
+        - output_format
+        - operator_result_id
+        - result
+    ExtractionResult:
+      type: object
+      properties:
+        output_format:
+          $ref: '#/components/schemas/OutputFormat'
+        operator_result_id:
+          type: string
+        result:
+          $ref: '#/components/schemas/ExtractionResult_result'
+      required:
+        - output_format
+        - operator_result_id
+        - result
+    OperatorResultsResponseV1:
+      type: object
+      discriminator:
+        propertyName: output_format
+        mapping:
+          TEXT: '#/components/schemas/TextResult'
+          JSON: '#/components/schemas/JSONResult'
+          CLASSIFICATION: '#/components/schemas/ClassificationResult'
+          EXTRACTION: '#/components/schemas/ExtractionResult'
+      oneOf:
+        - $ref: '#/components/schemas/TextResult'
+        - $ref: '#/components/schemas/JSONResult'
+        - $ref: '#/components/schemas/ClassificationResult'
+        - $ref: '#/components/schemas/ExtractionResult'
+  securitySchemes:
+    accountSid_authToken:
+      scheme: basic
+      type: http
+info:
+  contact:
+    email: support@twilio.com
+    name: Twilio Support
+    url: https://support.twilio.com
+  description: This is a test spec for oneOf with different types.
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: https://www.twilio.com/legal/tos
+  title: Twilio - Intelligence
+  version: v3
+  x-twilio:
+    apiStandards: v1.0
+openapi: 3.0.1
+paths:
+  /v3/OperatorResults/{OperatorResultId}:
+    description: Operator Results resource
+    x-twilio:
+      pathType: instance
+    parameters:
+      - name: OperatorResultId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags:
+        - OperatorResults
+      operationId: FetchOperatorResult
+      security:
+        - accountSid_authToken: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperatorResultsResponseV1'
+  /v3/OperatorResults:
+    description: Operator Results list resource
+    x-twilio:
+      pathType: list
+    get:
+      tags:
+        - OperatorResults
+      operationId: ListOperatorResults
+      security:
+        - accountSid_authToken: []
+      parameters:
+        - name: PageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  operator_results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OperatorResultsResponseV1'
+                  meta:
+                    type: object
+                    properties:
+                      first_page_url:
+                        format: uri
+                        type: string
+                      key:
+                        type: string
+                      next_page_url:
+                        format: uri
+                        nullable: true
+                        type: string
+                      page:
+                        type: integer
+                      page_size:
+                        type: integer
+                      previous_page_url:
+                        format: uri
+                        nullable: true
+                        type: string
+                      url:
+                        format: uri
+                        type: string
+servers:
+  - url: https://intelligence.twilio.com
+tags:
+  - name: OperatorResults

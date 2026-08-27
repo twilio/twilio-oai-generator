@@ -9,8 +9,11 @@ import org.openapitools.codegen.CodegenProperty;
 import org.openapitools.codegen.CodegenResponse;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class V1JsonResponseProcessor implements  ResponseProcessor {
     RecursiveModelProcessor recursiveModelProcessor = new RecursiveModelProcessor();
@@ -34,6 +37,7 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
             return;
         }
         CodegenModel codegenModel = responseModel.get();
+        normalizeOneOfPropertyTypes(codegenModel, allModels);
         for (CodegenProperty property : codegenModel.vars) {
             recursiveModelProcessor.process(property);
         }
@@ -60,6 +64,7 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
             if (property.isContainer && property.baseName.equals(recordKey)) {
                 CodegenModel itemModel = resolveItemModel(property, allModels);
                 if (itemModel != null) {
+                    normalizeOneOfPropertyTypes(itemModel, allModels);
                     for (CodegenProperty itemProp : itemModel.vars) {
                         recursiveModelProcessor.process(itemProp);
                     }
@@ -117,5 +122,39 @@ public class V1JsonResponseProcessor implements  ResponseProcessor {
     @Override
     public boolean shouldProcess(CodegenOperation codegenOperation) {
         return ResourceCacheContext.get().isV1();
+    }
+
+    private void normalizeOneOfPropertyTypes(final CodegenModel model, final List<CodegenModel> allModels) {
+        if (model.oneOf == null || model.oneOf.isEmpty()) {
+            return;
+        }
+
+        List<CodegenModel> variantModels = model.oneOf.stream()
+                .map(name -> allModels.stream()
+                        .filter(m -> m.getClassname().equals(name))
+                        .findFirst())
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
+
+        if (variantModels.size() < 2) {
+            return;
+        }
+
+        for (CodegenProperty property : model.vars) {
+            Set<String> typesAcrossVariants = new HashSet<>();
+            for (CodegenModel variant : variantModels) {
+                variant.vars.stream()
+                        .filter(v -> v.baseName.equals(property.baseName))
+                        .findFirst()
+                        .ifPresent(v -> typesAcrossVariants.add(v.dataType));
+            }
+            if (typesAcrossVariants.size() > 1) {
+                property.dataType = "Object";
+                property.baseType = "Object";
+                property.complexType = null;
+                property.datatypeWithEnum = "Object";
+            }
+        }
     }
 }
