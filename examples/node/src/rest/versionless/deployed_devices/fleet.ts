@@ -42,6 +42,13 @@ export class VersionlessFleetTestNestedObjectNestedObject {
 
 
 
+/**
+ * Options to pass to fetch a FleetInstance
+ */
+export interface FleetContextFetchOptions {
+  /** The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library). */
+  "pageToken"?: string;
+}
 
 /**
  * Options to pass to create a FleetInstance
@@ -60,7 +67,16 @@ export interface FleetContext {
    *
    * @returns Resolves to processed FleetInstance
    */
-  fetch(callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance>
+  fetch(callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance>;
+  /**
+   * Fetch a FleetInstance
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FleetInstance
+   */
+  fetch(params: FleetContextFetchOptions, callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance>;
 
   /**
    * Fetch a FleetInstance and return HTTP info
@@ -69,7 +85,16 @@ export interface FleetContext {
    *
    * @returns Resolves to processed FleetInstance with HTTP metadata
    */
-  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>>
+  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>>;
+  /**
+   * Fetch a FleetInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FleetInstance with HTTP metadata
+   */
+  fetchWithHttpInfo(params: FleetContextFetchOptions, callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>>;
 
   /**
    * Provide a user-friendly representation
@@ -96,13 +121,29 @@ export class FleetContextImpl implements FleetContext {
     this._uri = `/Fleets/${sid}`;
   }
 
-  fetch(callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance> {
-      const headers: any = {};
+  fetch(params?: FleetContextFetchOptions | ((error: Error | null, item?: FleetInstance) => any),callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance> {
+      if (params instanceof Function) {
+      callback = params;
+      params = {} as any;
+    } else {
+      params = params || {} as any;
+    }
+
+    let data: any = {};
+
+        if (params["pageToken"] !== undefined)
+    data["PageToken"] = params["pageToken"];
+
+    
+    
+    
+    
+    const headers: any = {};
     headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version,
-        operationPromise = operationVersion.fetch({ uri: instance._uri, method: "get", headers});
+        operationPromise = operationVersion.fetch({ uri: instance._uri, method: "get", params: data, headers});
     
     operationPromise = operationPromise.then(payload => new FleetInstance(operationVersion, payload, instance._solution.sid));
     
@@ -113,14 +154,30 @@ export class FleetContextImpl implements FleetContext {
 
   }
 
-  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>> {
-      const headers: any = {};
+  fetchWithHttpInfo(params?: FleetContextFetchOptions | ((error: Error | null, item?: ApiResponse<FleetInstance>) => any),callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>> {
+      if (params instanceof Function) {
+      callback = params;
+      params = {} as any;
+    } else {
+      params = params || {} as any;
+    }
+
+    let data: any = {};
+
+        if (params["pageToken"] !== undefined)
+    data["PageToken"] = params["pageToken"];
+
+    
+    
+    
+    
+    const headers: any = {};
     headers["Accept"] = "application/json"
 
     const instance = this;
     let operationVersion = instance._version;
     // CREATE, FETCH, UPDATE operations
-    let operationPromise = operationVersion.fetchWithResponseInfo<FleetResource>({ uri: instance._uri, method: "get", headers}).then((response) : ApiResponse<FleetInstance> => ({
+    let operationPromise = operationVersion.fetchWithResponseInfo<FleetResource>({ uri: instance._uri, method: "get", params: data, headers}).then((response) : ApiResponse<FleetInstance> => ({
       ...response,
       body: new FleetInstance(operationVersion, response.body, instance._solution.sid)
     }));
@@ -201,10 +258,20 @@ export class FleetInstance {
    *
    * @returns Resolves to processed FleetInstance
    */
-  fetch(callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance>
+  fetch(callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance>;
+  /**
+   * Fetch a FleetInstance
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FleetInstance
+   */
+  fetch(params: FleetContextFetchOptions, callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance>;
 
+    fetch(params?: any, callback?: (error: Error | null, item?: FleetInstance) => any): Promise<FleetInstance>
     {
-    return this._proxy.fetch(callback);
+    return this._proxy.fetch(params, callback);
   }
 
   /**
@@ -214,10 +281,20 @@ export class FleetInstance {
    *
    * @returns Resolves to processed FleetInstance with HTTP metadata
    */
-  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>>
+  fetchWithHttpInfo(callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>>;
+  /**
+   * Fetch a FleetInstance and return HTTP info
+   *
+   * @param params - Parameter for request
+   * @param callback - Callback to handle processed record
+   *
+   * @returns Resolves to processed FleetInstance with HTTP metadata
+   */
+  fetchWithHttpInfo(params: FleetContextFetchOptions, callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>>;
 
+    fetchWithHttpInfo(params?: any, callback?: (error: Error | null, item?: ApiResponse<FleetInstance>) => any): Promise<ApiResponse<FleetInstance>>
     {
-    return this._proxy.fetchWithHttpInfo(callback);
+    return this._proxy.fetchWithHttpInfo(params, callback);
   }
 
   /**

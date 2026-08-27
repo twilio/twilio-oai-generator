@@ -91,6 +91,13 @@ paths:
         required: true
         schema:
           type: string
+      - name: PageToken
+        in: query
+        description: The page token. This is provided by the API. On a fetch
+          operation this is a user-supplied query parameter and must be retained
+          (unlike list operations, where paging is handled by the helper library).
+        schema:
+          type: string
       responses:
         '200':
           content:
