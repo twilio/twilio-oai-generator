@@ -9,6 +9,7 @@ import java.util.List;
 public class RubyApiResources extends FluentApiResources {
 
     private List<CodegenParameter> readParams;
+    private List<CodegenParameter> readHeaderParams;
     List<String[]> parentDir = new ArrayList<>();
     boolean hasParents = false;
     private Boolean isApiV1 = null;
@@ -16,6 +17,7 @@ public class RubyApiResources extends FluentApiResources {
     public RubyApiResources(RubyApiResourceBuilder apiResourceBuilder) {
         super(apiResourceBuilder);
         this.readParams = apiResourceBuilder.readParams;
+        this.readHeaderParams = apiResourceBuilder.readHeaderParams;
         this.parentDir = apiResourceBuilder.parentDir;
         this.hasParents = apiResourceBuilder.hasParents;
         if (ResourceCacheContext.get() != null && ResourceCacheContext.get().isV1()) {

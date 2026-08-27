@@ -30,6 +30,7 @@ import static com.twilio.oai.common.ApplicationConstants.STRING;
 public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     List<CodegenParameter> readParams;
+    List<CodegenParameter> readHeaderParams;
     List<String[]> parentDir = new ArrayList<>();
     boolean hasParents = false;
     final OpenAPI openApi;
@@ -147,11 +148,16 @@ public class RubyApiResourceBuilder extends FluentApiResourceBuilder {
 
     private void createReadParams(RubyApiResourceBuilder apiResourceBuilder) {
         this.readParams = new ArrayList<>();
+        this.readHeaderParams = new ArrayList<>();
         for (CodegenOperation operation : apiResourceBuilder.codegenOperationList) {
             if ((boolean) operation.vendorExtensions.getOrDefault("x-is-read-operation", false)) {
                 for (CodegenParameter param : operation.allParams) {
                     if (!param.paramName.equals("page_size")) {
-                        readParams.add(param);
+                        if (param.isHeaderParam) {
+                            readHeaderParams.add(param);
+                        } else {
+                            readParams.add(param);
+                        }
                     }
                 }
             }

@@ -37,6 +37,9 @@
                     {{#readParams}}
                     # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
+                    {{#readHeaderParams}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/readHeaderParams}}
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
                     # @param [Integer] page_size Number of records to fetch per request, when
@@ -44,11 +47,14 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Array] Array of up to limit results
-                    def list({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
+                    def list({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}{{#readHeaderParams.0}}{{^readParams.0}}{{#readHeaderParams}}{{>params}}{{/readHeaderParams}}, {{/readParams.0}}{{#readParams.0}}{{#readHeaderParams}}{{>params}}{{/readHeaderParams}}, {{/readParams.0}}{{/readHeaderParams.0}}limit: nil, page_size: nil)
                         self.stream(
                     {{#readParams}}
                             {{paramName}}: {{paramName}},
                     {{/readParams}}
+                    {{#readHeaderParams}}
+                            {{paramName}}: {{paramName}},
+                    {{/readHeaderParams}}
                             limit: limit,
                             page_size: page_size
                         ).entries
@@ -61,6 +67,9 @@
                     {{#readParams}}
                     # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
+                    {{#readHeaderParams}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/readHeaderParams}}
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
                     # @param [Integer] page_size Number of records to fetch per request, when
@@ -68,13 +77,16 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Enumerable] Enumerable that will yield up to limit results
-                    def stream({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
+                    def stream({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}{{#readHeaderParams.0}}{{^readParams.0}}{{#readHeaderParams}}{{>params}}{{/readHeaderParams}}, {{/readParams.0}}{{#readParams.0}}{{#readHeaderParams}}{{>params}}{{/readHeaderParams}}, {{/readParams.0}}{{/readHeaderParams.0}}limit: nil, page_size: nil)
                         limits = @version.read_limits(limit, page_size)
 
                         page = self.page(
                         {{#readParams}}
                             {{paramName}}: {{paramName}},
                         {{/readParams}}
+                        {{#readHeaderParams}}
+                            {{paramName}}: {{paramName}},
+                        {{/readHeaderParams}}
                             page_size: limits[:page_size], )
 
                         return [].each if page.nil?
@@ -89,6 +101,9 @@
                     {{#readParams}}
                       # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
+                    {{#readHeaderParams}}
+                      # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/readHeaderParams}}
                     # @param [Integer] limit Upper limit for the number of records to return. stream()
                     #    guarantees to never return more than limit.  Default is no limit
                     # @param [Integer] page_size Number of records to fetch per request, when
@@ -96,7 +111,7 @@
                     #    but a limit is defined, stream() will attempt to read the limit with the most
                     #    efficient page size, i.e. min(limit, 1000)
                     # @return [Array] Array of up to limit results
-                    def list_with_metadata({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}limit: nil, page_size: nil)
+                    def list_with_metadata({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}{{#readHeaderParams.0}}{{^readParams.0}}{{#readHeaderParams}}{{>params}}{{/readHeaderParams}}, {{/readParams.0}}{{#readParams.0}}{{#readHeaderParams}}{{>params}}{{/readHeaderParams}}, {{/readParams.0}}{{/readHeaderParams.0}}limit: nil, page_size: nil)
                         limits = @version.read_limits(limit, page_size)
                         params = Twilio::Values.of({
                             {{#readParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
@@ -105,7 +120,7 @@
                             {{/vendorExtensions.isList}}{{/vendorExtensions.x-serialize}}{{/readParams}}
                             'PageSize' => limits[:page_size],
                         });
-                        headers = Twilio::Values.of({})
+                        headers = Twilio::Values.of({{#readHeaderParams.0}}{ {{#readHeaderParams}}'{{baseName}}' => {{paramName}}, {{/readHeaderParams}} }{{/readHeaderParams.0}}{{^readHeaderParams.0}}{}{{/readHeaderParams.0}})
 
                         response = @version.page('GET', @uri, params: params, headers: headers)
 
@@ -136,11 +151,14 @@
                     {{#readParams}}
                     # @param [{{dataType}}] {{paramName}} {{{description}}}
                     {{/readParams}}
+                    {{#readHeaderParams}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/readHeaderParams}}
                     {{^isApiV1}}# @param [String] page_token PageToken provided by the API
                     # @param [Integer] page_number Page Number, this value is simply for client state
                     # @param [Integer] page_size Number of records to return, defaults to 50{{/isApiV1}}
                     # @return [Page] Page of {{apiName}}Instance
-                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}{{^isApiV1}}page_token: :unset, page_number: :unset,{{/isApiV1}}page_size: :unset)
+                    def page({{#readParams.0}}{{#readParams}}{{>params}}{{/readParams}}, {{/readParams.0}}{{#readHeaderParams.0}}{{^readParams.0}}{{#readHeaderParams}}{{>params}}{{/readHeaderParams}}, {{/readParams.0}}{{#readParams.0}}{{#readHeaderParams}}{{>params}}{{/readHeaderParams}}, {{/readParams.0}}{{/readHeaderParams.0}}{{^isApiV1}}page_token: :unset, page_number: :unset,{{/isApiV1}}page_size: :unset)
                         params = Twilio::Values.of({
                             {{#readParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
                             {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}{{^vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),{{/vendorExtensions.isList}}
@@ -150,7 +168,7 @@
                             {{/isApiV1}}
                             'PageSize' => page_size,
                         })
-                        headers = Twilio::Values.of({})
+                        headers = Twilio::Values.of({{#readHeaderParams.0}}{ {{#readHeaderParams}}'{{baseName}}' => {{paramName}}, {{/readHeaderParams}} }{{/readHeaderParams.0}}{{^readHeaderParams.0}}{}{{/readHeaderParams.0}})
                         {{#vendorExtensions.scimConsumes}}headers['Content-Type'] = 'application/scim+json'{{/vendorExtensions.scimConsumes}}
                         {{#vendorExtensions.scimProduces}}headers['Accept'] = 'application/scim+json'{{/vendorExtensions.scimProduces}}
 
