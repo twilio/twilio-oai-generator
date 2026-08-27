@@ -14,7 +14,9 @@ module Twilio
 {{>context}}
 {{/metaProperties.hasInstanceOperation}}
 {{>page}}
+{{#hasOperationWithPagination}}
 {{>pageMetadata}}
+{{/hasOperationWithPagination}}
 {{>instance}}
             end
         end

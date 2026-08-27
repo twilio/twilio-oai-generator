@@ -185,66 +185,6 @@ module Twilio
               end
             end
 
-            class HistoryPageMetadata < PageMetadata
-              attr_reader :history_page
-
-              def initialize(version, response, solution, limit)
-                super(version, response)
-                @history_page = []
-                @limit = limit
-                key = get_key(response.body)
-                records = 0
-                while (limit != :unset && records < limit)
-                  @history_page << HistoryListResponse.new(version, @payload, key, limit - records)
-                  @payload = self.next_page
-                  break unless @payload
-
-                  records += (@payload.body[key] || []).size
-                end
-                # Path Solution
-                @solution = solution
-              end
-
-              def each
-                @history_page.each do |record|
-                  yield record
-                end
-              end
-
-              def to_s
-                '<Twilio::REST::FlexApi::V1PageMetadata>';
-              end
-            end
-
-            class HistoryListResponse < InstanceListResource
-              # @param [Array<HistoryInstance>] instance
-              # @param [Hash{String => Object}] headers
-              # @param [Integer] status_code
-              def initialize(version, payload, key, limit = :unset)
-                data_list = payload.body[key] || []
-                if limit != :unset
-                  data_list = data_list[0, limit]
-                end
-                @history = data_list.map do |data|
-                  HistoryInstance.new(version, data)
-                end
-                @headers = payload.headers
-                @status_code = payload.status_code
-              end
-
-              def history
-                @history
-              end
-
-              def headers
-                @headers
-              end
-
-              def status_code
-                @status_code
-              end
-            end
-
             class HistoryInstance < InstanceResource
               ##
               # Initialize the HistoryInstance

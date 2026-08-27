@@ -7,7 +7,9 @@
 {{>context}}
 {{/metaProperties.hasInstanceOperation}}
 {{>page}}
+{{#hasOperationWithPagination}}
 {{>pageMetadata}}
+{{/hasOperationWithPagination}}
 {{>instance}}
             {{#parentDir}}
              end
