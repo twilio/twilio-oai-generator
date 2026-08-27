@@ -130,7 +130,7 @@ public class JavaConventionResolver {
     public Map<String, Object> populateSecurityAttributes(CodegenOperation co) {
         ArrayList<CodegenSecurity> authMethods = (ArrayList) co.authMethods;
         HashMap<String,String> authAttributes = new HashMap<>();
-        if(authMethods == null){
+        if(authMethods == null || authMethods.isEmpty()){
             authAttributes.put(AUTH_IMPORT_CLASS, NOAUTH_IMPORT_CLASS);
             authAttributes.put(HTTP_CLASS_PREFIX, NOAUTH_HTTP_CLASS_PREFIX);
         }else{

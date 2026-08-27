@@ -204,7 +204,7 @@ public class JavaApiResourceBuilder extends ApiResourceBuilder{
     public void processAuthMethods(List<CodegenOperation> opList) {
         if(opList != null){
             List<CodegenSecurity> authMethods = opList.get(0).authMethods;
-            if(authMethods != null){
+            if(authMethods != null && !authMethods.isEmpty()){
                 for(CodegenSecurity c : authMethods){
                     if(c.isOAuth == true){
                         this.authMethodPackage = ".bearertoken";
