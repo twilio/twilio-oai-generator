@@ -84,7 +84,8 @@ public class EnumConstants {
     @Getter
     @RequiredArgsConstructor
     public enum PythonDataTypes implements LanguageDataType {
-        LIST("List[");
+        LIST("List["),
+        MAP("Dict[str, ");
 
         private final String value;
     }
