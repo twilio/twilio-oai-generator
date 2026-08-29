@@ -5,7 +5,6 @@ import re
 import shutil
 from pathlib import Path
 from typing import List, Tuple
-
 from clean_unused_imports import remove_unused_imports, remove_duplicate_imports
 from process_orgs_api import preprocess_orgs_spec
 
@@ -33,6 +32,10 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
         spec_files = [domain]
     else:
         spec_folder = openapi_spec_path
+        # It will be removed once orgs team add the path(/Organizations/{OrganizationSid}) to twilio_iam_organizations spec
+        if language == 'python':
+            iam_orgs_spec_path = spec_folder + 'twilio_iam_organizations.json'
+            merge_orgs_schema('twilio_am_temporary.json', iam_orgs_spec_path)
         spec_files = sorted(os.listdir(spec_folder))
     if 'twilio_monitor_v2.json' in spec_files:
         spec_files.remove('twilio_monitor_v2.json')
@@ -108,6 +111,25 @@ def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) 
     domain_name = parts[1]
     api_version = parts[2] or ''
     return full_path, domain_name, api_version
+
+def merge_orgs_schema(from_spec, to_spec):
+
+    with open(to_spec, 'r') as f1:
+        spec1 = json.load(f1)
+
+
+    with open(from_spec, 'r') as f2:
+        spec2 = json.load(f2)
+
+    if 'paths' in spec1 and 'paths' in spec2:
+        spec1['paths'].update(spec2['paths'])
+    else:
+        print("One of the files doesn't contain 'paths'.")
+
+    with open(to_spec, 'w') as outfile:
+        json.dump(spec1, outfile, indent=2)
+
+    print(f"Files merged successfully into {to_spec}.")
 
 
 if __name__ == '__main__':
