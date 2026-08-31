@@ -236,7 +236,16 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}({{#allParams}}{{
 		close(recordChannel)
 		close(errorChannel)
 	} else {
+{{#vendorExtensions.isApiV1}}
+		path := "{{{path}}}"
+		{{#pathParams}}
+		path = strings.Replace(path, "{"+"{{baseName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
+		{{/pathParams}}
+		go c.stream{{{vendorExtensions.x-domain-name}}}(response, path, params, recordChannel, errorChannel)
+{{/vendorExtensions.isApiV1}}
+{{^vendorExtensions.isApiV1}}
 		go c.stream{{{vendorExtensions.x-domain-name}}}(response, params, recordChannel, errorChannel)
+{{/vendorExtensions.isApiV1}}
 	}
 
 	return recordChannel, errorChannel
@@ -259,7 +268,16 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}WithMetadata({{#a
         close(errorChannel)
     } else {
         resource := response.GetResource()
+{{#vendorExtensions.isApiV1}}
+        path := "{{{path}}}"
+        {{#pathParams}}
+        path = strings.Replace(path, "{"+"{{baseName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
+        {{/pathParams}}
+        go c.stream{{{vendorExtensions.x-domain-name}}}(&resource, path, params, recordChannel, errorChannel)
+{{/vendorExtensions.isApiV1}}
+{{^vendorExtensions.isApiV1}}
         go c.stream{{{vendorExtensions.x-domain-name}}}(&resource, params, recordChannel, errorChannel)
+{{/vendorExtensions.isApiV1}}
     }
 
     metadataWrapper := metadata.NewResourceMetadata[chan {{{returnBaseType}}}](
@@ -271,7 +289,7 @@ func (c *ApiService) Stream{{{vendorExtensions.x-domain-name}}}WithMetadata({{#a
     return metadataWrapper, errorChannel
 }
 
-func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{returnContainer}}}, params *{{{nickname}}}Params, recordChannel chan {{{returnBaseType}}}, errorChannel chan error) {
+func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{returnContainer}}}, {{#vendorExtensions.isApiV1}}path string, {{/vendorExtensions.isApiV1}}params *{{{nickname}}}Params, recordChannel chan {{{returnBaseType}}}, errorChannel chan error) {
 	curRecord := 1
 
 	for response != nil {
@@ -286,7 +304,7 @@ func (c *ApiService) stream{{{vendorExtensions.x-domain-name}}}(response *{{{ret
 			}
 		}
 
-		record, err := client.GetNext(c.baseURL{{#vendorExtensions.isApiV1}}+"{{{path}}}"{{/vendorExtensions.isApiV1}}, response, c.getNext{{{returnContainer}}})
+		record, err := client.GetNext(c.baseURL{{#vendorExtensions.isApiV1}}+path{{/vendorExtensions.isApiV1}}, response, c.getNext{{{returnContainer}}})
 		if err != nil {
 			errorChannel <- err
 			break

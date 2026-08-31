@@ -35,6 +35,20 @@ abstract class FleetOptions
         );
     }
 
+    /**
+     * @param string $pageToken The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
+     * @return FetchFleetOptions Options builder
+     */
+    public static function fetch(
+        
+        string $pageToken = Values::NONE
+
+    ): FetchFleetOptions
+    {
+        return new FetchFleetOptions(
+            $pageToken
+        );
+    }
 
 }
 
@@ -73,4 +87,40 @@ class CreateFleetOptions extends Options
     }
 }
 
+class FetchFleetOptions extends Options
+    {
+    /**
+     * @param string $pageToken The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
+     */
+    public function __construct(
+        
+        string $pageToken = Values::NONE
+
+    ) {
+        $this->options['pageToken'] = $pageToken;
+    }
+
+    /**
+     * The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
+     *
+     * @param string $pageToken The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
+     * @return $this Fluent Builder
+     */
+    public function setPageToken(string $pageToken): self
+    {
+        $this->options['pageToken'] = $pageToken;
+        return $this;
+    }
+
+    /**
+     * Provide a friendly representation
+     *
+     * @return string Machine friendly representation
+     */
+    public function __toString(): string
+    {
+        $options = \http_build_query(Values::of($this->options), '', ' ');
+        return '[Twilio.Versionless.DeployedDevices.FetchFleetOptions ' . $options . ']';
+    }
+}
 
