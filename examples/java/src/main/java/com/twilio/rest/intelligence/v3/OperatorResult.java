@@ -390,6 +390,7 @@ public enum OutputFormat {
 
 
     @JsonDeserialize(builder = OutputFormat.Builder.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
     public static class OutputFormat {
@@ -405,6 +406,7 @@ public enum OutputFormat {
         return mapper.readValue(jsonString, OutputFormat.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
 
@@ -437,6 +439,7 @@ public enum OutputFormat {
     
 
     @JsonDeserialize(builder = ListOperatorResults200ResponseMeta.Builder.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
     public static class ListOperatorResults200ResponseMeta {
@@ -487,6 +490,7 @@ public enum OutputFormat {
         return mapper.readValue(jsonString, ListOperatorResults200ResponseMeta.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
         @JsonProperty("first_page_url")
@@ -599,6 +603,7 @@ public enum OutputFormat {
     
 
     @JsonDeserialize(builder = TextResultResult.Builder.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
     public static class TextResultResult {
@@ -619,6 +624,7 @@ public enum OutputFormat {
         return mapper.readValue(jsonString, TextResultResult.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
         @JsonProperty("text")
@@ -665,6 +671,7 @@ public enum OutputFormat {
     
 
     @JsonDeserialize(builder = OperatorResultsResponseV1.Builder.class)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     @ToString
     public static class OperatorResultsResponseV1 {
@@ -695,6 +702,7 @@ public enum OutputFormat {
         return mapper.readValue(jsonString, OperatorResultsResponseV1.class);
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder {
         @JsonProperty("output_format")

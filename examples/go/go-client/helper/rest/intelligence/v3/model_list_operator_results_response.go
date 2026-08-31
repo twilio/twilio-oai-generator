@@ -16,6 +16,6 @@ package openapi
 
 // ListOperatorResultsResponse struct for ListOperatorResultsResponse
 type ListOperatorResultsResponse struct {
-	OperatorResults []OperatorResultsResponseV1     `json:"operator_results,omitempty"`
-	Meta            ListOperatorResultsResponseMeta `json:"meta,omitempty"`
+	OperatorResults []OperatorResultsResponseV1      `json:"operator_results,omitempty"`
+	Meta            *ListOperatorResultsResponseMeta `json:"meta,omitempty"`
 }

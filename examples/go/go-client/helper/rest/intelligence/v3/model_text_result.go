@@ -16,7 +16,7 @@ package openapi
 
 // TextResult struct for TextResult
 type TextResult struct {
-	OutputFormat     OutputFormat     `json:"output_format"`
-	OperatorResultId string           `json:"operator_result_id"`
-	Result           TextResultResult `json:"result"`
+	OutputFormat     OutputFormat      `json:"output_format"`
+	OperatorResultId string            `json:"operator_result_id"`
+	Result           *TextResultResult `json:"result"`
 }
