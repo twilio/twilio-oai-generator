@@ -7,7 +7,7 @@
         def __init__(self, payload: Dict[str, Any]):
 
             {{#vars}}
-            self.{{name}}: Optional[{{{dataType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{vendorExtensions.json-name}}}")){{else}}payload.get("{{{vendorExtensions.json-name}}}"){{/if}}{{/vars}}
+            self.{{name}}: Optional[{{{dataType}}}] = {{#if vendorExtensions.x-deserialize}}{{vendorExtensions.x-deserialize}}(payload.get("{{{vendorExtensions.json-name}}}")){{else}}{{#if complexType}}{{^vendorExtensions.x-enum-object}}{{#isArray}}[{{complexType}}(item) if isinstance(item, dict) else item for item in payload.get("{{{vendorExtensions.json-name}}}")] if payload.get("{{{vendorExtensions.json-name}}}") is not None else None{{/isArray}}{{^isArray}}{{^isMap}}{{^containerType}}{{complexType}}(payload.get("{{{vendorExtensions.json-name}}}")) if payload.get("{{{vendorExtensions.json-name}}}") is not None else None{{/containerType}}{{/isMap}}{{#isMap}}payload.get("{{{vendorExtensions.json-name}}}"){{/isMap}}{{/isArray}}{{/vendorExtensions.x-enum-object}}{{#vendorExtensions.x-enum-object}}payload.get("{{{vendorExtensions.json-name}}}"){{/vendorExtensions.x-enum-object}}{{else}}payload.get("{{{vendorExtensions.json-name}}}"){{/if}}{{/if}}{{/vars}}
 
         def to_dict(self):
             return {
