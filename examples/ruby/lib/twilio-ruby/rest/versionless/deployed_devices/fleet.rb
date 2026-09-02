@@ -97,11 +97,17 @@ module Twilio
 
           ##
           # Fetch the FleetInstance
+          # @param [String] page_token The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
           # @return [FleetInstance] Fetched FleetInstance
-          def fetch
+          def fetch(
+            page_token: :unset
+          )
+            params = Twilio::Values.of({
+                                         'PageToken' => page_token,
+                                       })
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-            payload = @version.fetch('GET', @uri, headers: headers)
+            payload = @version.fetch('GET', @uri, params: params, headers: headers)
             FleetInstance.new(
               @version,
               payload,
@@ -111,11 +117,17 @@ module Twilio
 
           ##
           # Fetch the FleetInstanceMetadata
+          # @param [String] page_token The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
           # @return [FleetInstance] Fetched FleetInstance
-          def fetch_with_metadata
+          def fetch_with_metadata(
+            page_token: :unset
+          )
+            params = Twilio::Values.of({
+                                         'PageToken' => page_token,
+                                       })
             headers = Twilio::Values.of({ 'Content-Type' => 'application/x-www-form-urlencoded', })
 
-            response = @version.fetch_with_metadata('GET', @uri, headers: headers)
+            response = @version.fetch_with_metadata('GET', @uri, params: params, headers: headers)
             fleet_instance = FleetInstance.new(
               @version,
               response.body,
@@ -220,66 +232,6 @@ module Twilio
           end
         end
 
-        class FleetPageMetadata < PageMetadata
-          attr_reader :fleet_page
-
-          def initialize(version, response, solution, limit)
-            super(version, response)
-            @fleet_page = []
-            @limit = limit
-            key = get_key(response.body)
-            records = 0
-            while (limit != :unset && records < limit)
-              @fleet_page << FleetListResponse.new(version, @payload, key, limit - records)
-              @payload = self.next_page
-              break unless @payload
-
-              records += (@payload.body[key] || []).size
-            end
-            # Path Solution
-            @solution = solution
-          end
-
-          def each
-            @fleet_page.each do |record|
-              yield record
-            end
-          end
-
-          def to_s
-            '<Twilio::REST::Versionless::DeployedDevicesPageMetadata>';
-          end
-        end
-
-        class FleetListResponse < InstanceListResource
-          # @param [Array<FleetInstance>] instance
-          # @param [Hash{String => Object}] headers
-          # @param [Integer] status_code
-          def initialize(version, payload, key, limit = :unset)
-            data_list = payload.body[key] || []
-            if limit != :unset
-              data_list = data_list[0, limit]
-            end
-            @fleet = data_list.map do |data|
-              FleetInstance.new(version, data)
-            end
-            @headers = payload.headers
-            @status_code = payload.status_code
-          end
-
-          def fleet
-            @fleet
-          end
-
-          def headers
-            @headers
-          end
-
-          def status_code
-            @status_code
-          end
-        end
-
         class FleetInstance < InstanceResource
           ##
           # Initialize the FleetInstance
@@ -364,9 +316,14 @@ module Twilio
 
           ##
           # Fetch the FleetInstance
+          # @param [String] page_token The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
           # @return [FleetInstance] Fetched FleetInstance
-          def fetch
-            context.fetch
+          def fetch(
+            page_token: :unset
+          )
+            context.fetch(
+              page_token: page_token,
+            )
           end
 
           ##

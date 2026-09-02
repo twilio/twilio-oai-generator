@@ -96,6 +96,7 @@
                         result
                     end
 
+                    {{#vendorExtensions.x-supports-pagination}}
                     ##
                     # Lists {{apiName}}PageMetadata records from the API as a list.
                     {{#readParams}}
@@ -126,6 +127,7 @@
 
                         {{apiName}}PageMetadata.new(@version, response, @solution, limits[:limit])
                     end
+                    {{/vendorExtensions.x-supports-pagination}}
 
                     ##
                     # When passed a block, yields {{apiName}}Instance records from the API.
