@@ -79,9 +79,14 @@ public class PythonCodegenModelDataTypeResolver extends CodegenModelDataTypeReso
                 : property.name;
             property.vendorExtensions.put("json-name", jsonName);
         }
+        // Only rewrite the dataType to a nested enum reference when the enum has its own named
+        // schema, which is what actually gets generated as a nested class. Inline enums resolve to
+        // a primitive dataType (e.g. "str") and have no class to point at, so rewriting them would
+        // emit a dangling reference such as "OperatorInstance.str".
         if(CodegenUtils.isPropertySchemaEnum(property)
             && !property.dataType.contains(ApplicationConstants.ENUM)
-            && !property.dataType.contains("Instance.")) {
+            && !property.dataType.contains("Instance.")
+            && apiResourceBuilder.getModel(property.dataType) != null) {
                 property.baseType = ApplicationConstants.ENUM + property.baseType;
                 property.dataType = ApplicationConstants.ENUM + property.dataType;
                 updateDataType(property.baseType, property.dataType, apiResourceBuilder, (dataTypeWithEnum, dataType) -> {

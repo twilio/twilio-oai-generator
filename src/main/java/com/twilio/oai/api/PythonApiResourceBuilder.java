@@ -26,6 +26,8 @@ import static com.twilio.oai.common.ApplicationConstants.PATH_SEPARATOR_PLACEHOL
 import static com.twilio.oai.common.ApplicationConstants.STRING;
 
 public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
+    private static final String INSTANCE_TYPE_SEPARATOR = "Instance.";
+
     public PythonApiResourceBuilder(final IApiActionTemplate template,
                                     final List<CodegenOperation> codegenOperations,
                                     final List<CodegenModel> allModels,
@@ -170,8 +172,19 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
             responseModel.getVars().forEach(variable -> {
                 if (variable.complexType != null && !variable.complexType.contains(ApplicationConstants.ENUM)) {
                     getModelByClassname(variable.complexType).ifPresent(model -> {
-                        variable.baseType = variable.baseType.replace(variable.datatypeWithEnum, "str");
-                        variable.datatypeWithEnum = "str";
+                        if (model.isEnum) {
+                            // Enums are emitted as nested classes on the Instance, so the annotation
+                            // should keep referring to them rather than being flattened to str.
+                            // Qualify the reference unless an earlier pass already did.
+                            if (!variable.baseType.contains(INSTANCE_TYPE_SEPARATOR)) {
+                                variable.baseType = substituteType(variable.baseType,
+                                    variable.datatypeWithEnum,
+                                    '"' + getApiName() + INSTANCE_TYPE_SEPARATOR + variable.datatypeWithEnum + '"');
+                            }
+                        } else {
+                            variable.baseType = substituteType(variable.baseType, variable.datatypeWithEnum, "str");
+                            variable.datatypeWithEnum = "str";
+                        }
                         if(!model.vendorExtensions.containsKey("part-of-request-model"))
                             model.vendorExtensions.put("part-of-response-model", true);
                     });
@@ -223,10 +236,29 @@ public class PythonApiResourceBuilder extends FluentApiResourceBuilder {
         }
     }
 
+    /**
+     * Replaces the element type of a (possibly container) type expression with the given
+     * replacement, substituting the whole type token exactly once. The enum-prefixed spelling is
+     * preferred so that "List[EnumChannel]" yields "List[<replacement>]" rather than leaving a
+     * dangling "Enum" prefix behind, and so the replacement is never spliced into a name that has
+     * already been rewritten.
+     *
+     * @param type the type expression to rewrite, e.g. "List[Rule]"
+     * @param elementType the element type name to replace, e.g. "Rule"
+     * @param replacement the text to substitute in its place
+     * @return the rewritten type expression
+     */
+    private static String substituteType(final String type, final String elementType, final String replacement) {
+        final String enumElementType = ApplicationConstants.ENUM + elementType;
+        return type.contains(enumElementType)
+            ? type.replace(enumElementType, replacement)
+            : type.replace(elementType, replacement);
+    }
+
     @Override
     protected String getDataTypeName(final String dataType) {
         if (dataType != null && dataType.contains(ApplicationConstants.ENUM)) {
-            return '"' + getApiName() + "Instance." + Utility.removeEnumName(dataType) + '"';
+            return '"' + getApiName() + INSTANCE_TYPE_SEPARATOR + Utility.removeEnumName(dataType) + '"';
         }
 
         return dataType;
