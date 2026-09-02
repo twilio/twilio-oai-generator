@@ -67,8 +67,25 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             model.allVars.forEach(v -> v.setIsNumber(v.isNumber || v.isFloat));
             model.vendorExtensions.put("x-has-numbers-vars", model.allVars.stream().anyMatch(v -> v.isNumber));
 
+            model.allVars.forEach(v -> v.vendorExtensions.put("x-go-omit-empty", omitEmpty(v)));
         }
         return results;
+    }
+
+    /**
+     * Decides whether a struct field gets the `omitempty` JSON tag.
+     *
+     * <p>Optional fields have always carried it. Required fields did not, which meant a required
+     * field the caller never populated was still serialized -- and for the nil-able Go types
+     * (slices, maps, pointers) that emits an explicit `null` into the request body rather than
+     * leaving the field out. Required nil-able fields therefore get `omitempty` as well.
+     *
+     * <p>Required scalars are deliberately left alone: their zero values (`""`, `0`, `false`)
+     * marshal as real JSON values rather than `null`, and omitting them would silently drop
+     * legitimate payload values such as a required `false`.
+     */
+    private boolean omitEmpty(final CodegenProperty property) {
+        return !property.required || property.isContainer || property.isNullable;
     }
 
     boolean containsAllOf(String modelName) {
