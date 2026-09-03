@@ -16,7 +16,7 @@ package openapi
 
 // ClassificationResult struct for ClassificationResult
 type ClassificationResult struct {
-	OutputFormat     OutputFormat               `json:"output_format"`
-	OperatorResultId string                     `json:"operator_result_id"`
-	Result           ClassificationResultResult `json:"result"`
+	OutputFormat     OutputFormat                `json:"output_format"`
+	OperatorResultId string                      `json:"operator_result_id"`
+	Result           *ClassificationResultResult `json:"result"`
 }

@@ -320,6 +320,9 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
     @Override
     public void postProcessModelProperty(CodegenModel model, CodegenProperty property) {
         super.postProcessModelProperty(model, property);
+        if (property.isModel && !property.isNullable && !property.isArray && !property.isMap) {
+            property.isNullable = true;
+        }
         if (property.dataType.startsWith("[]") && property.dataType.contains("Enum")) {
             property._enum = (List<String>) property.items.allowableValues.get("values");
             property.allowableValues = property.items.allowableValues;

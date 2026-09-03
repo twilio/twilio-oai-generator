@@ -16,7 +16,7 @@ package openapi
 
 // OperatorResultsResponseV1 struct for OperatorResultsResponseV1
 type OperatorResultsResponseV1 struct {
-	OutputFormat     OutputFormat           `json:"output_format"`
-	OperatorResultId string                 `json:"operator_result_id"`
-	Result           ExtractionResultResult `json:"result"`
+	OutputFormat     OutputFormat            `json:"output_format"`
+	OperatorResultId string                  `json:"operator_result_id"`
+	Result           *ExtractionResultResult `json:"result"`
 }
