@@ -3,7 +3,7 @@
 {{#isApiV1}}from __future__ import annotations
 
 {{/isApiV1}}from datetime import date, datetime
-from typing import Any, Dict, List, Optional, Union, Iterator, AsyncIterator, Protocol
+from typing import Any, Dict, List, Optional, Union, Iterator, AsyncIterator
 from twilio.base import deserialize, serialize, values
 from twilio.base.api_response import ApiResponse
 {{#instancePath}}from twilio.base.instance_context import InstanceContext{{/instancePath}}
@@ -66,8 +66,6 @@ class {{apiName}}List(ListResource):
 {{! For non-v1 APIs, keep original order for backward compatibility }}
 {{^isApiV1}}
 {{#hasMultipleResponseModels}}
-class ResponseResource(Protocol):
-  pass
 {{>nestedResponseModel}}
 {{>responseInstance}}
 {{/hasMultipleResponseModels}}
