@@ -19,6 +19,7 @@ namespace Twilio\Rest\Versionless\DeployedDevices;
 
 use Twilio\Exceptions\TwilioException;
 use Twilio\InstanceResource;
+use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 
@@ -80,13 +81,14 @@ class FleetInstance extends InstanceResource
     /**
      * Fetch the FleetInstance
      *
+     * @param array|Options $options Optional Arguments
      * @return FleetInstance Fetched FleetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): FleetInstance
+    public function fetch(array $options = []): FleetInstance
     {
 
-        return $this->proxy()->fetch();
+        return $this->proxy()->fetch($options);
     }
 
     /**

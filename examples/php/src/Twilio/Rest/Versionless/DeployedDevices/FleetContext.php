@@ -18,6 +18,7 @@
 namespace Twilio\Rest\Versionless\DeployedDevices;
 
 use Twilio\Exceptions\TwilioException;
+use Twilio\Options;
 use Twilio\Values;
 use Twilio\Version;
 use Twilio\InstanceContext;
@@ -53,26 +54,35 @@ class FleetContext extends InstanceContext
      * Helper function for Fetch
      *
      
+     * @param array|Options $options Optional Arguments
      * @return Response Fetched Response
      * @throws TwilioException When an HTTP error occurs.
      */
-    private function _fetch(): Response
+    private function _fetch(array $options = []): Response
     {
         
+        $options = new Values($options);
+
+        $params = Values::of([
+            'PageToken' =>
+                $options['pageToken'],
+        ]);
+
         $headers = Values::of(['Content-Type' => 'application/x-www-form-urlencoded', 'Accept' => 'application/json' ]);
-        return $this->version->handleRequest('GET', $this->uri, [], [], $headers, "fetch");
+        return $this->version->handleRequest('GET', $this->uri, $params, [], $headers, "fetch");
     }
 
     /**
      * Fetch the FleetInstance
      *
      
+     * @param array|Options $options Optional Arguments
      * @return FleetInstance Fetched FleetInstance
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetch(): FleetInstance
+    public function fetch(array $options = []): FleetInstance
     {
-        $response = $this->_fetch();
+        $response = $this->_fetch($options);
         return new FleetInstance(
             $this->version,
             $response->getContent(),
@@ -85,12 +95,13 @@ class FleetContext extends InstanceContext
      * Fetch the FleetInstance with Metadata
      *
      
+     * @param array|Options $options Optional Arguments
      * @return ResourceMetadata The Fetched Resource with Metadata
      * @throws TwilioException When an HTTP error occurs.
      */
-    public function fetchWithMetadata(): ResourceMetadata
+    public function fetchWithMetadata(array $options = []): ResourceMetadata
     {
-        $response = $this->_fetch();
+        $response = $this->_fetch($options);
         $resource = new FleetInstance(
                         $this->version,
                         $response->getContent(),

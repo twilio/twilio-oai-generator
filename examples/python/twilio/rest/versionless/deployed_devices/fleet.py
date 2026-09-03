@@ -72,41 +72,59 @@ class FleetInstance(InstanceResource):
             )
         return self._context
 
-    def fetch(self) -> "FleetInstance":
+    def fetch(self, page_token: Union[str, object] = values.unset) -> "FleetInstance":
         """
         Fetch the FleetInstance
 
+        :param page_token: The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
 
         :returns: The fetched FleetInstance
         """
-        return self._proxy.fetch()
+        return self._proxy.fetch(
+            page_token=page_token,
+        )
 
-    async def fetch_async(self) -> "FleetInstance":
+    async def fetch_async(
+        self, page_token: Union[str, object] = values.unset
+    ) -> "FleetInstance":
         """
         Asynchronous coroutine to fetch the FleetInstance
 
+        :param page_token: The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
 
         :returns: The fetched FleetInstance
         """
-        return await self._proxy.fetch_async()
+        return await self._proxy.fetch_async(
+            page_token=page_token,
+        )
 
-    def fetch_with_http_info(self) -> ApiResponse:
+    def fetch_with_http_info(
+        self, page_token: Union[str, object] = values.unset
+    ) -> ApiResponse:
         """
         Fetch the FleetInstance with HTTP info
 
+        :param page_token: The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
 
         :returns: ApiResponse with instance, status code, and headers
         """
-        return self._proxy.fetch_with_http_info()
+        return self._proxy.fetch_with_http_info(
+            page_token=page_token,
+        )
 
-    async def fetch_with_http_info_async(self) -> ApiResponse:
+    async def fetch_with_http_info_async(
+        self, page_token: Union[str, object] = values.unset
+    ) -> ApiResponse:
         """
         Asynchronous coroutine to fetch the FleetInstance with HTTP info
 
+        :param page_token: The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
 
         :returns: ApiResponse with instance, status code, and headers
         """
-        return await self._proxy.fetch_with_http_info_async()
+        return await self._proxy.fetch_with_http_info_async(
+            page_token=page_token,
+        )
 
     def __repr__(self) -> str:
         """
@@ -134,7 +152,7 @@ class FleetContext(InstanceContext):
         }
         self._uri = "/Fleets/{sid}".format(**self._solution)
 
-    def _fetch(self) -> tuple:
+    def _fetch(self, page_token: Union[str, object] = values.unset) -> tuple:
         """
         Internal helper for fetch operation
 
@@ -142,36 +160,46 @@ class FleetContext(InstanceContext):
             tuple: (payload, status_code, headers)
         """
 
+        params = values.of(
+            {
+                "PageToken": page_token,
+            }
+        )
+
         headers = values.of({})
 
         headers["Accept"] = "application/json"
 
         return self._version.fetch_with_response_info(
-            method="GET", uri=self._uri, headers=headers
+            method="GET", uri=self._uri, params=params, headers=headers
         )
 
-    def fetch(self) -> FleetInstance:
+    def fetch(self, page_token: Union[str, object] = values.unset) -> FleetInstance:
         """
         Fetch the FleetInstance
 
+        :param page_token: The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
 
         :returns: The fetched FleetInstance
         """
-        payload, _, _ = self._fetch()
+        payload, _, _ = self._fetch(page_token=page_token)
         return FleetInstance(
             self._version,
             payload,
             sid=self._solution["sid"],
         )
 
-    def fetch_with_http_info(self) -> ApiResponse:
+    def fetch_with_http_info(
+        self, page_token: Union[str, object] = values.unset
+    ) -> ApiResponse:
         """
         Fetch the FleetInstance and return response metadata
 
+        :param page_token: The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
 
         :returns: ApiResponse with instance, status code, and headers
         """
-        payload, status_code, headers = self._fetch()
+        payload, status_code, headers = self._fetch(page_token=page_token)
         instance = FleetInstance(
             self._version,
             payload,
@@ -179,7 +207,9 @@ class FleetContext(InstanceContext):
         )
         return ApiResponse(data=instance, status_code=status_code, headers=headers)
 
-    async def _fetch_async(self) -> tuple:
+    async def _fetch_async(
+        self, page_token: Union[str, object] = values.unset
+    ) -> tuple:
         """
         Internal async helper for fetch operation
 
@@ -187,36 +217,48 @@ class FleetContext(InstanceContext):
             tuple: (payload, status_code, headers)
         """
 
+        params = values.of(
+            {
+                "PageToken": page_token,
+            }
+        )
+
         headers = values.of({})
 
         headers["Accept"] = "application/json"
 
         return await self._version.fetch_with_response_info_async(
-            method="GET", uri=self._uri, headers=headers
+            method="GET", uri=self._uri, params=params, headers=headers
         )
 
-    async def fetch_async(self) -> FleetInstance:
+    async def fetch_async(
+        self, page_token: Union[str, object] = values.unset
+    ) -> FleetInstance:
         """
         Asynchronous coroutine to fetch the FleetInstance
 
+        :param page_token: The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
 
         :returns: The fetched FleetInstance
         """
-        payload, _, _ = await self._fetch_async()
+        payload, _, _ = await self._fetch_async(page_token=page_token)
         return FleetInstance(
             self._version,
             payload,
             sid=self._solution["sid"],
         )
 
-    async def fetch_with_http_info_async(self) -> ApiResponse:
+    async def fetch_with_http_info_async(
+        self, page_token: Union[str, object] = values.unset
+    ) -> ApiResponse:
         """
         Asynchronous coroutine to fetch the FleetInstance and return response metadata
 
+        :param page_token: The page token. This is provided by the API. On a fetch operation this is a user-supplied query parameter and must be retained (unlike list operations, where paging is handled by the helper library).
 
         :returns: ApiResponse with instance, status code, and headers
         """
-        payload, status_code, headers = await self._fetch_async()
+        payload, status_code, headers = await self._fetch_async(page_token=page_token)
         instance = FleetInstance(
             self._version,
             payload,
