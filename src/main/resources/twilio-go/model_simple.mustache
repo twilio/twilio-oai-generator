@@ -4,7 +4,7 @@ type {{classname}} struct {
 	{{#description}}
 		// {{{description}}}
 	{{/description}}
-	{{name}} {{#isNullable}}*{{/isNullable}}{{{vendorExtensions.x-go-base-type}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+	{{name}} {{#isNullable}}*{{/isNullable}}{{{vendorExtensions.x-go-base-type}}} `json:"{{baseName}}{{#vendorExtensions.x-go-omit-empty}},omitempty{{/vendorExtensions.x-go-omit-empty}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
 {{/allVars}}
 }
 
