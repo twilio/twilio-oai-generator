@@ -1,10 +1,14 @@
 import argparse
+import glob
 import json
 import os
 import re
+import shlex
 import shutil
+import subprocess
 from pathlib import Path
 from typing import List, Tuple
+
 
 from clean_unused_imports import remove_unused_imports, remove_duplicate_imports
 from process_orgs_api import preprocess_orgs_spec
@@ -40,6 +44,10 @@ def build(openapi_spec_path: str, output_path: str, language: str) -> None:
 
 
 def generate(spec_folder: str, spec_files: List[str], output_path: str, language: str) -> None:
+    """
+    spec_folder: typically "examples/spec/json"
+    config_path: typically "tmp"
+    """
     sub_dir = subdirectories.get(language, 'rest')
     parent_dir = Path(__file__).parent.parent
     output_path = os.path.join(output_path, sub_dir)
@@ -56,7 +64,9 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
                 generate_domain_for_language(input_path_versionless, config_path, spec_dir, output_path, language, parent_dir)
             if language in generateForLanguages.get(spec_file):
                 generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
-        else: generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
+        else:
+            generate_domain_for_language(spec_file, config_path, spec_folder, output_path, language, parent_dir)
+
     if spec_files[0] in generateForLanguages:
         if language in generateForLanguages.get(spec_files[0]) or language in dynamic_languages:
             print(f'Generating {output_path} from {spec_folder}')
@@ -74,6 +84,7 @@ def generate(spec_folder: str, spec_files: List[str], output_path: str, language
 
 
 def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: str, output_path: str, language: str, parent_dir: str) -> None:
+    print("generate domain for language: {}, config: {}, spec folder: {}, file: {}".format(language, config_path, spec_folder, spec_file))
     full_path = os.path.join(spec_folder, spec_file)
     full_config_path = os.path.join(config_path, spec_file)
     config = {
@@ -86,20 +97,38 @@ def generate_domain_for_language(spec_file: str, config_path: str, spec_folder: 
     }
     # print(config)
     with open(full_config_path, 'w') as f:
-        f.write(json.dumps(config))
-
+        f.write(json.dumps(config) + "\n")
 
 def run_openapi_generator(parent_dir: Path, language: str) -> None:
-    properties = '-DapiTests=false'
-    if language in {'node', 'python'}:
-        properties += ' -DskipFormModel=false'
+    properties = "-DapiTests=false"
+    if language in {"node", "python"}:
+        properties += " -DskipFormModel=false"
 
-    command = f'cd {parent_dir} && java {properties} ' \
-              f'-cp target/twilio-openapi-generator.jar ' \
-              f'org.openapitools.codegen.OpenAPIGenerator batch {CONFIG_FOLDER}/{language}/*'
+    paths = glob.glob(os.path.join(CONFIG_FOLDER, language, "*"))
 
-    if os.system(command + '> /dev/null') != 0:  # Suppress stdout
-        raise RuntimeError()
+    command = [
+        "java",
+        *properties.split(),  # Splits e.g. "-DapiTests=false -DskipFormModel=false" into separate arguments
+        "-cp",
+        "target/twilio-openapi-generator.jar",
+        "org.openapitools.codegen.OpenAPIGenerator",
+        "batch",
+        *paths,
+    ]
+
+    printable_cmd = " ".join(shlex.quote(arg) for arg in command)
+    print(f"Running command: {printable_cmd}")
+
+    try:
+        subprocess.run(
+            command,
+            cwd=parent_dir,              # Change working directory to parent_dir
+            check=True,                  # Raise CalledProcessError on non-zero exit
+            stdout=subprocess.DEVNULL,   # Suppress standard output
+        )
+    except subprocess.CalledProcessError as exc:
+        # Wrap the original exception for more informative error handling
+        raise RuntimeError("OpenAPI generation failed.") from exc
 
 
 def get_domain_info(oai_spec_location: str, domain: str, is_file: bool = False) -> Tuple[str, str, str]:
