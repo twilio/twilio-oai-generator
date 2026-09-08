@@ -18,5 +18,5 @@ package openapi
 type TextResult struct {
 	OutputFormat     OutputFormat      `json:"output_format"`
 	OperatorResultId string            `json:"operator_result_id"`
-	Result           *TextResultResult `json:"result"`
+	Result           *TextResultResult `json:"result,omitempty"`
 }

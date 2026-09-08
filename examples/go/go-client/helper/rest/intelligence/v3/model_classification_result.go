@@ -18,5 +18,5 @@ package openapi
 type ClassificationResult struct {
 	OutputFormat     OutputFormat                `json:"output_format"`
 	OperatorResultId string                      `json:"operator_result_id"`
-	Result           *ClassificationResultResult `json:"result"`
+	Result           *ClassificationResultResult `json:"result,omitempty"`
 }

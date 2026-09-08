@@ -243,7 +243,7 @@ namespace Twilio.Rest.Intelligence.V3
                 Rest.Domain.Intelligence,
                 path,
                 queryParams: options.GetParams(),
-                headerParams: null
+                headerParams: options.GetHeaderParams()
             );
         }
         /// <summary> read </summary>
@@ -273,31 +273,35 @@ namespace Twilio.Rest.Intelligence.V3
         }
         #endif
         /// <summary> read </summary>
+        /// <param name="uuidKey"> Testing for uuid </param>
         /// <param name="pageSize">  </param>
         /// <param name="limit"> Record limit </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> A single instance of OperatorResult </returns>
         public static ResourceSet<OperatorResultReadResource> Read(
+                                                     Guid? uuidKey = null,
                                                      int? pageSize = null,
                                                      long? limit = null,
                                                     ITwilioRestClient client = null)
         {
-            var options = new ReadOperatorResultOptions(){ PageSize = pageSize, Limit = limit};
+            var options = new ReadOperatorResultOptions(){ UuidKey = uuidKey, PageSize = pageSize, Limit = limit};
             return Read(options, client);
         }
 
         #if !NET35
         /// <summary> read </summary>
+        /// <param name="uuidKey"> Testing for uuid </param>
         /// <param name="pageSize">  </param>
         /// <param name="limit"> Record limit </param>
         /// <param name="client"> Client to make requests to Twilio </param>
         /// <returns> Task that resolves to A single instance of OperatorResult </returns>
         public static async System.Threading.Tasks.Task<ResourceSet<OperatorResultReadResource>> ReadAsync(
+                                                                                             Guid? uuidKey = null,
                                                                                              int? pageSize = null,
                                                                                              long? limit = null,
                                                                                             ITwilioRestClient client = null)
         {
-            var options = new ReadOperatorResultOptions(){ PageSize = pageSize, Limit = limit};
+            var options = new ReadOperatorResultOptions(){ UuidKey = uuidKey, PageSize = pageSize, Limit = limit};
             return await ReadAsync(options, client);
         }
         #endif
@@ -312,11 +316,12 @@ namespace Twilio.Rest.Intelligence.V3
         }
 
         public static ResourceSetResponse<OperatorResultReadResource> ReadWithHeaders(
+            Guid? uuidKey = null,
             int? pageSize = null,
             long? limit = null,
             ITwilioRestClient client = null)
         {
-            var options = new ReadOperatorResultOptions(){ PageSize = pageSize, Limit = limit};
+            var options = new ReadOperatorResultOptions(){ UuidKey = uuidKey, PageSize = pageSize, Limit = limit};
             return ReadWithHeaders(options, client);
         }
 

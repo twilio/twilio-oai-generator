@@ -31,6 +31,7 @@ import com.twilio.http.TwilioRestClient;
 import com.twilio.rest.Domains;
 
 import java.io.InputStream;
+import java.util.UUID;
 import com.twilio.type.*;
 
 import com.twilio.base.Page;
@@ -40,6 +41,7 @@ import com.twilio.base.ResourceSet;
 public class OperatorResultReader extends Reader<OperatorResult.ListOperatorResultResponse> {
 
         private Integer pageSize;
+    private UUID uuidKey;
 
         public OperatorResultReader() {
     }
@@ -47,6 +49,12 @@ public class OperatorResultReader extends Reader<OperatorResult.ListOperatorResu
     
 public OperatorResultReader setPageSize(final Integer pageSize){
     this.pageSize = pageSize;
+    return this;
+}
+
+
+public OperatorResultReader setUuidKey(final UUID uuidKey){
+    this.uuidKey = uuidKey;
     return this;
 }
 
@@ -76,6 +84,7 @@ public OperatorResultReader setPageSize(final Integer pageSize){
             path
         );
         addQueryParams(request);
+        addHeaderParams(request);
         return request;
     }
     
@@ -194,4 +203,11 @@ private Page<OperatorResult.ListOperatorResultResponse> pageForRequest(final Twi
 }
 
 
+    private void addHeaderParams(final Request request) {
+
+    if (uuidKey != null) {
+        Serializer.toString(request, "uuid-Key", uuidKey, ParameterType.HEADER);
+    }
+
+}
 }
