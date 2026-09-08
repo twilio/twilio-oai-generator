@@ -152,6 +152,13 @@ paths:
       security:
         - accountSid_authToken: []
       parameters:
+        - in: header
+          name: uuid-Key
+          required: false
+          description: 'Testing for uuid'
+          schema:
+            type: string
+            format: uuid
         - name: PageSize
           in: query
           schema:

@@ -57,6 +57,9 @@ namespace Twilio.Rest.Intelligence.V3
     public class ReadOperatorResultOptions : ReadOptions<OperatorResultReadResource>
     {
     
+        ///<summary> Testing for uuid </summary> 
+        public Guid? UuidKey { get; set; }
+
 
 
 
@@ -74,6 +77,16 @@ namespace Twilio.Rest.Intelligence.V3
         }
 
     
+    /// <summary> Generate the necessary header parameters </summary>
+    public List<KeyValuePair<string, string>> GetHeaderParams()
+    {
+        var p = new List<KeyValuePair<string, string>>();
+        if (UuidKey != null)
+        {
+            p.Add(new KeyValuePair<string, string>("uuid-Key", UuidKey.ToString()));
+        }
+        return p;
+    }
 
     }
 

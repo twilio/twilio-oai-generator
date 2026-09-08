@@ -51,6 +51,8 @@ export type OutputFormat = 'TEXT'|'JSON'|'CLASSIFICATION'|'EXTRACTION';
  * Options to pass to each
  */
 export interface OperatorResultListInstanceEachOptions {
+  /** Testing for uuid */
+  "uuidKey"?: string;
   /**  */
   "pageSize"?: number;
   /** Function to process each record. If this and a positional callback are passed, this one will be used */
@@ -65,6 +67,8 @@ export interface OperatorResultListInstanceEachOptions {
  * Options to pass to list
  */
 export interface OperatorResultListInstanceOptions {
+  /** Testing for uuid */
+  "uuidKey"?: string;
   /**  */
   "pageSize"?: number;
   /** Upper limit for the number of records to return. list() guarantees never to return more than limit. Default is no limit */
@@ -76,6 +80,8 @@ export interface OperatorResultListInstanceOptions {
  * Options to pass to page
  */
 export interface OperatorResultListInstancePageOptions {
+  /** Testing for uuid */
+  "uuidKey"?: string;
   /**  */
   "pageSize"?: number;
 }
@@ -410,6 +416,7 @@ export function OperatorResultListInstance(version: V3): OperatorResultListInsta
     
     const headers: any = {};
     headers["Accept"] = "application/json"
+    if (params["uuidKey"] !== undefined) headers["uuid-Key"] = params["uuidKey"];
 
     let operationVersion = version,
         operationPromise = operationVersion.page({ uri: instance._uri, method: "get", params: data, headers});
@@ -455,6 +462,7 @@ export function OperatorResultListInstance(version: V3): OperatorResultListInsta
     
     const headers: any = {};
     headers["Accept"] = "application/json"
+    if (params["uuidKey"] !== undefined) headers["uuid-Key"] = params["uuidKey"];
 
     let operationVersion = version;
     

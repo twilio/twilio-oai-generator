@@ -18,5 +18,5 @@ package openapi
 type OperatorResultsResponseV1 struct {
 	OutputFormat     OutputFormat            `json:"output_format"`
 	OperatorResultId string                  `json:"operator_result_id"`
-	Result           *ExtractionResultResult `json:"result"`
+	Result           *ExtractionResultResult `json:"result,omitempty"`
 }

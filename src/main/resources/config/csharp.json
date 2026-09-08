@@ -48,6 +48,7 @@
         "http-method": "Twilio.Http.HttpMethod",
         "int": "int?",
         "long": "long?",
+        "uuid": "Guid?",
         "uri": "Uri",
         "uri-map": "Dictionary<string, string>",
         "string-map": "Dictionary<string, string>",

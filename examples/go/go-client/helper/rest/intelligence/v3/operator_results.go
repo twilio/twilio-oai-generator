@@ -81,12 +81,18 @@ func (c *ApiService) FetchOperatorResultWithMetadata(OperatorResultId string) (*
 
 // Optional parameters for the method 'ListOperatorResults'
 type ListOperatorResultsParams struct {
+	// Testing for uuid
+	UuidKey *string `json:"uuid-Key,omitempty"`
 	//
 	PageSize *int `json:"PageSize,omitempty"`
 	// Max number of records to return.
 	Limit *int `json:"limit,omitempty"`
 }
 
+func (params *ListOperatorResultsParams) SetUuidKey(UuidKey string) *ListOperatorResultsParams {
+	params.UuidKey = &UuidKey
+	return params
+}
 func (params *ListOperatorResultsParams) SetPageSize(PageSize int) *ListOperatorResultsParams {
 	params.PageSize = &PageSize
 	return params
