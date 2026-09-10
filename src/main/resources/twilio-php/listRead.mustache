@@ -137,8 +137,8 @@
      */
     private function _page(
         {{#vendorExtensions.x-has-non-pagination-params}}array $options = [],
-        {{/vendorExtensions.x-has-non-pagination-params}}$pageSize = Values::NONE,
-        {{^isApiV1}}string $pageToken = Values::NONE,
+        {{/vendorExtensions.x-has-non-pagination-params}}$pageSize = Values::NONE{{^isApiV1}},
+        string $pageToken = Values::NONE,
         $pageNumber = Values::NONE{{/isApiV1}}
     ): Response
     {
@@ -201,12 +201,12 @@
      */
     public function page(
         {{#vendorExtensions.x-has-non-pagination-params}}array $options = [],
-        {{/vendorExtensions.x-has-non-pagination-params}}$pageSize = Values::NONE,
-        {{^isApiV1}}string $pageToken = Values::NONE,
+        {{/vendorExtensions.x-has-non-pagination-params}}$pageSize = Values::NONE{{^isApiV1}},
+        string $pageToken = Values::NONE,
         $pageNumber = Values::NONE{{/isApiV1}}
     ): {{apiName}}Page
     {
-        $response = $this->_page({{#vendorExtensions.x-has-non-pagination-params}}$options,{{/vendorExtensions.x-has-non-pagination-params}} $pageSize,{{^isApiV1}} $pageToken, $pageNumber{{/isApiV1}});
+        $response = $this->_page({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$pageSize{{^isApiV1}}, $pageToken, $pageNumber{{/isApiV1}});
 
         return new {{apiName}}Page($this->version, $response, $this->solution);
     }
@@ -222,12 +222,12 @@
      */
     public function pageWithMetadata(
         {{#vendorExtensions.x-has-non-pagination-params}}array $options = [],
-        {{/vendorExtensions.x-has-non-pagination-params}}$pageSize = Values::NONE,
-        {{^isApiV1}}string $pageToken = Values::NONE,
+        {{/vendorExtensions.x-has-non-pagination-params}}$pageSize = Values::NONE{{^isApiV1}},
+        string $pageToken = Values::NONE,
         $pageNumber = Values::NONE{{/isApiV1}}
     ): PageMetadata
     {
-        $response = $this->_page({{#vendorExtensions.x-has-non-pagination-params}}$options,{{/vendorExtensions.x-has-non-pagination-params}} $pageSize,{{^isApiV1}} $pageToken, $pageNumber{{/isApiV1}});
+        $response = $this->_page({{#vendorExtensions.x-has-non-pagination-params}}$options, {{/vendorExtensions.x-has-non-pagination-params}}$pageSize{{^isApiV1}}, $pageToken, $pageNumber{{/isApiV1}});
 
         $resource =  new {{apiName}}Page($this->version, $response, $this->solution);
 
