@@ -17,11 +17,15 @@ import com.twilio.oai.template.PythonApiActionTemplate;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.PathItem;
+import io.swagger.v3.oas.models.media.ObjectSchema;
+import io.swagger.v3.oas.models.media.Schema;
 import org.openapitools.codegen.CodegenModel;
 import org.openapitools.codegen.CodegenOperation;
 import org.openapitools.codegen.languages.PythonClientCodegen;
@@ -80,10 +84,55 @@ public class TwilioPythonGenerator extends PythonClientCodegen {
         twilioCodegen.setIsV1ApiStandard(openAPI);
         twilioCodegen.setOutputDir(domain, version);
 
+        replaceCustomClassAdditionalProperties(openAPI);
+
         openAPI.getPaths().forEach(resourceTree::addResource);
         resourceTree.getResources().forEach(resource -> resource.updateFamily(resourceTree));
 
         directoryStructureService.configure(openAPI);
+    }
+
+    /**
+     * Walks every schema in the spec and, wherever a map schema's {@code additionalProperties} is a reference to a
+     * custom class (e.g. {@code additionalProperties: {$ref: '#/components/schemas/OperatorParameter'}}), replaces it
+     * with a plain object schema. This makes such maps generate as {@code Dict[str, object]} instead of
+     * {@code Dict[str, CustomClass]}.
+     */
+    private void replaceCustomClassAdditionalProperties(final OpenAPI openAPI) {
+        if (openAPI.getComponents() == null || openAPI.getComponents().getSchemas() == null) {
+            return;
+        }
+        final Set<Schema> visited = java.util.Collections.newSetFromMap(new IdentityHashMap<>());
+        openAPI.getComponents().getSchemas().values().forEach(schema -> visitSchema(schema, visited));
+    }
+
+    private void visitSchema(final Schema<?> schema, final Set<Schema> visited) {
+        if (schema == null || !visited.add(schema)) {
+            return;
+        }
+
+        final Object additionalProperties = schema.getAdditionalProperties();
+        if (additionalProperties instanceof Schema && ((Schema<?>) additionalProperties).get$ref() != null) {
+            schema.setAdditionalProperties(new ObjectSchema());
+        } else if (additionalProperties instanceof Schema) {
+            visitSchema((Schema<?>) additionalProperties, visited);
+        }
+
+        if (schema.getProperties() != null) {
+            schema.getProperties().values().forEach(property -> visitSchema(property, visited));
+        }
+        if (schema.getItems() != null) {
+            visitSchema(schema.getItems(), visited);
+        }
+        if (schema.getAllOf() != null) {
+            schema.getAllOf().forEach(s -> visitSchema(s, visited));
+        }
+        if (schema.getAnyOf() != null) {
+            schema.getAnyOf().forEach(s -> visitSchema(s, visited));
+        }
+        if (schema.getOneOf() != null) {
+            schema.getOneOf().forEach(s -> visitSchema(s, visited));
+        }
     }
 
     @Override
