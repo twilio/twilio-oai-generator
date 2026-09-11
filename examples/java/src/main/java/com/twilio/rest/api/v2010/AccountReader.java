@@ -43,7 +43,6 @@ public class AccountReader extends Reader<Account> {
     private LocalDate dateTest;
     private ZonedDateTime dateCreatedBefore;
     private ZonedDateTime dateCreatedAfter;
-    private Integer pageSize;
 
         public AccountReader() {
     }
@@ -74,10 +73,11 @@ public AccountReader setDateCreatedAfter(final ZonedDateTime dateCreatedAfter){
 
 
 public AccountReader setPageSize(final Integer pageSize){
-    this.pageSize = pageSize;
+    if (pageSize != null) {
+        super.pageSize(pageSize.intValue());
+    }
     return this;
 }
-
 
     
     public ResourceSetResponse<Account> readWithResponse(final TwilioRestClient client) {
@@ -197,15 +197,6 @@ private Page<Account> pageForRequest(final TwilioRestClient client, final Reques
 
     
     
-    
-
-
-    if (pageSize != null) {
-        Serializer.toString(request, "PageSize", pageSize, ParameterType.QUERY);
-    }
-
-
-
     
     if (getPageSize() != null) {
         request.addQueryParam("PageSize", Integer.toString(getPageSize()));

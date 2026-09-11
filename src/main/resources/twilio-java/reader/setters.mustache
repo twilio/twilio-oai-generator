@@ -18,3 +18,15 @@ public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.tit
 }
 {{/vendorExtensions.x-promotion}}
 {{/vendorExtensions.x-setter-methods}}
+{{! The page-size parameter is not held by this reader: the parent Reader owns it (see
+    x-page-size-param). The setter is kept so callers keep compiling, and writes through to the parent,
+    which is also what pageSize()/limit() write to and what addQueryParams serializes. }}
+{{#vendorExtensions.x-page-size-param}}
+
+public {{resourceName}}Reader set{{#lambda.titlecase}}{{paramName}}{{/lambda.titlecase}}(final {{{dataType}}} {{paramName}}){
+    if ({{paramName}} != null) {
+        super.pageSize({{paramName}}.intValue());
+    }
+    return this;
+}
+{{/vendorExtensions.x-page-size-param}}

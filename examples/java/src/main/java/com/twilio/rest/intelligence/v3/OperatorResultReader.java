@@ -40,24 +40,24 @@ import com.twilio.base.ResourceSet;
 
 public class OperatorResultReader extends Reader<OperatorResult.ListOperatorResultResponse> {
 
-        private Integer pageSize;
-    private UUID uuidKey;
+        private UUID uuidKey;
 
         public OperatorResultReader() {
     }
 
     
-public OperatorResultReader setPageSize(final Integer pageSize){
-    this.pageSize = pageSize;
-    return this;
-}
-
-
 public OperatorResultReader setUuidKey(final UUID uuidKey){
     this.uuidKey = uuidKey;
     return this;
 }
 
+
+public OperatorResultReader setPageSize(final Integer pageSize){
+    if (pageSize != null) {
+        super.pageSize(pageSize.intValue());
+    }
+    return this;
+}
 
     
     public ResourceSetResponse<OperatorResult.ListOperatorResultResponse> readWithResponse(final TwilioRestClient client) {
@@ -188,15 +188,6 @@ private Page<OperatorResult.ListOperatorResultResponse> pageForRequest(final Twi
     }
 
     private void addQueryParams(final Request request) {
-
-
-    if (pageSize != null) {
-        Serializer.toString(request, "PageSize", pageSize, ParameterType.QUERY);
-    }
-
-
-
-    
     if (getPageSize() != null) {
         request.addQueryParam("PageSize", Integer.toString(getPageSize()));
     }

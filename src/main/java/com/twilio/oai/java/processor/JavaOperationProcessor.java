@@ -3,6 +3,7 @@ package com.twilio.oai.java.processor;
 import com.twilio.oai.common.ApplicationConstants;
 import com.twilio.oai.java.cache.ResourceCacheContext;
 import com.twilio.oai.java.feature.Inequality;
+import com.twilio.oai.java.feature.PageSizeParameter;
 import com.twilio.oai.java.feature.SetterMethodGenerator;
 import com.twilio.oai.java.feature.constructor.ConstructorFactory;
 import com.twilio.oai.java.format.Promoter;
@@ -38,6 +39,8 @@ public class JavaOperationProcessor {
 
         // All Features should be applied after processors are completed
         ConstructorFactory.getInstance().applyFeature(codegenOperation);
+        // Must run before the setters are collected: it takes the page-size parameter out of queryParams.
+        PageSizeParameter.getInstance().apply(codegenOperation);
         SetterMethodGenerator.getInstance().apply(codegenOperation);
         Inequality.getInstance().process(codegenOperation);
         Promoter.addPromoter(codegenOperation);

@@ -17,8 +17,6 @@ package com.twilio.rest.versionless.understand;
 import com.twilio.base.Reader;
 import com.twilio.base.ResourceSetResponse;
 import com.twilio.base.TwilioResponse;
-import com.twilio.constant.EnumConstants.ParameterType;
-import com.twilio.converter.Serializer;
 import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
@@ -37,17 +35,17 @@ import com.twilio.base.ResourceSet;
 
 public class AssistantReader extends Reader<Assistant> {
 
-        private Integer pageSize;
-
+    
         public AssistantReader() {
     }
 
     
 public AssistantReader setPageSize(final Integer pageSize){
-    this.pageSize = pageSize;
+    if (pageSize != null) {
+        super.pageSize(pageSize.intValue());
+    }
     return this;
 }
-
 
     
     public ResourceSetResponse<Assistant> readWithResponse(final TwilioRestClient client) {
@@ -150,15 +148,6 @@ private Page<Assistant> pageForRequest(final TwilioRestClient client, final Requ
     }
 
     private void addQueryParams(final Request request) {
-
-
-    if (pageSize != null) {
-        Serializer.toString(request, "PageSize", pageSize, ParameterType.QUERY);
-    }
-
-
-
-    
     if (getPageSize() != null) {
         request.addQueryParam("PageSize", Integer.toString(getPageSize()));
     }

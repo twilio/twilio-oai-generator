@@ -32,9 +32,12 @@ private void addQueryParams(final Request request) {
 {{/vendorExtensions.x-has-before-or-after}}
     
 {{/queryParams}}
-{{#vendorExtensions.x-list-operation}}
+{{! -- The page size is owned by the parent Reader, so it is serialized once, here. Set on list
+       operations only, x-page-size-query-name holds the spelling the spec uses: PageSize for classic
+       APIs, pageSize for API v1 - they are not the same query parameter.}}
+{{#vendorExtensions.x-page-size-query-name}}
     if (getPageSize() != null) {
-        request.addQueryParam("PageSize", Integer.toString(getPageSize()));
+        request.addQueryParam("{{{.}}}", Integer.toString(getPageSize()));
     }
-{{/vendorExtensions.x-list-operation}}
+{{/vendorExtensions.x-page-size-query-name}}
 }
