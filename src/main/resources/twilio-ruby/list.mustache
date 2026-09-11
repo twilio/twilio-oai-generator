@@ -30,6 +30,37 @@
                 {{/vendorExtensions.listOperation}}
                 {{/apiOperations}}
                 {{#operations}}{{#vendorExtensions.x-is-read-operation}}
+                    {{^vendorExtensions.x-supports-pagination}}
+                    ##
+                    # Lists {{apiName}}Instance records from the API as a list.
+                    # This endpoint does not paginate; every record is returned by a single request.
+                    {{#readParams}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/readParams}}
+                    {{#readHeaderParams}}
+                    # @param [{{dataType}}] {{paramName}} {{{description}}}
+                    {{/readHeaderParams}}
+                    # @return [Array] Array of {{apiName}}Instance
+                    def list{{#readParams.0}}({{#readParams}}{{>params}}{{/readParams}}{{#readHeaderParams.0}}, {{#readHeaderParams}}{{>params}}{{/readHeaderParams}}{{/readHeaderParams.0}}){{/readParams.0}}{{^readParams.0}}{{#readHeaderParams.0}}({{#readHeaderParams}}{{>params}}{{/readHeaderParams}}){{/readHeaderParams.0}}{{/readParams.0}}
+                        params = Twilio::Values.of({
+                            {{#readParams}}{{^vendorExtensions.x-serialize}}'{{{baseName}}}' => {{paramName}},
+                            {{/vendorExtensions.x-serialize}}{{#vendorExtensions.x-serialize}}{{^vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}),{{/vendorExtensions.isList}}
+                            {{#vendorExtensions.isList}}'{{{baseName}}}' =>  {{vendorExtensions.x-serialize}}({{paramName}}) { |e| e },
+                            {{/vendorExtensions.isList}}{{/vendorExtensions.x-serialize}}{{/readParams}}
+                        })
+                        headers = Twilio::Values.of({{#readHeaderParams.0}}{ {{#readHeaderParams}}'{{baseName}}' => {{paramName}}, {{/readHeaderParams}} }{{/readHeaderParams.0}}{{^readHeaderParams.0}}{}{{/readHeaderParams.0}})
+                        {{#vendorExtensions.scimConsumes}}headers['Content-Type'] = 'application/scim+json'{{/vendorExtensions.scimConsumes}}
+                        {{#vendorExtensions.scimProduces}}headers['Accept'] = 'application/scim+json'{{/vendorExtensions.scimProduces}}
+
+                        payload = @version.fetch('{{httpMethod}}', @uri, params: params, headers: headers)
+
+                        records = payload['{{recordKey}}'] || []
+                        records.map do |record|
+                            {{apiName}}Instance.new(@version, record{{#listPathParams}}, {{paramName}}: @solution[:{{paramName}}]{{/listPathParams}})
+                        end
+                    end
+                    {{/vendorExtensions.x-supports-pagination}}
+                    {{#vendorExtensions.x-supports-pagination}}
                     ##
                     # Lists {{apiName}}Instance records from the API as a list.
                     # Unlike stream(), this operation is eager and will load `limit` records into
@@ -96,7 +127,6 @@
                         result
                     end
 
-                    {{#vendorExtensions.x-supports-pagination}}
                     ##
                     # Lists {{apiName}}PageMetadata records from the API as a list.
                     {{#readParams}}
@@ -127,7 +157,6 @@
 
                         {{apiName}}PageMetadata.new(@version, response, @solution, limits[:limit])
                     end
-                    {{/vendorExtensions.x-supports-pagination}}
 
                     ##
                     # When passed a block, yields {{apiName}}Instance records from the API.
@@ -191,6 +220,7 @@
                         )
                     {{apiName}}Page.new(@version, response, @solution)
                     end
+                    {{/vendorExtensions.x-supports-pagination}}
                     {{/vendorExtensions.x-is-read-operation}}{{/operations}}
 
                 {{#metaProperties.listImportProperties}}
