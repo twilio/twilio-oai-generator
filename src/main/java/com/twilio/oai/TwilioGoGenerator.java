@@ -99,7 +99,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
      * fields into pointers -- a breaking change for every caller reading a timestamp, with no
      * serialization benefit, since response models are deserialized rather than sent.
      */
-    private void pointerizeOmittableTimestamps(final Map<String, ModelsMap> allModels) {
+    void pointerizeOmittableTimestamps(final Map<String, ModelsMap> allModels) {
         allModels.values().stream()
             .flatMap(modelsMap -> modelsMap.getModels().stream())
             .map(ModelMap::getModel)
@@ -127,7 +127,7 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
      * If any variant cannot be resolved the model is left untouched, so an unknown shape can only
      * preserve today's behaviour rather than silently relax a field that really is required.
      */
-    private void relaxOneOfVariantRequired(final Map<String, ModelsMap> allModels) {
+    void relaxOneOfVariantRequired(final Map<String, ModelsMap> allModels) {
         final Map<String, CodegenModel> byClassname = new HashMap<>();
         allModels.values().stream()
             .flatMap(modelsMap -> modelsMap.getModels().stream())
