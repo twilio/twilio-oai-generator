@@ -26,6 +26,8 @@ import static com.twilio.oai.common.ApplicationConstants.STRING;
 
 public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
 
+    private static final String TIME_TYPE = "time.Time";
+
     private final Set<String> patchOperationIds = new HashSet<>();
 
     @Override
@@ -70,6 +72,108 @@ public class TwilioGoGenerator extends AbstractTwilioGoGenerator {
             model.allVars.forEach(v -> v.vendorExtensions.put("x-go-omit-empty", omitEmpty(v)));
         }
         return results;
+    }
+
+    @Override
+    public Map<String, ModelsMap> postProcessAllModels(final Map<String, ModelsMap> allModels) {
+        final Map<String, ModelsMap> results = super.postProcessAllModels(allModels);
+        relaxOneOfVariantRequired(results);
+        pointerizeOmittableTimestamps(results);
+        return results;
+    }
+
+    /**
+     * Makes omittable `time.Time` fields pointers so that `omitempty` actually fires.
+     *
+     * <p>`omitempty` has no effect on a struct, and `time.Time` is a struct -- so a field tagged
+     * `json:"uploadExpiration,omitempty"` still serialized the zero value `"0001-01-01T00:00:00Z"`
+     * on every request. The tag promised omission and silently did not deliver it.
+     *
+     * <p>`*time.Time` restores the intended behaviour: nil is omitted, a set value is written.
+     * This mirrors the convention the generator already applies to optional time query parameters.
+     * Required timestamps keep their value type -- they are always transmitted anyway.
+     *
+     * <p>Scoped deliberately to flattened `oneOf` models. That is where a stray zero timestamp
+     * changes behaviour: it makes the body match a sibling variant and the request is rejected.
+     * Elsewhere the same tag is merely inaccurate, and widening the scope would turn ~90 response
+     * fields into pointers -- a breaking change for every caller reading a timestamp, with no
+     * serialization benefit, since response models are deserialized rather than sent.
+     */
+    void pointerizeOmittableTimestamps(final Map<String, ModelsMap> allModels) {
+        allModels.values().stream()
+            .flatMap(modelsMap -> modelsMap.getModels().stream())
+            .map(ModelMap::getModel)
+            .filter(Objects::nonNull)
+            .filter(model -> model.oneOf != null && !model.oneOf.isEmpty())
+            .forEach(model -> model.allVars.stream()
+                .filter(property -> !property.required)
+                .filter(property -> TIME_TYPE.equals(property.vendorExtensions.get("x-go-base-type")))
+                .filter(property -> !property.isNullable)
+                .forEach(property -> property.isNullable = true));
+    }
+
+    /**
+     * Relaxes `required` on the fields of a flattened `oneOf` model.
+     *
+     * <p>When a `oneOf` is flattened into a single struct, the upstream generator unions every
+     * variant's `required` list onto the merged model. A field required by only one variant is
+     * therefore marked required on the union, loses `omitempty`, and its zero value is serialized
+     * for every other variant -- which breaks discrimination. `KnowledgeSourceTypes` is the clearest
+     * case: creating a Web source also transmitted `content:""`, `fileName:""`, `fileSize:0` and
+     * `mimeType:""`, and Prism rejected the body as matching the Text variant.
+     *
+     * <p>A field is genuinely required on the union only when *every* variant requires it (the
+     * discriminator, typically). Anything else is conditionally required and must be omittable.
+     * If any variant cannot be resolved the model is left untouched, so an unknown shape can only
+     * preserve today's behaviour rather than silently relax a field that really is required.
+     */
+    void relaxOneOfVariantRequired(final Map<String, ModelsMap> allModels) {
+        final Map<String, CodegenModel> byClassname = new HashMap<>();
+        allModels.values().stream()
+            .flatMap(modelsMap -> modelsMap.getModels().stream())
+            .map(ModelMap::getModel)
+            .filter(Objects::nonNull)
+            .forEach(model -> byClassname.put(model.classname, model));
+
+        for (final CodegenModel model : byClassname.values()) {
+            if (model.oneOf == null || model.oneOf.isEmpty()) {
+                continue;
+            }
+
+            final List<CodegenModel> variants = new ArrayList<>();
+            for (final String variantName : model.oneOf) {
+                final CodegenModel variant = byClassname.get(variantName);
+                if (variant == null) {
+                    variants.clear();
+                    break;
+                }
+                variants.add(variant);
+            }
+            if (variants.isEmpty()) {
+                continue;
+            }
+
+            Set<String> requiredInEveryVariant = null;
+            for (final CodegenModel variant : variants) {
+                final Set<String> variantRequired = variant.allVars.stream()
+                    .filter(property -> property.required)
+                    .map(property -> property.baseName)
+                    .collect(Collectors.toSet());
+                if (requiredInEveryVariant == null) {
+                    requiredInEveryVariant = new HashSet<>(variantRequired);
+                } else {
+                    requiredInEveryVariant.retainAll(variantRequired);
+                }
+            }
+
+            final Set<String> stillRequired = requiredInEveryVariant;
+            model.allVars.stream()
+                .filter(property -> property.required && !stillRequired.contains(property.baseName))
+                .forEach(property -> property.required = false);
+
+            // `required` drives omitEmpty, so recompute it for this model.
+            model.allVars.forEach(v -> v.vendorExtensions.put("x-go-omit-empty", omitEmpty(v)));
+        }
     }
 
     /**
