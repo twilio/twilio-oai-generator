@@ -132,7 +132,7 @@ export class CallInstance {
     
     this.sid = deserialize.integer(payload.sid);
 
-    this._solution = { sid: sid.toString(),  };
+    this._solution = { sid: sid || this.sid.toString(),  };
   }
 
   /**
