@@ -431,7 +431,7 @@ export class AccountInstance {
     this.status = (payload.status);
     this.message = (payload.message);
 
-    this._solution = { sid: sid,  };
+    this._solution = { sid: sid || this.sid,  };
   }
 
   accountSid: string;

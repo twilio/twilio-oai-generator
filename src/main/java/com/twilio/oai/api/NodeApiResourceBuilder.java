@@ -158,6 +158,17 @@ public class NodeApiResourceBuilder extends FluentApiResourceBuilder {
                 model.getVars().forEach(variable -> {
                     codegenPropertyResolver.resolve(variable, this);
 
+                    // The Instance constructor receives path params positionally, but list/page/create
+                    // operations don't know them up front and omit the argument. Where the response body
+                    // echoes the param, the Instance can recover it from the parsed property, so record
+                    // which response property backs this path param. Params with no backing property are
+                    // left unset -- referencing one that doesn't exist would not compile (e.g. voice v2
+                    // Configuration, whose path param `type` is absent from its response).
+                    instancePathParams
+                            .stream()
+                            .filter(param -> param.paramName.equals(variable.name))
+                            .forEach(param -> param.vendorExtensions.put("x-response-property", variable.name));
+
                     instancePathParams
                             .stream()
                             .filter(param -> param.paramName.equals(variable.name))
