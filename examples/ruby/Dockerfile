@@ -1,4 +1,4 @@
-FROM ruby:3.0
+FROM ruby:3.3
 
 RUN apt-get update -y && apt-get install -y git
 
