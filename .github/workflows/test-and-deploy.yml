@@ -34,8 +34,8 @@ jobs:
       - name: Run unit tests
         run: make test
 
-#      - name: Run helper tests and sonar analysis
-#        run: make test-docker SONAR_TOKEN=${{ secrets.SONAR_TOKEN }} LANGUAGES=${{ matrix.language }}
+      - name: Run helper tests
+        run: make test-docker LANGUAGES=${{ matrix.language }}
 
       - name: Show git status and fail on diff
         run: |
