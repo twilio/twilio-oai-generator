@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:22
 
 WORKDIR /app
 RUN git clone https://github.com/twilio/twilio-node.git
