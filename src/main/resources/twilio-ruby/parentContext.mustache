@@ -6,7 +6,14 @@
 {{#metaProperties.hasInstanceOperation}}
 {{>context}}
 {{/metaProperties.hasInstanceOperation}}
+{{^isApiV1}}
 {{>page}}
+{{/isApiV1}}
+{{#isApiV1}}
+{{#hasOperationWithPagination}}
+{{>page}}
+{{/hasOperationWithPagination}}
+{{/isApiV1}}
 {{#hasOperationWithPagination}}
 {{>pageMetadata}}
 {{/hasOperationWithPagination}}
