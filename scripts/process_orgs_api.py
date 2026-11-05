@@ -29,8 +29,13 @@ def preprocess_orgs_spec(spec_folder:str, spec_file:str, parent_dir: str, langua
         x_twilio = path_value.get("x-twilio")
         if not x_twilio:
             x_twilio = {}
-        if not x_twilio.get("parent"):
+        # open-api annotates parents with the full path (/Organizations/{OrganizationSid}); the generator
+        # resolves parents against the path without its first segment, so drop the leading /Organizations.
+        parent = x_twilio.get("parent")
+        if not parent:
             x_twilio["parent"] = "/{OrganizationSid}"
+        elif parent.startswith("/Organizations/"):
+            x_twilio["parent"] = parent[len("/Organizations"):]
         path_value["x-twilio"] = x_twilio
     non_versioned_paths.update(existing_paths)
     non_versioned_paths.update(missing_paths)
