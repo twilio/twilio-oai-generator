@@ -20,6 +20,7 @@ import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.HttpUtility;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
@@ -44,7 +45,7 @@ import com.twilio.type.*;
     
     String path = "/v1/Credentials/AWS/{Sid}";
 
-    path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+    path = path.replace("{"+"Sid"+"}", HttpUtility.validatePathParam(this.pathSid.toString()));
 
 
         Predicate<Integer> deleteStatuses = i -> i != null && i >= 200 && i < 300;

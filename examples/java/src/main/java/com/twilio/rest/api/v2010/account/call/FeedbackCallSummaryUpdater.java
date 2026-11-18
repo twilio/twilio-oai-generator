@@ -23,6 +23,7 @@ import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.HttpUtility;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
@@ -77,8 +78,8 @@ public FeedbackCallSummaryUpdater setStartDate(final LocalDate startDate){
     String path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
         this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
-        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
-    path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+        path = path.replace("{"+"AccountSid"+"}", HttpUtility.validatePathParam(this.pathAccountSid.toString()));
+    path = path.replace("{"+"Sid"+"}", HttpUtility.validatePathParam(this.pathSid.toString()));
 
 
         Request request = new Request(

@@ -9,9 +9,9 @@
 {{#pathParams}}
     {{#vendorExtensions.x-is-account-sid}}
         this.{{paramName}} = this.{{paramName}} == null ? client.getAccountSid() : this.{{paramName}};
-        path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
+        path = path.replace("{"+"{{baseName}}"+"}", HttpUtility.validatePathParam(this.{{paramName}}.toString()));
     {{/vendorExtensions.x-is-account-sid}}
     {{^vendorExtensions.x-is-account-sid}}
-    path = path.replace("{"+"{{baseName}}"+"}", this.{{paramName}}.toString());
+    path = path.replace("{"+"{{baseName}}"+"}", HttpUtility.validatePathParam(this.{{paramName}}.toString()));
     {{/vendorExtensions.x-is-account-sid}}
 {{/pathParams}}

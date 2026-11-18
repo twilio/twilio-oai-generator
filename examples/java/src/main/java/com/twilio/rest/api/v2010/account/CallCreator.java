@@ -25,6 +25,7 @@ import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.HttpUtility;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
@@ -94,7 +95,7 @@ public CallCreator setTestMethod(final HttpMethod testMethod){
     String path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
 
         this.pathAccountSid = this.pathAccountSid == null ? client.getAccountSid() : this.pathAccountSid;
-        path = path.replace("{"+"AccountSid"+"}", this.pathAccountSid.toString());
+        path = path.replace("{"+"AccountSid"+"}", HttpUtility.validatePathParam(this.pathAccountSid.toString()));
 
 
         Request request = new Request(

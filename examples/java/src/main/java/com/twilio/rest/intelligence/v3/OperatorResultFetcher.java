@@ -20,6 +20,7 @@ import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.HttpUtility;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
@@ -43,7 +44,7 @@ import com.twilio.type.*;
     
     String path = "/v3/OperatorResults/{OperatorResultId}";
 
-    path = path.replace("{"+"OperatorResultId"+"}", this.pathOperatorResultId.toString());
+    path = path.replace("{"+"OperatorResultId"+"}", HttpUtility.validatePathParam(this.pathOperatorResultId.toString()));
 
 
         Request request = new Request(
