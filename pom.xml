@@ -38,7 +38,7 @@
                             <value>conf/log4j.properties</value>
                         </property>
                     </systemProperties>
-                    <argLine>-Xms512m -Xmx1500m</argLine>
+                    <argLine>-Xms512m -Xmx1500m --add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
                     <parallel>methods</parallel>
                     <forkMode>pertest</forkMode>
                 </configuration>
