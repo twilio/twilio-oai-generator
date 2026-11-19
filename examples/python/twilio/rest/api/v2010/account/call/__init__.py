@@ -221,8 +221,8 @@ class CallContext(InstanceContext):
 
         # Path Solution
         self._solution = {
-            "account_sid": account_sid,
-            "test_integer": test_integer,
+            "account_sid": serialize.validate_path_param(account_sid),
+            "test_integer": serialize.validate_path_param(test_integer),
         }
         self._uri = "/Accounts/{account_sid}/Calls/{test_integer}.json".format(
             **self._solution
@@ -413,7 +413,7 @@ class CallList(ListResource):
 
         # Path Solution
         self._solution = {
-            "account_sid": account_sid,
+            "account_sid": serialize.validate_path_param(account_sid),
         }
         self._uri = "/Accounts/{account_sid}/Calls.json".format(**self._solution)
 

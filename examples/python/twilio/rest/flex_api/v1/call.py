@@ -14,7 +14,7 @@ r"""
 
 
 from typing import Any, Dict, Optional
-from twilio.base import deserialize, values
+from twilio.base import deserialize, serialize, values
 from twilio.base.api_response import ApiResponse
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -114,7 +114,7 @@ class CallContext(InstanceContext):
 
         # Path Solution
         self._solution = {
-            "sid": sid,
+            "sid": serialize.validate_path_param(sid),
         }
         self._uri = "/Voice/{sid}".format(**self._solution)
 

@@ -43,7 +43,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             
             string path = "/v1/Credentials/AWS/{Sid}";
 
-            string PathSid = options.PathSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(
@@ -144,7 +144,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             
             string path = "/v1/Credentials/AWS/{Sid}";
 
-            string PathSid = options.PathSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(
@@ -390,7 +390,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             
             string path = "/v1/Credentials/AWS/{Sid}";
 
-            string PathSid = options.PathSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(
@@ -508,7 +508,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential
             
             string path = "/v1/Credentials/AWS/{Sid}";
 
-            string PathSid = options.PathSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(

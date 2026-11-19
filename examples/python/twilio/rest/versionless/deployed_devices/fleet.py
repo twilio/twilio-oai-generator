@@ -14,7 +14,7 @@ r"""
 
 
 from typing import Any, Dict, List, Optional, Union
-from twilio.base import values
+from twilio.base import serialize, values
 from twilio.base.api_response import ApiResponse
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -148,7 +148,7 @@ class FleetContext(InstanceContext):
 
         # Path Solution
         self._solution = {
-            "sid": sid,
+            "sid": serialize.validate_path_param(sid),
         }
         self._uri = "/Fleets/{sid}".format(**self._solution)
 

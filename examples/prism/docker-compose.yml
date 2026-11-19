@@ -12,6 +12,8 @@ services:
   java-test:
     build:
       context: ../java
+      args:
+        TWILIO_JAVA_BRANCH: ${TWILIO_JAVA_BRANCH:-main}
     volumes:
       - ../java:/local
     depends_on:

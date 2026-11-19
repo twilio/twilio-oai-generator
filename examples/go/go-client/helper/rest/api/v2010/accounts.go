@@ -140,6 +140,9 @@ func (c *ApiService) CreateAccountWithMetadata(params *CreateAccountParams) (*me
 
 func (c *ApiService) DeleteAccount(Sid string) error {
 	path := "/2010-04-01/Accounts/{Sid}.json"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -160,6 +163,9 @@ func (c *ApiService) DeleteAccount(Sid string) error {
 // DeleteAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) DeleteAccountWithMetadata(Sid string) (*metadata.ResourceMetadata[bool], error) {
 	path := "/2010-04-01/Accounts/{Sid}.json"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -185,6 +191,9 @@ func (c *ApiService) DeleteAccountWithMetadata(Sid string) (*metadata.ResourceMe
 
 func (c *ApiService) FetchAccount(Sid string) (*TestFetchResponseObject, error) {
 	path := "/2010-04-01/Accounts/{Sid}.json"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -210,6 +219,9 @@ func (c *ApiService) FetchAccount(Sid string) (*TestFetchResponseObject, error) 
 // FetchAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) FetchAccountWithMetadata(Sid string) (*metadata.ResourceMetadata[TestFetchResponseObject], error) {
 	path := "/2010-04-01/Accounts/{Sid}.json"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -536,6 +548,9 @@ func (params *UpdateAccountParams) SetStatus(Status string) *UpdateAccountParams
 
 func (c *ApiService) UpdateAccount(Sid string, params *UpdateAccountParams) (*TestResponseObject, error) {
 	path := "/2010-04-01/Accounts/{Sid}.json"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -568,6 +583,9 @@ func (c *ApiService) UpdateAccount(Sid string, params *UpdateAccountParams) (*Te
 // UpdateAccountWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) UpdateAccountWithMetadata(Sid string, params *UpdateAccountParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
 	path := "/2010-04-01/Accounts/{Sid}.json"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}

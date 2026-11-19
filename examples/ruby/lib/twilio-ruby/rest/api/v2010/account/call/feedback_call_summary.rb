@@ -27,7 +27,7 @@ module Twilio
                 super(version)
 
                 # Path Solution
-                @solution = { account_sid: account_sid }
+                @solution = { account_sid: Twilio::Values.validate_path_param(account_sid) }
               end
 
               # Provide a user friendly representation
@@ -47,7 +47,7 @@ module Twilio
                 super(version)
 
                 # Path Solution
-                @solution = { account_sid: account_sid, sid: sid, }
+                @solution = { account_sid: Twilio::Values.validate_path_param(account_sid), sid: Twilio::Values.validate_path_param(sid), }
                 @uri = "/Accounts/#{@solution[:account_sid]}/Calls/Feedback/Summary/#{@solution[:sid]}.json"
               end
 

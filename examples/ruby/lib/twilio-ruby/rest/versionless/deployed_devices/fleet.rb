@@ -91,7 +91,7 @@ module Twilio
             super(version)
 
             # Path Solution
-            @solution = { sid: sid, }
+            @solution = { sid: Twilio::Values.validate_path_param(sid), }
             @uri = "/Fleets/#{@solution[:sid]}"
           end
 

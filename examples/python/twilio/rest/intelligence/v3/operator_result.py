@@ -16,7 +16,7 @@ r"""
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Union, Iterator, AsyncIterator
-from twilio.base import values
+from twilio.base import serialize, values
 from twilio.base.api_response import ApiResponse
 from twilio.base.instance_context import InstanceContext
 from twilio.base.instance_resource import InstanceResource
@@ -46,9 +46,9 @@ class OperatorResultInstance(InstanceResource):
     ):
         super().__init__(version)
 
-        self.output_format: Optional["OperatorResultInstance.str"] = payload.get(
-            "output_format"
-        )
+        self.output_format: Optional[
+            "OperatorResultInstance.OutputFormat"
+        ] = payload.get("output_format")
         self.operator_result_id: Optional[str] = payload.get("operator_result_id")
         self.result: Optional[str] = payload.get("result")
 
@@ -133,7 +133,7 @@ class OperatorResultContext(InstanceContext):
 
         # Path Solution
         self._solution = {
-            "operator_result_id": operator_result_id,
+            "operator_result_id": serialize.validate_path_param(operator_result_id),
         }
         self._uri = "/OperatorResults/{operator_result_id}".format(**self._solution)
 
@@ -270,6 +270,7 @@ class OperatorResultList(ListResource):
 
     def stream(
         self,
+        uuid_key: Union[str, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> Iterator[OperatorResultInstance]:
@@ -279,6 +280,7 @@ class OperatorResultList(ListResource):
         is reached.
         The results are returned as a generator, so this operation is memory efficient.
 
+        :param str uuid_key: Testing for uuid
         :param limit: Upper limit for the number of records to return. stream()
                       guarantees to never return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -289,12 +291,13 @@ class OperatorResultList(ListResource):
         :returns: Generator that will yield up to limit results
         """
         limits = self._version.read_limits(limit, page_size)
-        page = self.page(page_size=limits["page_size"])
+        page = self.page(uuid_key=uuid_key, page_size=limits["page_size"])
 
         return self._version.stream(page, limits["limit"])
 
     async def stream_async(
         self,
+        uuid_key: Union[str, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> AsyncIterator[OperatorResultInstance]:
@@ -304,6 +307,7 @@ class OperatorResultList(ListResource):
         is reached.
         The results are returned as a generator, so this operation is memory efficient.
 
+        :param str uuid_key: Testing for uuid
         :param limit: Upper limit for the number of records to return. stream()
                       guarantees to never return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -314,12 +318,13 @@ class OperatorResultList(ListResource):
         :returns: Generator that will yield up to limit results
         """
         limits = self._version.read_limits(limit, page_size)
-        page = await self.page_async(page_size=limits["page_size"])
+        page = await self.page_async(uuid_key=uuid_key, page_size=limits["page_size"])
 
         return self._version.stream_async(page, limits["limit"])
 
     def stream_with_http_info(
         self,
+        uuid_key: Union[str, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> tuple:
@@ -327,6 +332,7 @@ class OperatorResultList(ListResource):
         Streams OperatorResultInstance and returns headers from first page
 
 
+        :param str uuid_key: Testing for uuid
         :param limit: Upper limit for the number of records to return. stream()
                       guarantees to never return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -337,13 +343,16 @@ class OperatorResultList(ListResource):
         :returns: tuple of (generator, status_code, headers) where generator yields instances
         """
         limits = self._version.read_limits(limit, page_size)
-        page_response = self.page_with_http_info(page_size=limits["page_size"])
+        page_response = self.page_with_http_info(
+            uuid_key=uuid_key, page_size=limits["page_size"]
+        )
 
         generator = self._version.stream(page_response.data, limits["limit"])
         return (generator, page_response.status_code, page_response.headers)
 
     async def stream_with_http_info_async(
         self,
+        uuid_key: Union[str, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> tuple:
@@ -351,6 +360,7 @@ class OperatorResultList(ListResource):
         Asynchronously streams OperatorResultInstance and returns headers from first page
 
 
+        :param str uuid_key: Testing for uuid
         :param limit: Upper limit for the number of records to return. stream()
                       guarantees to never return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -362,7 +372,7 @@ class OperatorResultList(ListResource):
         """
         limits = self._version.read_limits(limit, page_size)
         page_response = await self.page_with_http_info_async(
-            page_size=limits["page_size"]
+            uuid_key=uuid_key, page_size=limits["page_size"]
         )
 
         generator = self._version.stream_async(page_response.data, limits["limit"])
@@ -370,6 +380,7 @@ class OperatorResultList(ListResource):
 
     def list(
         self,
+        uuid_key: Union[str, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> List[OperatorResultInstance]:
@@ -378,6 +389,7 @@ class OperatorResultList(ListResource):
         Unlike stream(), this operation is eager and will load `limit` records into
         memory before returning.
 
+        :param str uuid_key: Testing for uuid
         :param limit: Upper limit for the number of records to return. list() guarantees
                       never to return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -390,6 +402,7 @@ class OperatorResultList(ListResource):
 
         return list(
             self.stream(
+                uuid_key=uuid_key,
                 limit=limit,
                 page_size=page_size,
             )
@@ -397,6 +410,7 @@ class OperatorResultList(ListResource):
 
     async def list_async(
         self,
+        uuid_key: Union[str, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> List[OperatorResultInstance]:
@@ -405,6 +419,7 @@ class OperatorResultList(ListResource):
         Unlike stream(), this operation is eager and will load `limit` records into
         memory before returning.
 
+        :param str uuid_key: Testing for uuid
         :param limit: Upper limit for the number of records to return. list() guarantees
                       never to return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -418,6 +433,7 @@ class OperatorResultList(ListResource):
         return [
             record
             async for record in await self.stream_async(
+                uuid_key=uuid_key,
                 limit=limit,
                 page_size=page_size,
             )
@@ -425,6 +441,7 @@ class OperatorResultList(ListResource):
 
     def list_with_http_info(
         self,
+        uuid_key: Union[str, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> ApiResponse:
@@ -432,6 +449,7 @@ class OperatorResultList(ListResource):
         Lists OperatorResultInstance and returns headers from first page
 
 
+        :param str uuid_key: Testing for uuid
         :param limit: Upper limit for the number of records to return. list() guarantees
                       never to return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -442,6 +460,7 @@ class OperatorResultList(ListResource):
         :returns: ApiResponse with list of instances, status code, and headers
         """
         generator, status_code, headers = self.stream_with_http_info(
+            uuid_key=uuid_key,
             limit=limit,
             page_size=page_size,
         )
@@ -450,6 +469,7 @@ class OperatorResultList(ListResource):
 
     async def list_with_http_info_async(
         self,
+        uuid_key: Union[str, object] = values.unset,
         limit: Optional[int] = None,
         page_size: Optional[int] = None,
     ) -> ApiResponse:
@@ -457,6 +477,7 @@ class OperatorResultList(ListResource):
         Asynchronously lists OperatorResultInstance and returns headers from first page
 
 
+        :param str uuid_key: Testing for uuid
         :param limit: Upper limit for the number of records to return. list() guarantees
                       never to return more than limit.  Default is no limit
         :param page_size: Number of records to fetch per request, when not set will use
@@ -467,6 +488,7 @@ class OperatorResultList(ListResource):
         :returns: ApiResponse with list of instances, status code, and headers
         """
         generator, status_code, headers = await self.stream_with_http_info_async(
+            uuid_key=uuid_key,
             limit=limit,
             page_size=page_size,
         )
@@ -475,22 +497,27 @@ class OperatorResultList(ListResource):
 
     def page(
         self,
+        uuid_key: Union[str, object] = values.unset,
         page_size: Union[int, object] = values.unset,
     ) -> OperatorResultPage:
         """
         Retrieve a single page of OperatorResultInstance records from the API.
         Request is executed immediately
 
+        :param uuid_key: Testing for uuid
         :param page_size:
         :returns: Page of OperatorResultInstance
         """
         data = values.of(
             {
+                "uuid-Key": uuid_key,
                 "PageSize": page_size,
             }
         )
 
-        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
+        headers = values.of(
+            {"uuid-Key": uuid_key, "Content-Type": "application/x-www-form-urlencoded"}
+        )
 
         headers["Accept"] = "application/json"
 
@@ -501,22 +528,27 @@ class OperatorResultList(ListResource):
 
     async def page_async(
         self,
+        uuid_key: Union[str, object] = values.unset,
         page_size: Union[int, object] = values.unset,
     ) -> OperatorResultPage:
         """
         Asynchronously retrieve a single page of OperatorResultInstance records from the API.
         Request is executed immediately
 
+        :param uuid_key: Testing for uuid
         :param page_size:
         :returns: Page of OperatorResultInstance
         """
         data = values.of(
             {
+                "uuid-Key": uuid_key,
                 "PageSize": page_size,
             }
         )
 
-        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
+        headers = values.of(
+            {"uuid-Key": uuid_key, "Content-Type": "application/x-www-form-urlencoded"}
+        )
 
         headers["Accept"] = "application/json"
 
@@ -527,6 +559,7 @@ class OperatorResultList(ListResource):
 
     def page_with_http_info(
         self,
+        uuid_key: Union[str, object] = values.unset,
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -535,6 +568,7 @@ class OperatorResultList(ListResource):
         Retrieve a single page with response metadata
 
 
+        :param uuid_key: Testing for uuid
         :param page_token: PageToken provided by the API
         :param page_number: Page Number, this value is simply for client state
         :param page_size: Number of records to return, defaults to 50
@@ -543,13 +577,16 @@ class OperatorResultList(ListResource):
         """
         data = values.of(
             {
+                "uuid-Key": uuid_key,
                 "PageToken": page_token,
                 "Page": page_number,
                 "PageSize": page_size,
             }
         )
 
-        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
+        headers = values.of(
+            {"uuid-Key": uuid_key, "Content-Type": "application/x-www-form-urlencoded"}
+        )
 
         headers["Accept"] = "application/json"
 
@@ -561,6 +598,7 @@ class OperatorResultList(ListResource):
 
     async def page_with_http_info_async(
         self,
+        uuid_key: Union[str, object] = values.unset,
         page_token: Union[str, object] = values.unset,
         page_number: Union[int, object] = values.unset,
         page_size: Union[int, object] = values.unset,
@@ -569,6 +607,7 @@ class OperatorResultList(ListResource):
         Asynchronously retrieve a single page with response metadata
 
 
+        :param uuid_key: Testing for uuid
         :param page_token: PageToken provided by the API
         :param page_number: Page Number, this value is simply for client state
         :param page_size: Number of records to return, defaults to 50
@@ -577,13 +616,16 @@ class OperatorResultList(ListResource):
         """
         data = values.of(
             {
+                "uuid-Key": uuid_key,
                 "PageToken": page_token,
                 "Page": page_number,
                 "PageSize": page_size,
             }
         )
 
-        headers = values.of({"Content-Type": "application/x-www-form-urlencoded"})
+        headers = values.of(
+            {"uuid-Key": uuid_key, "Content-Type": "application/x-www-form-urlencoded"}
+        )
 
         headers["Accept"] = "application/json"
 

@@ -275,7 +275,7 @@ class AwsContext(InstanceContext):
 
         # Path Solution
         self._solution = {
-            "sid": sid,
+            "sid": serialize.validate_path_param(sid),
         }
         self._uri = "/Credentials/AWS/{sid}".format(**self._solution)
 

@@ -9,7 +9,7 @@
                         {{#isApiV1}}apiV1Version = ApiV1Version.new version.domain, version
                         super(apiV1Version){{/isApiV1}}
                         # Path Solution
-                        @solution = { {{#listPathParams}}{{paramName}}: {{paramName}}{{^-last}}, {{/-last}}{{/listPathParams}} }
+                        @solution = { {{#listPathParams}}{{paramName}}: Twilio::Values.validate_path_param({{paramName}}){{^-last}}, {{/-last}}{{/listPathParams}} }
                         {{#listPath}}@uri = "{{listPath}}"{{/listPath}}
                         {{#metaProperties.listImportProperties.0}}# Components{{/metaProperties.listImportProperties.0}}{{^metaProperties.listImportProperties}}{{#metaProperties.listImportMethods.0}}# Components{{/metaProperties.listImportMethods.0}}{{/metaProperties.listImportProperties}}
                         {{#metaProperties.listImportProperties}}

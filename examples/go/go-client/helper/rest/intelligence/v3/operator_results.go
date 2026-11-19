@@ -26,6 +26,9 @@ import (
 
 func (c *ApiService) FetchOperatorResult(OperatorResultId string) (*OperatorResultsResponseV1, error) {
 	path := "/v3/OperatorResults/{OperatorResultId}"
+	if _, err := client.ValidatePathParam(OperatorResultId); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"OperatorResultId"+"}", OperatorResultId, -1)
 
 	data := url.Values{}
@@ -51,6 +54,9 @@ func (c *ApiService) FetchOperatorResult(OperatorResultId string) (*OperatorResu
 // FetchOperatorResultWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) FetchOperatorResultWithMetadata(OperatorResultId string) (*metadata.ResourceMetadata[OperatorResultsResponseV1], error) {
 	path := "/v3/OperatorResults/{OperatorResultId}"
+	if _, err := client.ValidatePathParam(OperatorResultId); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"OperatorResultId"+"}", OperatorResultId, -1)
 
 	data := url.Values{}

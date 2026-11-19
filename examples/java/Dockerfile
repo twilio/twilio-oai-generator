@@ -14,7 +14,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Use HTTPS instead of SSH for git clone
-RUN git clone https://github.com/twilio/twilio-java.git
+ARG TWILIO_JAVA_BRANCH=main
+RUN git clone --branch "${TWILIO_JAVA_BRANCH}" https://github.com/twilio/twilio-java.git
 WORKDIR /app/twilio-java/
 
 RUN rm -rf src/main/java/com/twilio/rest/*/ \

@@ -39,7 +39,7 @@ namespace Twilio.Rest.FlexApi.V1.Credential.Aws
             
             string path = "/v1/Credentials/AWS/{Sid}/History";
 
-            string PathSid = options.PathSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(

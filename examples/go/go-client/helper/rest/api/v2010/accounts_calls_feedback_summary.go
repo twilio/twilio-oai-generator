@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/twilio/twilio-go/client"
 	"github.com/twilio/twilio-go/client/metadata"
 )
 
@@ -54,10 +55,18 @@ func (params *UpdateCallFeedbackSummaryParams) SetStartDate(StartDate string) *U
 
 func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFeedbackSummaryParams) (*TestResponseObject, error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json"
+	var pathAccountSid string
 	if params != nil && params.PathAccountSid != nil {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+		pathAccountSid = *params.PathAccountSid
 	} else {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+		pathAccountSid = c.requestHandler.Client.AccountSid()
+	}
+	if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+		return nil, err
+	}
+	path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
 	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
@@ -94,10 +103,18 @@ func (c *ApiService) UpdateCallFeedbackSummary(Sid string, params *UpdateCallFee
 // UpdateCallFeedbackSummaryWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) UpdateCallFeedbackSummaryWithMetadata(Sid string, params *UpdateCallFeedbackSummaryParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json"
+	var pathAccountSid string
 	if params != nil && params.PathAccountSid != nil {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+		pathAccountSid = *params.PathAccountSid
 	} else {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+		pathAccountSid = c.requestHandler.Client.AccountSid()
+	}
+	if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+		return nil, err
+	}
+	path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
 	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 

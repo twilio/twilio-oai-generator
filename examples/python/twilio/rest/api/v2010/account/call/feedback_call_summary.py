@@ -231,8 +231,8 @@ class FeedbackCallSummaryContext(InstanceContext):
 
         # Path Solution
         self._solution = {
-            "account_sid": account_sid,
-            "sid": sid,
+            "account_sid": serialize.validate_path_param(account_sid),
+            "sid": serialize.validate_path_param(sid),
         }
         self._uri = "/Accounts/{account_sid}/Calls/Feedback/Summary/{sid}.json".format(
             **self._solution
@@ -423,7 +423,7 @@ class FeedbackCallSummaryList(ListResource):
 
         # Path Solution
         self._solution = {
-            "account_sid": account_sid,
+            "account_sid": serialize.validate_path_param(account_sid),
         }
 
     def get(self, sid: str) -> FeedbackCallSummaryContext:

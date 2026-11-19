@@ -13,7 +13,7 @@ class {{apiName}}Context(InstanceContext):
         {{#if instancePathParams}}
         # Path Solution
         self._solution = { {{#instancePathParams}}
-            '{{paramName}}': {{paramName}},{{/instancePathParams}}
+            '{{paramName}}': serialize.validate_path_param({{paramName}}),{{/instancePathParams}}
         }{{/if}}
         self._uri = '{{instancePath}}'{{#if instancePathParams}}.format(**self._solution){{/if}}
         {{#dependents}}{{#instanceDependent}}

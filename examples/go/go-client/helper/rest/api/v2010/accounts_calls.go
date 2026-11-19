@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/twilio/twilio-go/client"
 	"github.com/twilio/twilio-go/client/metadata"
 )
 
@@ -60,11 +61,16 @@ func (params *CreateCallParams) SetTestMethod(TestMethod string) *CreateCallPara
 
 func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls.json"
+	var pathAccountSid string
 	if params != nil && params.PathAccountSid != nil {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+		pathAccountSid = *params.PathAccountSid
 	} else {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+		pathAccountSid = c.requestHandler.Client.AccountSid()
 	}
+	if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+		return nil, err
+	}
+	path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
 
 	data := url.Values{}
 	headers := map[string]interface{}{
@@ -106,11 +112,16 @@ func (c *ApiService) CreateCall(params *CreateCallParams) (*TestResponseObject, 
 // CreateCallWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) CreateCallWithMetadata(params *CreateCallParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls.json"
+	var pathAccountSid string
 	if params != nil && params.PathAccountSid != nil {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+		pathAccountSid = *params.PathAccountSid
 	} else {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+		pathAccountSid = c.requestHandler.Client.AccountSid()
 	}
+	if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+		return nil, err
+	}
+	path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
 
 	data := url.Values{}
 	headers := map[string]interface{}{
@@ -168,10 +179,18 @@ func (params *DeleteCallParams) SetPathAccountSid(PathAccountSid string) *Delete
 
 func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) error {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
+	var pathAccountSid string
 	if params != nil && params.PathAccountSid != nil {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+		pathAccountSid = *params.PathAccountSid
 	} else {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+		pathAccountSid = c.requestHandler.Client.AccountSid()
+	}
+	if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+		return err
+	}
+	path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
+	if _, err := client.ValidatePathParam(fmt.Sprint(TestInteger)); err != nil {
+		return err
 	}
 	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
@@ -193,10 +212,18 @@ func (c *ApiService) DeleteCall(TestInteger int, params *DeleteCallParams) error
 // DeleteCallWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) DeleteCallWithMetadata(TestInteger int, params *DeleteCallParams) (*metadata.ResourceMetadata[bool], error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
+	var pathAccountSid string
 	if params != nil && params.PathAccountSid != nil {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+		pathAccountSid = *params.PathAccountSid
 	} else {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+		pathAccountSid = c.requestHandler.Client.AccountSid()
+	}
+	if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+		return nil, err
+	}
+	path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
+	if _, err := client.ValidatePathParam(fmt.Sprint(TestInteger)); err != nil {
+		return nil, err
 	}
 	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
@@ -234,10 +261,18 @@ func (params *FetchCallParams) SetPathAccountSid(PathAccountSid string) *FetchCa
 
 func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestResponseObject, error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
+	var pathAccountSid string
 	if params != nil && params.PathAccountSid != nil {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+		pathAccountSid = *params.PathAccountSid
 	} else {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+		pathAccountSid = c.requestHandler.Client.AccountSid()
+	}
+	if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+		return nil, err
+	}
+	path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
+	if _, err := client.ValidatePathParam(fmt.Sprint(TestInteger)); err != nil {
+		return nil, err
 	}
 	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 
@@ -264,10 +299,18 @@ func (c *ApiService) FetchCall(TestInteger int, params *FetchCallParams) (*TestR
 // FetchCallWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) FetchCallWithMetadata(TestInteger int, params *FetchCallParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
 	path := "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json"
+	var pathAccountSid string
 	if params != nil && params.PathAccountSid != nil {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+		pathAccountSid = *params.PathAccountSid
 	} else {
-		path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+		pathAccountSid = c.requestHandler.Client.AccountSid()
+	}
+	if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+		return nil, err
+	}
+	path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
+	if _, err := client.ValidatePathParam(fmt.Sprint(TestInteger)); err != nil {
+		return nil, err
 	}
 	path = strings.Replace(path, "{"+"TestInteger"+"}", fmt.Sprint(TestInteger), -1)
 

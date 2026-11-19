@@ -193,7 +193,7 @@ namespace Twilio.Rest.Api.V2010
             
             string path = "/2010-04-01/Accounts/{Sid}.json";
 
-            string PathSid = options.PathSid ?? client.AccountSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid ?? client.AccountSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(
@@ -294,7 +294,7 @@ namespace Twilio.Rest.Api.V2010
             
             string path = "/2010-04-01/Accounts/{Sid}.json";
 
-            string PathSid = options.PathSid ?? client.AccountSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid ?? client.AccountSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(
@@ -560,7 +560,7 @@ namespace Twilio.Rest.Api.V2010
             
             string path = "/2010-04-01/Accounts/{Sid}.json";
 
-            string PathSid = options.PathSid ?? client.AccountSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid ?? client.AccountSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(

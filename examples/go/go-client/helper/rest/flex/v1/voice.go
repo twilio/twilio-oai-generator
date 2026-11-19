@@ -19,11 +19,15 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/twilio/twilio-go/client"
 	"github.com/twilio/twilio-go/client/metadata"
 )
 
 func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
 	path := "/v1/Voice/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -49,6 +53,9 @@ func (c *ApiService) UpdateCall(Sid string) (*UpdateCallResponse, error) {
 // UpdateCallWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) UpdateCallWithMetadata(Sid string) (*metadata.ResourceMetadata[UpdateCallResponse], error) {
 	path := "/v1/Voice/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}

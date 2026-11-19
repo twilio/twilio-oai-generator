@@ -56,9 +56,9 @@ namespace Twilio.Rest.Api.V2010.Account.Call
             
             string path = "/2010-04-01/Accounts/{AccountSid}/Calls/Feedback/Summary/{Sid}.json";
 
-            string PathSid = options.PathSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
-            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
+            string PathAccountSid = PathParamValidator.Validate(options.PathAccountSid ?? client.AccountSid);
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
 
             return new Request(

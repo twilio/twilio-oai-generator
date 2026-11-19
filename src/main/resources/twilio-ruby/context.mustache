@@ -17,7 +17,7 @@
                         super(apiV1Version){{/isApiV1}}
 
                         # Path Solution
-                        @solution = { {{#instancePathParams}}{{paramName}}: {{paramName}}, {{/instancePathParams}} }
+                        @solution = { {{#instancePathParams}}{{paramName}}: Twilio::Values.validate_path_param({{paramName}}), {{/instancePathParams}} }
                         {{#instancePath}}
                         @uri = "{{{instancePath}}}"
                         {{/instancePath}}
