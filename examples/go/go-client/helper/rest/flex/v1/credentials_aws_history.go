@@ -19,6 +19,7 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/twilio/twilio-go/client"
 	"github.com/twilio/twilio-go/client/metadata"
 )
 
@@ -35,6 +36,9 @@ func (params *FetchCredentialHistoryParams) SetAddOnsData(AddOnsData map[string]
 
 func (c *ApiService) FetchCredentialHistory(Sid string, params *FetchCredentialHistoryParams) (*TestResponseObject, error) {
 	path := "/v1/Credentials/AWS/{Sid}/History"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -70,6 +74,9 @@ func (c *ApiService) FetchCredentialHistory(Sid string, params *FetchCredentialH
 // FetchCredentialHistoryWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) FetchCredentialHistoryWithMetadata(Sid string, params *FetchCredentialHistoryParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
 	path := "/v1/Credentials/AWS/{Sid}/History"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}

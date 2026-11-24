@@ -22,6 +22,7 @@ import com.twilio.exception.ApiConnectionException;
 import com.twilio.exception.ApiException;
 import com.twilio.exception.RestException;
 import com.twilio.http.HttpMethod;
+import com.twilio.http.HttpUtility;
 import com.twilio.http.Request;
 import com.twilio.http.Response;
 import com.twilio.http.TwilioRestClient;
@@ -52,7 +53,7 @@ public FleetFetcher setPageToken(final String pageToken){
     
     String path = "/DeployedDevices/Fleets/{Sid}";
 
-    path = path.replace("{"+"Sid"+"}", this.pathSid.toString());
+    path = path.replace("{"+"Sid"+"}", HttpUtility.validatePathParam(this.pathSid.toString()));
 
 
         Request request = new Request(

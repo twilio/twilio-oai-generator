@@ -193,7 +193,7 @@ namespace Twilio.Rest.Versionless.DeployedDevices
             
             string path = "/DeployedDevices/Fleets/{Sid}";
 
-            string PathSid = options.PathSid;
+            string PathSid = PathParamValidator.Validate(options.PathSid);
             path = path.Replace("{"+"Sid"+"}", PathSid);
 
             return new Request(

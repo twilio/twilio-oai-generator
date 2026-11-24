@@ -1,13 +1,21 @@
 {{#queryParams}}
 {{#vendorExtensions.x-is-account-sid}}
+var pathAccountSid string
 if params != nil && params.PathAccountSid != nil {
-    path = strings.Replace(path, "{"+"AccountSid"+"}", *params.PathAccountSid, -1)
+    pathAccountSid = *params.PathAccountSid
 } else {
-    path = strings.Replace(path, "{"+"AccountSid"+"}", c.requestHandler.Client.AccountSid(), -1)
+    pathAccountSid = c.requestHandler.Client.AccountSid()
 }
+if _, err := client.ValidatePathParam(pathAccountSid); err != nil {
+    {{#returnType}}return nil, err{{/returnType}}{{^returnType}}return err{{/returnType}}
+}
+path = strings.Replace(path, "{"+"AccountSid"+"}", pathAccountSid, -1)
 {{/vendorExtensions.x-is-account-sid}}
 {{/queryParams}}
 {{#pathParams}}
+    if _, err := client.ValidatePathParam({{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}); err != nil {
+        {{#returnType}}return nil, err{{/returnType}}{{^returnType}}return err{{/returnType}}
+    }
     path = strings.Replace(path, "{"+"{{baseName}}"+"}", {{^isString}}fmt.Sprint({{/isString}}{{paramName}}{{^isString}}){{/isString}}, -1)
 {{/pathParams}}
 

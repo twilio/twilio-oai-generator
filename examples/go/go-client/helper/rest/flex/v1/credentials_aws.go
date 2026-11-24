@@ -352,6 +352,9 @@ func (c *ApiService) CreateCredentialAwsWithMetadata(params *CreateCredentialAws
 
 func (c *ApiService) DeleteCredentialAws(Sid string) error {
 	path := "/v1/Credentials/AWS/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -372,6 +375,9 @@ func (c *ApiService) DeleteCredentialAws(Sid string) error {
 // DeleteCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) DeleteCredentialAwsWithMetadata(Sid string) (*metadata.ResourceMetadata[bool], error) {
 	path := "/v1/Credentials/AWS/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -397,6 +403,9 @@ func (c *ApiService) DeleteCredentialAwsWithMetadata(Sid string) (*metadata.Reso
 
 func (c *ApiService) FetchCredentialAws(Sid string) (*TestResponseObject, error) {
 	path := "/v1/Credentials/AWS/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -422,6 +431,9 @@ func (c *ApiService) FetchCredentialAws(Sid string) (*TestResponseObject, error)
 // FetchCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) FetchCredentialAwsWithMetadata(Sid string) (*metadata.ResourceMetadata[TestResponseObject], error) {
 	path := "/v1/Credentials/AWS/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -700,6 +712,9 @@ func (params *PatchCredentialAwsParams) SetTestBoolean(TestBoolean bool) *PatchC
 
 func (c *ApiService) PatchCredentialAws(Sid string, params *PatchCredentialAwsParams) (*TestResponseObject, error) {
 	path := "/v1/Credentials/AWS/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -732,6 +747,9 @@ func (c *ApiService) PatchCredentialAws(Sid string, params *PatchCredentialAwsPa
 // PatchCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) PatchCredentialAwsWithMetadata(Sid string, params *PatchCredentialAwsParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
 	path := "/v1/Credentials/AWS/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -786,6 +804,9 @@ func (params *UpdateCredentialAwsParams) SetTestBoolean(TestBoolean bool) *Updat
 
 func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAwsParams) (*TestResponseObject, error) {
 	path := "/v1/Credentials/AWS/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}
@@ -818,6 +839,9 @@ func (c *ApiService) UpdateCredentialAws(Sid string, params *UpdateCredentialAws
 // UpdateCredentialAwsWithMetadata returns response with metadata like status code and response headers
 func (c *ApiService) UpdateCredentialAwsWithMetadata(Sid string, params *UpdateCredentialAwsParams) (*metadata.ResourceMetadata[TestResponseObject], error) {
 	path := "/v1/Credentials/AWS/{Sid}"
+	if _, err := client.ValidatePathParam(Sid); err != nil {
+		return nil, err
+	}
 	path = strings.Replace(path, "{"+"Sid"+"}", Sid, -1)
 
 	data := url.Values{}

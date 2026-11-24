@@ -56,7 +56,7 @@ namespace Twilio.Rest.Api.V2010.Account
             
             string path = "/2010-04-01/Accounts/{AccountSid}/Calls.json";
 
-            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
+            string PathAccountSid = PathParamValidator.Validate(options.PathAccountSid ?? client.AccountSid);
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
 
             return new Request(
@@ -189,9 +189,9 @@ namespace Twilio.Rest.Api.V2010.Account
             
             string path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
 
-            string PathTestInteger = options.PathTestInteger.ToString();
+            string PathTestInteger = PathParamValidator.Validate(options.PathTestInteger.ToString());
             path = path.Replace("{"+"TestInteger"+"}", PathTestInteger);
-            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
+            string PathAccountSid = PathParamValidator.Validate(options.PathAccountSid ?? client.AccountSid);
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
 
             return new Request(
@@ -294,9 +294,9 @@ namespace Twilio.Rest.Api.V2010.Account
             
             string path = "/2010-04-01/Accounts/{AccountSid}/Calls/{TestInteger}.json";
 
-            string PathTestInteger = options.PathTestInteger.ToString();
+            string PathTestInteger = PathParamValidator.Validate(options.PathTestInteger.ToString());
             path = path.Replace("{"+"TestInteger"+"}", PathTestInteger);
-            string PathAccountSid = options.PathAccountSid ?? client.AccountSid;
+            string PathAccountSid = PathParamValidator.Validate(options.PathAccountSid ?? client.AccountSid);
             path = path.Replace("{"+"AccountSid"+"}", PathAccountSid);
 
             return new Request(

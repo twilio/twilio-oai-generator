@@ -36,7 +36,7 @@ class {{apiName}}List(ListResource):
 
         {{#if listPathParams}}
         # Path Solution
-        self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }{{/if}}
+        self._solution = { {{#listPathParams}}'{{paramName}}': serialize.validate_path_param({{paramName}}), {{/listPathParams}} }{{/if}}
         {{#listPath}}self._uri = '{{listPath}}'{{#if listPathParams}}.format(**self._solution){{/if}}{{/listPath}}
         {{#dependents}}{{^instanceDependent}}
         self._{{mountName}}: Optional[{{resourceName}}List] = None{{/instanceDependent}}{{/dependents}}
@@ -87,7 +87,7 @@ class {{apiName}}List(ListResource):
 
         {{#if listPathParams}}
         # Path Solution
-        self._solution = { {{#listPathParams}}'{{paramName}}': {{paramName}}, {{/listPathParams}} }{{/if}}
+        self._solution = { {{#listPathParams}}'{{paramName}}': serialize.validate_path_param({{paramName}}), {{/listPathParams}} }{{/if}}
         {{#listPath}}self._uri = '{{listPath}}'{{#if listPathParams}}.format(**self._solution){{/if}}{{/listPath}}
         {{#dependents}}{{^instanceDependent}}
         self._{{mountName}}: Optional[{{resourceName}}List] = None{{/instanceDependent}}{{/dependents}}

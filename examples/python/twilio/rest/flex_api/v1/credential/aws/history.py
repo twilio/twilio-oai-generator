@@ -140,7 +140,7 @@ class HistoryContext(InstanceContext):
 
         # Path Solution
         self._solution = {
-            "sid": sid,
+            "sid": serialize.validate_path_param(sid),
         }
         self._uri = "/Credentials/AWS/{sid}/History".format(**self._solution)
 
@@ -283,7 +283,7 @@ class HistoryList(ListResource):
 
         # Path Solution
         self._solution = {
-            "sid": sid,
+            "sid": serialize.validate_path_param(sid),
         }
 
     def get(self) -> HistoryContext:

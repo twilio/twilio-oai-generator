@@ -140,7 +140,7 @@ namespace Twilio.Rest.Intelligence.V3
             
             string path = "/v3/OperatorResults/{OperatorResultId}";
 
-            string PathOperatorResultId = options.PathOperatorResultId;
+            string PathOperatorResultId = PathParamValidator.Validate(options.PathOperatorResultId);
             path = path.Replace("{"+"OperatorResultId"+"}", PathOperatorResultId);
 
             return new Request(
